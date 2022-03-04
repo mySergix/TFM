@@ -1,0 +1,9 @@
+Número de Rayleigh: 1000.000000 
+
+Número Nusselt medio: 9.051359 
+
+Número de Nusselt máximo: 9.052601 
+Posición Y del número de Nusselt máximo (m): 0.025813 
+
+Número de Nusselt mínimo: 9.050121 
+Posición Y del número de Nusselt mínimo (m): 0.974187 
