@@ -38,6 +38,10 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1){
         Fx[i] = P1.Fx[i];
     }
 
+	CourantFactor = 0.70;
+	// Courant Factor -> Driven ----- RK3 ->(0.80 max) ----- RK4 ->(1.10 max) 
+	//				  -> Differentially ----- RK3 ->( max) ----- RK4 ->(0.70 max) 
+
     //Datos Físicos del Problema
 	Rho = R1.ProblemPhysicalData[0];
 	Uref = R1.ProblemPhysicalData[1];
@@ -73,13 +77,14 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1){
 #include "Matrix_Index.cpp"
 #include "Solver_CFD_Memory.cpp"
 #include "Solver_CFD_Utilities.cpp"
-#include "Solver_CFD_BoundaryConditions_Driven.cpp"
-//#include "Solver_CFD_BoundaryConditions_Differentially.cpp"
+//#include "Solver_CFD_BoundaryConditions_Driven.cpp"
+#include "Solver_CFD_BoundaryConditions_Differentially.cpp"
 #include "Solver_CFD_BoundaryConditions_Differentially_T.cpp"
 #include "Solver_CFD_PoissonCoeffs.cpp"
 #include "Solver_CFD_MomentumDiffusion.cpp"
 #include "Solver_CFD_MomentumConvection.cpp"
 #include "Solver_CFD_Energy.cpp"
-#include "Solver_CFD_RK_Integration.cpp"
+//#include "Solver_CFD_RK3_Integration.cpp"
+#include "Solver_CFD_RK4_Integration.cpp"
 #include "Solver_RunSolver.cpp"
 

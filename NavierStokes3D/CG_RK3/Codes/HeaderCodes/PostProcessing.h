@@ -44,7 +44,7 @@ class PostProcessing{
 		void VTK_GlobalScalar3D(string, string, string, Mesher, double*);
 		void VTK_GlobalVectorial3D(string, string, string, Mesher, double*, double*, double*);
 
-		void Get_VelocityResults(Mesher, double*, double*);
+		void Get_VelocityResults(Mesher, double*, double*, double);
 		void Get_NusseltResults(Mesher, double*);
 
 		void Delete_PostProcessingMemory();

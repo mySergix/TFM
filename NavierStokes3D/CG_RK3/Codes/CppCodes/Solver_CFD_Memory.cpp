@@ -29,6 +29,7 @@ void Solver::Allocate_VelocitiesPartMemory(Memory M1, Velocity_Struct &StructNam
     StructName.K1 = M1.AllocateDouble(NodeX, NodesY, NodesZ, 1);
     StructName.K2 = M1.AllocateDouble(NodeX, NodesY, NodesZ, 1);
     StructName.K3 = M1.AllocateDouble(NodeX, NodesY, NodesZ, 1);
+    StructName.K4 = M1.AllocateDouble(NodeX, NodesY, NodesZ, 1);
 
     StructName.New_Velocity = M1.AllocateDouble(NodeX, NodesY, NodesZ, 1);
 
@@ -85,11 +86,8 @@ void Solver::Allocate_EnergyMemory(Memory M1){
     T.Pres = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     T.Fut = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
 
-    T.K1 = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
-    T.K2 = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
-    T.K3 = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
-
-    T.New_Temperature = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+    T.ContributionPast = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+    T.ContributionPres = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
 
     T.Convective = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     T.Diffusive = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
@@ -114,9 +112,9 @@ void Solver::Allocate_GlobalMemory(Memory M1){
 
     Global.P = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     
-    Global.U = M1.AllocateDouble(NX + 2*HP + 1, NY + 2*Halo, NZ + 2*Halo, 1);
-    Global.V = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo + 1, NZ + 2*Halo, 1);
-    Global.W = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo, NZ + 2*Halo + 1, 1);
+    Global.U = M1.AllocateDouble(NX + 2*Halo + 1, NY + 2*Halo, NZ + 2*Halo, 1);
+    Global.V = M1.AllocateDouble(NX + 2*Halo, NY + 2*Halo + 1, NZ + 2*Halo, 1);
+    Global.W = M1.AllocateDouble(NX + 2*Halo, NY + 2*Halo, NZ + 2*Halo + 1, 1);
 
     Global.T = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
 }
@@ -162,11 +160,8 @@ void Solver::Delete_EnergyMemory(Energy_Struct &StructName){
     delete[] StructName.Convective;
     delete[] StructName.Diffusive;
 
-    delete[] StructName.K1;
-    delete[] StructName.K2;
-    delete[] StructName.K3;
-
-    delete[] StructName.New_Temperature;
+    delete[] StructName.ContributionPres;
+    delete[] StructName.ContributionPast;
 
     delete[] StructName.Bottom;
     delete[] StructName.Top;

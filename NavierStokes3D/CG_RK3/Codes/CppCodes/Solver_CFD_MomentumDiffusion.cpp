@@ -140,6 +140,7 @@ int i, j, k;
 										 - MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
     }
+	
 
     if (Rango == 0){
         for(j = 0; j < NY; j++){
@@ -303,8 +304,8 @@ int i, j, k;
 
     // Center
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for(k = 1; k < NZ; k++){
-			for(j = 1; j < NY - 1; j++){
+		for(j = 1; j < NY - 1; j++){
+			for(k = 1; k < NZ; k++){
 				W.Diffusive[LW(i,j,k,0)] = (mu/(Rho*MESH.VolMW[LW(i,j,k,0)]))*(
 										 + MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i+1,j,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]

@@ -157,7 +157,7 @@ int IminNu = 0;
 
 	for (j = 0; j <  NY; j++){
 		for (k = 0; k < NZ; k++){
-			LocalNusselt[j] += ((Tleft - T_matrix[GP(0,j,k,0)]) / MESH.DeltasMU[LU(0,j,k,0)]) * MESH.DeltasMP[LP(0,j,k,2)];
+			LocalNusselt[j] += ((Tleft - T_matrix[GP(0,j,k,0)]) / MESH.DeltasMU[LU(0,j,k,0)]) * (MESH.DeltasMP[LP(0,j,k,2)] / MESH.Zdominio);
 		}
 		LocalNusselt[j] = LocalNusselt[j] * (MESH.Xdominio / (Tleft - Tright));
 		Sumatorio += LocalNusselt[j] * MESH.DeltasMP[LP(0,j,NZ/2,1)];
@@ -199,7 +199,7 @@ int IminNu = 0;
 }
 
 // Function to calculate the average velocity at the mid sections
-void PostProcessing::Get_VelocityResults(Mesher MESH, double *U_matrix, double *V_matrix){
+void PostProcessing::Get_VelocityResults(Mesher MESH, double *U_matrix, double *V_matrix, double K){
 int i, j, k;
 
 	// U Velocity Mid Vertical Line (Z - Averaged)
@@ -209,18 +209,9 @@ int i, j, k;
 
 	for (j = 0; j < NY; j++){
 		for (k = 0; k < NZ; k++){
-			U_Averaged[j] += U_matrix[GU(NX/2,j,k,0)] * MESH.DeltasMU[LU(0,j,k,2)];
+			U_Averaged[j] += U_matrix[GU(NX/2,j,k,0)] * (MESH.DeltasMU[LU(0,j,k,2)] / MESH.Zdominio);
 		}
 	}
-
-	FILE *fp1;
-		fp1 = fopen("../NumericalResults/Driven_U_Results.txt","w");
-			fprintf(fp1,"Coordinate \t U Velocity \n");
-			for (j = 0; j < NY; j++){
-				fprintf(fp1, "%f \t %f \n", MESH.GlobalMeshU[GU(NX/2,j,0,1)], U_Averaged[j]);
-			}				
-		fclose(fp1);
-
 
 	// V Velocity Mid Horizonal Line (Z - Averaged)
 	for (i = 0; i < NX; i++){
@@ -229,17 +220,44 @@ int i, j, k;
 
 	for (i = 0; i < NX; i++){
 		for (k = 0; k < NZ; k++){
-			V_Averaged[i] += V_matrix[GV(i,NY/2,k,0)] * MESH.GlobalDeltasMV[GV(i,NY/2,k,2)];
+			V_Averaged[i] += V_matrix[GV(i,NY/2,k,0)] * (MESH.GlobalDeltasMV[GV(i,NY/2,k,2)] / MESH.Zdominio);
 		}
 	}
 
-	FILE *fp2;
+	if (Problema == 1){
+		FILE *fp1;
+		fp1 = fopen("../NumericalResults/Driven_U_Results.txt","w");
+			fprintf(fp1,"Coordinate \t U Velocity \n");
+			for (j = 0; j < NY; j++){
+				fprintf(fp1, "%f \t %f \n", MESH.GlobalMeshU[GU(NX/2,j,0,1)], U_Averaged[j]);
+			}				
+		fclose(fp1);
+
+		FILE *fp2;
 		fp2 = fopen("../NumericalResults/Driven_V_Results.txt","w");
 			fprintf(fp2,"Coordinate \t V Velocity \n");
 			for (i = 0; i < NX; i++){
 				fprintf(fp2, "%f \t %f \n", MESH.GlobalMeshV[GV(i,NY/2,0,0)], V_Averaged[i]);
 			}				
 		fclose(fp2);
+	}
+	else if (Problema == 2){
+		FILE *fp1;
+		fp1 = fopen("../NumericalResults/Differentially_U_Results.txt","w");
+			fprintf(fp1,"Coordinate \t U Velocity \n");
+			for (j = 0; j < NY; j++){
+				fprintf(fp1, "%f \t %f \n", MESH.GlobalMeshU[GU(NX/2,j,0,1)], U_Averaged[j] * (MESH.Xdominio / K));
+			}				
+		fclose(fp1);
+
+		FILE *fp2;
+		fp2 = fopen("../NumericalResults/Differentially_V_Results.txt","w");
+			fprintf(fp2,"Coordinate \t V Velocity \n");
+			for (i = 0; i < NX; i++){
+				fprintf(fp2, "%f \t %f \n", MESH.GlobalMeshV[GV(i,NY/2,0,0)], V_Averaged[i] * (MESH.Xdominio / K));
+			}				
+		fclose(fp2);
+	}
 
 }
 

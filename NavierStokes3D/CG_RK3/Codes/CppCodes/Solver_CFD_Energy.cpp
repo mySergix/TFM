@@ -973,6 +973,20 @@ double Tw, Te, Ts, Tn, Th, Tt;
 
 }
 
+// Function to calculate the contributions of the energy equation
+void Solver::Get_EnergyContributions(){
+int i, j, k;
+
+    for (i = Ix[Rango]; i < Fx[Rango]; i++){
+        for (j = 0; j < NY; j++){
+            for (k = 0; k < NZ; k++){
+                T.ContributionPres[LP(i,j,k,0)] = T.Diffusive[LP(i,j,k,0)] - T.Convective[LP(i,j,k,0)];
+            }
+        }
+    }
+
+}
+
 // Function to calculate the Boussinesq Approximation for Velocity V
 void Solver::Get_BoussinesqV(Mesher MESH, double *V_Matrix, double *T_Matrix){
 int i, j, k;
@@ -982,7 +996,21 @@ double Temp;
         for (j = 1; j < NY; j++){
             for (k = 0; k < NZ; k++){
                 Temp = ConvectiveScheme(MESH.MV[LV(i,j,k,1)], V_Matrix[LV(i,j,k,0)], MESH.MP[LP(i,j-2,k,1)], T_Matrix[LP(i,j-2,k,0)], MESH.MP[LP(i,j-1,k,1)], T_Matrix[LP(i,j-1,k,0)], MESH.MP[LP(i,j,k,1)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i,j+1,k,1)], T_Matrix[LP(i,j+1,k,0)], EsquemaLargo);
-                V.Boussinesq[LV(i,j,k,0)] = V.Gravity * (1.0 - Beta * (Temp - To));
+                V.Boussinesq[LV(i,j,k,0)] = Rho * V.Gravity * (1.0 - Beta * (Temp - To));
+            }
+        }
+    }
+
+}
+
+// Function to calculate the new temperature field
+void Solver::Get_NewTemperatures(){
+int i, j, k;
+
+    for (i = Ix[Rango]; i < Fx[Rango]; i++){
+        for (j = 0; j < NY; j++){
+            for (k = 0; k < NZ; k++){
+                T.Fut[LP(i,j,k,0)] = T.Pres[LP(i,j,k,0)] + DeltaT * (1.50 * T.ContributionPres[LP(i,j,k,0)] - 0.50 * T.ContributionPast[LP(i,j,k,0)]);
             }
         }
     }

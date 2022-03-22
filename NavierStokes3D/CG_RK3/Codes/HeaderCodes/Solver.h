@@ -65,6 +65,8 @@ class Solver{
 		double gy;
 		double gz;
 
+        double CourantFactor;
+        double DiffusiveDeltaT;
 		double DeltaT;
         double nu;
         double mu;
@@ -120,6 +122,7 @@ class Solver{
             double *K1;
             double *K2;
             double *K3;
+            double *K4;
 
             double *New_Velocity;
 
@@ -134,11 +137,8 @@ class Solver{
             double *Convective;
             double *Diffusive;
 
-            double *K1;
-            double *K2;
-            double *K3;
-
-            double *New_Temperature;
+            double *ContributionPast;
+            double *ContributionPres;
 
             double *Bottom;
             double *Top;
@@ -182,13 +182,14 @@ class Solver{
 
         struct Runge_Kutta
         {
-            double c1, c2, c3;
+            double c1, c2, c3, c4;
             
-            double a11, a12, a13;
-            double a21, a22, a23;
-            double a31, a32, a33;
+            double a11, a12, a13, a14;
+            double a21, a22, a23, a24;
+            double a31, a32, a33, a34;
+            double a41, a42, a43, a44;
 
-            double b1, b2, b3;
+            double b1, b2, b3, b4;
         };
 
         struct Velocity_Struct U;
@@ -202,7 +203,7 @@ class Solver{
         
         struct Global_Struct Global;
 
-        struct Runge_Kutta RK3;
+        struct Runge_Kutta RK;
 
 
         // Class Functions
@@ -224,9 +225,11 @@ class Solver{
 
             // Utilities
             void Get_InitialConditions(Mesher);
+            void Get_DiffusiveTimeStep(Mesher);
             void Get_StepTime(Mesher);
             inline double ConvectiveScheme(double, double, double, double, double, double, double, double, double, double, string);  
             void Get_PredictorsDivergence(Mesher);
+            void Get_CorrectedVelocities(Mesher, Parallel, double*, double*, double*);
             void Get_Velocities(Mesher, Parallel);
             void Get_Stop();
             void Get_Update();
@@ -234,8 +237,7 @@ class Solver{
             // Runge Kutta Temporal Integration
             void Get_RK_Coefficients(Runge_Kutta&);
             void Get_RK_VelocityContributions(double*, double*, double*);
-            void Get_RK_ScalarContributions(double*, double*, double*);
-            void Get_RK3_Integration(Mesher, Parallel);
+            void Get_RK_Integration(Mesher, Parallel);
 
             // Boundary Conditions
             void Get_StaticBoundaryConditions_Velocities(Mesher);
@@ -270,6 +272,8 @@ class Solver{
             void Get_DiffusionEnergy(Mesher, double*);
             void Get_ConvectionEnergy(Mesher, double*, double*, double*, double*);
             void Get_BoussinesqV(Mesher, double*, double*);
+            void Get_EnergyContributions();
+            void Get_NewTemperatures();
 
             // Run Solver
             void RunSolver(Memory, ReadData, Parallel, Mesher, PostProcessing);

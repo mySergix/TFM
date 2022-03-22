@@ -16,6 +16,7 @@ int i, j, k;
  
 	KSP         ksp; // Krylov Subspace Solver
  	PC          pc; // Preconditioner
+	MatNullSpace nullspace_Amatrix; // Nullspace setting for Singular Laplacian Matrix
 
 	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 	MPI_Comm_size(MPI_COMM_WORLD,&size);
@@ -28,7 +29,7 @@ int i, j, k;
 	MaxDiffGlobal = 2.0*ConvergenciaGlobal;
 
 	// Runge Kutta 3rd Order Coefficients
-	Get_RK_Coefficients(RK3);
+	Get_RK_Coefficients(RK);
 
 	// Memory Allocation for Navier Stokes Equations
 	Allocate_VelocitiesMemory(M1);
@@ -63,7 +64,10 @@ int i, j, k;
 	KSPSetOperators(ksp, A_Matrix, A_Matrix);
 	KSPSetType(ksp, KSPCG);
 	KSPGetPC(ksp, &pc);
-	KSPSetTolerances(ksp, 1e-2, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
+	KSPSetTolerances(ksp, 1e-5, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
+	MatNullSpaceCreate(PETSC_COMM_WORLD, PETSC_TRUE, 0, 0, &nullspace_Amatrix);
+	MatSetNullSpace(A_Matrix, nullspace_Amatrix);
+	MatSetTransposeNullSpace(A_Matrix, nullspace_Amatrix);
 	KSPSetFromOptions(ksp);
 	KSPSetUp(ksp);
 
@@ -80,10 +84,15 @@ int i, j, k;
     Get_StaticBoundaryConditions_Velocities(MESH);
 	Get_StaticHalos_Velocity(U.Pres, V.Pres, W.Pres);
 
+	Get_UpdateBoundaryConditions_Velocities(U.Pres, V.Pres, W.Pres);
+	Get_UpdateHalos_Velocity(U.Pres, V.Pres, W.Pres);
+
 	if (Problema == 2){
 		Get_StaticBoundaryConditions_Temperatures(MESH);
 		Get_StaticHalos_Temperatures(T.Pres);
 	}
+
+	Get_DiffusiveTimeStep(MESH);
 
 	// Communication to global matrix at step 0
 	P1.SendMatrixToZeroMP(P.Pres, Global.P);
@@ -107,7 +116,7 @@ int i, j, k;
 	}
 
 	// Time Variables
-	double Time_RK3 = 0.0;
+	double Time_RK = 0.0;
 	double Time_PoissonSolver = 0.0;
 
 	// Initial Loop Time
@@ -123,11 +132,11 @@ int i, j, k;
 		Time += DeltaT;
         
 		// RK3 Integration (Velocity + Temperature)
-		auto Inicio_RK3 = std::chrono::high_resolution_clock::now();
-		Get_RK3_Integration(MESH, P1);
-		auto Final_RK3 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> T_RK3 = Final_RK3 - Inicio_RK3;
-		Time_RK3 += T_RK3.count();
+		auto Inicio_RK = std::chrono::high_resolution_clock::now();
+		Get_RK_Integration(MESH, P1);
+		auto Final_RK = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> T_RK = Final_RK - Inicio_RK;
+		Time_RK += T_RK.count();
 
 		// Predictors Divergence
         Get_PredictorsDivergence(MESH);
@@ -150,7 +159,34 @@ int i, j, k;
 		// New Velocities Calculation
 		Get_Velocities(MESH, P1);
 
-		if(Step%100 == 0){
+		// New Temperatures Calculation
+		if (Problema == 2){
+			Get_UpdateBoundaryConditions_Temperatures(T.Pres);
+			Get_UpdateHalos_Temperatures(T.Pres);
+
+			P1.CommunicateDataLP(T.Pres, T.Pres);
+			Get_DiffusionEnergy(MESH, T.Pres);
+			Get_ConvectionEnergy(MESH, T.Pres, U.Pres, V.Pres, W.Pres);
+			Get_EnergyContributions();
+            Get_NewTemperatures();
+		}
+
+		if (Step%100 == 0){
+			// Checking Convergence Criteria
+			Get_Stop();
+
+			if (Rango == 0){
+
+				// Current Simulation Status
+				cout<<"Step: "<<Step<<", Total time: "<<Time<<", MaxDif: "<<MaxDiffGlobal<<", DeltaT: "<<DeltaT<<endl;	
+			}
+
+		}
+
+		// Fields Update
+		Get_Update();
+
+		if(Step%500 == 0){
 
 			// Communication to global matrix
 			P1.SendMatrixToZeroMP(P.Pres, Global.P);
@@ -159,50 +195,66 @@ int i, j, k;
 			P1.SendMatrixToZeroMW(W.Fut, Global.W);
 			if (Problema == 2){P1.SendMatrixToZeroMP(T.Pres, Global.T); }
 
-			// Checking Convergence Criteria
-			Get_Stop();
-
 			// Print of .VTK files
 			if(Rango == 0){
+				
+				POST1.Get_VelocityResults(MESH, Global.U, Global.V, K);
+				if (Problema == 2){
+					POST1.Get_NusseltResults(MESH, Global.T);
+				}
 
 				sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
 				POST1.VTK_GlobalScalar3D("DrivenCavity/", "Presion", FileName_1, MESH, Global.P);
 		
 				if (Problema == 2){
-					POST1.Get_NusseltResults(MESH, Global.T);
-
 					sprintf(FileName_1, "MapaTemperaturas_Step_%d", Step);
 					POST1.VTK_GlobalScalar3D("DrivenCavity/", "Temperatura", FileName_1, MESH, Global.T);
 				}
 				
 				sprintf(FileName_1, "MapaVelocidades_Step_%d", Step);
 				POST1.VTK_GlobalVectorial3D("DrivenCavity/", "Velocidades", FileName_1, MESH, Global.U, Global.V, Global.W);
-
-				// Current Simulation Status
-				cout<<"Step: "<<Step<<", Total time: "<<Time<<", MaxDif: "<<MaxDiffGlobal<<endl;	
+		
 			}
 
 		}
 
-		// Fields Update
-		Get_Update();
-		
 	}
 
 	// Final Loop Time
 	auto FinalLoop = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> Time_Loop = FinalLoop - InicioLoop;
 
-	// Solver Completed
-	if(Rango == 0){
-		POST1.Get_VelocityResults(MESH, Global.U, Global.V);
+	// Communication to global matrix
+	P1.SendMatrixToZeroMP(P.Pres, Global.P);
+	P1.SendMatrixToZeroMU(U.Fut, Global.U);
+	P1.SendMatrixToZeroMV(V.Fut, Global.V);
+	P1.SendMatrixToZeroMW(W.Fut, Global.W);
+	if (Problema == 2){P1.SendMatrixToZeroMP(T.Pres, Global.T); }
+
+	// Print of .VTK files
+	if(Rango == 0){		
+		sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
+		POST1.VTK_GlobalScalar3D("DrivenCavity/", "Presion", FileName_1, MESH, Global.P);
+		
+		sprintf(FileName_1, "MapaVelocidades_Step_%d", Step);
+		POST1.VTK_GlobalVectorial3D("DrivenCavity/", "Velocidades", FileName_1, MESH, Global.U, Global.V, Global.W);
+
+		if (Problema == 2){
+			sprintf(FileName_1, "MapaTemperaturas_Step_%d", Step);
+			POST1.VTK_GlobalScalar3D("DrivenCavity/", "Temperatura", FileName_1, MESH, Global.T);
+		}
+
+		// Post Processing Calculations
+		POST1.Get_VelocityResults(MESH, Global.U, Global.V, K);
 		if (Problema == 2){
 			POST1.Get_NusseltResults(MESH, Global.T);
 		}
+
+		// Solver Completed
 		cout<<"Solver Completed"<<endl;
 		cout<<endl;
 		cout<<"Solver Times:"<<endl;
-		cout<<"RK3 Integration: "<<Time_RK3<<" s, "<<100 * (Time_RK3 / Time_Loop.count())<<" %"<<endl;
+		cout<<"RK3 Integration: "<<Time_RK<<" s, "<<100 * (Time_RK / Time_Loop.count())<<" %"<<endl;
 		cout<<"Poisson Solver: "<<Time_PoissonSolver<<" s, "<<100 * (Time_PoissonSolver / Time_Loop.count())<<" %"<<endl;
 		cout<<"Loop Time: "<<Time_Loop.count()<<" s"<<endl;
 	}
@@ -221,7 +273,7 @@ int i, j, k;
 
 	MatDestroy(&A_Matrix);
 
-	// Classes Mmeory Delete
+	// Classes Memory Delete
 
 		// ReadData Memory
 		R1.Delete_ReadDataMemory();

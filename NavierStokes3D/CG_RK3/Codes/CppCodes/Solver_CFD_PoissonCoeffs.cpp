@@ -209,11 +209,6 @@ int Row_Count = 0;
     // Last element of Row_Ptr is the total number of NNZ
     Row_Ptr[Row_Count] = Val_Ind;
     
-    // A Matrix Perturbation
-    if (Rango == 0){
-        Val_Laplacian[0] = 1.05 * Val_Laplacian[0];
-    }
-
 }
 
 // Function to calculate the index of the RHS vector (bp)

@@ -4,5 +4,5 @@ Datos sobre la geometría del problema a simular
 Datos geométricos:
 1.0	Coordenada X de todo el dominio 	(m)
 1.0	Coordenada Y de todo el dominio 	(m)
-0.5	Coordenada Z de todo el dominio 	(m)
+0.2	Coordenada Z de todo el dominio 	(m)
 	

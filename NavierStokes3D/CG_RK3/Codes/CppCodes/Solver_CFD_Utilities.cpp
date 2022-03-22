@@ -5,7 +5,7 @@
 // Function to set the initial fields
 void Solver::Get_InitialConditions(Mesher MESH){
 int i, j, k;
-
+double I;
 	// Pressure
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
 		for(j = 0; j < NY; j++){
@@ -24,6 +24,7 @@ int i, j, k;
 
 				U.Convective[LU(i,j,k,0)] = 0.0;
 				U.Diffusive[LU(i,j,k,0)] = 0.0;	
+
 			}
 		}
 	}
@@ -45,7 +46,7 @@ int i, j, k;
     // Velocity W
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
 		for(j = 0; j < NY; j++){
-			for(k = 0; k < NZ; k++){	
+			for(k = 0; k < NZ + 1; k++){	
 				W.Pres[LW(i,j,k,0)] = 0.0;
 				W.Fut[LW(i,j,k,0)] = 0.0;
 				
@@ -57,10 +58,11 @@ int i, j, k;
 
 	// Temperature T
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){	
+		I = i;
 		for(j = 0; j < NY; j++){
 			for(k = 0; k < NZ; k++){	
-				T.Pres[LP(i,j,k,0)] = To;
-				T.Fut[LP(i,j,k,0)] = To;
+				T.Pres[LP(i,j,k,0)] = Tleft + (Tright - Tleft) * (I / NX);
+				T.Fut[LP(i,j,k,0)] = Tleft + (Tright - Tleft) * (I / NX);
 
 				T.Convective[LP(i,j,k,0)] = 0.0;
 				T.Diffusive[LP(i,j,k,0)] = 0.0;	
@@ -70,11 +72,10 @@ int i, j, k;
 	
 }
 
-//Cálculo del tiempo entre Steps
-void Solver::Get_StepTime(Mesher MESH){
+// Function to calculate the DeltaT threshold for the diffusion
+void Solver::Get_DiffusiveTimeStep(Mesher MESH){
 int i, j, k;
-DeltaT = 1000.0;
-double Tpar = 0.20;
+DiffusiveDeltaT = 1000.0;
 
 	//Comparacion 
 	//a*(a>b) + b*(b>a)
@@ -83,50 +84,41 @@ double Tpar = 0.20;
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
 		for(j = 0; j < NY; j++){
 			for(k = 0; k < NZ; k++){	
-				
-				// CFL Velocities (U, V, W)
-	
-				// Velocity U
-                DeltaT += (Tpar*abs(MESH.DeltasMP[LP(i,j,k,0)] / (0.50 * (U.Pres[LU(i,j,k,0)] + U.Pres[LU(i+1,j,k,0)]) + 1e-10)) - DeltaT) * (Tpar*abs(MESH.DeltasMP[LP(i,j,k,0)] / (0.50 * (U.Pres[LU(i,j,k,0)] + U.Pres[LU(i+1,j,k,0)]) + 1e-10)) <= DeltaT);
 
-				// Velocity V
-				DeltaT += (Tpar*abs(MESH.DeltasMP[LP(i,j,k,1)] / (0.50 * (V.Pres[LV(i,j,k,0)] + V.Pres[LV(i,j+1,k,0)]) + 1e-10)) - DeltaT) * (Tpar*abs(MESH.DeltasMP[LP(i,j,k,1)] / (0.50 * (V.Pres[LV(i,j,k,0)] + V.Pres[LV(i,j+1,k,0)]) + 1e-10)) <= DeltaT);
-
-				//Velocidad W
-				DeltaT += (Tpar*abs(MESH.DeltasMP[LP(i,j,k,2)] / (0.50 * (W.Pres[LW(i,j,k,0)] + W.Pres[LW(i,j,k+1,0)]) + 1e-10)) - DeltaT) * (Tpar*abs(MESH.DeltasMP[LP(i,j,k,2)] / (0.50 * (W.Pres[LW(i,j,k,0)] + W.Pres[LW(i,j,k+1,0)]) + 1e-10)) <= DeltaT);
-
+				// CFL Diffusive U
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,0)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,0)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,1)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,1)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,2)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,2)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
 			
-				//CFL Difusivo Velocidades
-                
-				//Difusivo U
-				DeltaT += ((Tpar*Rho*pow(MESH.DeltasMP[LP(i,j,k,0)],2.0))/(mu + 1e-10) - DeltaT) * ((Tpar*Rho*pow(MESH.DeltasMP[LP(i,j,k,0)],2.0))/(mu + 1e-10) <= DeltaT);
-
-				//Difusivo V
-				DeltaT += ((Tpar*Rho*pow(MESH.DeltasMP[LP(i,j,k,1)],2.0))/(mu + 1e-10) - DeltaT) * ((Tpar*Rho*pow(MESH.DeltasMP[LP(i,j,k,1)],2.0))/(mu + 1e-10) <= DeltaT);
-
-				//Difusivo W
-				DeltaT += ((Tpar*Rho*pow(MESH.DeltasMP[LP(i,j,k,2)],2.0))/(mu + 1e-10) - DeltaT) * ((Tpar*Rho*pow(MESH.DeltasMP[LP(i,j,k,2)],2.0))/(mu + 1e-10) <= DeltaT);
-
-			}	
+				// CFL Diffusive V
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,1)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,1)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,2)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,2)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
+			
+				// CFL Diffusive W
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMW[LW(i,j,k,0)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMW[LW(i,j,k,0)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMW[LW(i,j,k,1)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMW[LW(i,j,k,1)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
+				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMW[LW(i,j,k,2)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMW[LW(i,j,k,2)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
+			
+			}
 		}
 	}
-	
+
+	// Heat Diffusion Time Step
 	if (Problema == 2){
 
 		for(i = Ix[Rango]; i < Fx[Rango]; i++){	
 			for(j = 0; j < NY; j++){
 				for(k = 0; k < NZ; k++){
 
-					// Temperature Diffusion
+					// Heat Diffusion (X Direction)
+					DiffusiveDeltaT += ((0.20 * CourantFactor * Rho * Cp * pow(MESH.DeltasMP[LP(i,j,k,0)], 2.0)) / (K + 1e-10) - DiffusiveDeltaT) * ((0.20 * CourantFactor * Rho * Cp * pow(MESH.DeltasMP[LP(i,j,k,0)], 2.0)) / (K + 1e-10) <= DiffusiveDeltaT);
 
-					// Diffusion U
-					DeltaT += ((Tpar*Rho*Cp*pow(MESH.DeltasMP[LP(i,j,k,0)],2.0))/(K + 1e-10) - DeltaT)*((Tpar*Rho*Cp*pow(MESH.DeltasMP[LP(i,j,k,0)],2.0))/(K + 1e-10) <= DeltaT);
+					// Heat Diffusion (Y Direction)
+					DiffusiveDeltaT += ((0.20 * CourantFactor * Rho * Cp * pow(MESH.DeltasMP[LP(i,j,k,1)], 2.0)) / (K + 1e-10) - DiffusiveDeltaT) * ((0.20 * CourantFactor * Rho * Cp * pow(MESH.DeltasMP[LP(i,j,k,1)], 2.0)) / (K + 1e-10) <= DiffusiveDeltaT);
 
-					// Diffusion V
-					DeltaT += ((Tpar*Rho*Cp*pow(MESH.DeltasMP[LP(i,j,k,1)],2.0))/(K + 1e-10) - DeltaT)*((Tpar*Rho*Cp*pow(MESH.DeltasMP[LP(i,j,k,1)],2.0))/(K + 1e-10) <= DeltaT);
-
-					// Diffusion W
-					DeltaT += ((Tpar*Rho*Cp*pow(MESH.DeltasMP[LP(i,j,k,2)],2.0))/(K + 1e-10) - DeltaT)*((Tpar*Rho*Cp*pow(MESH.DeltasMP[LP(i,j,k,2)],2.0))/(K + 1e-10) <= DeltaT);
+					// Heat Diffusion (Z Direction)
+					DiffusiveDeltaT += ((0.20 * CourantFactor * Rho * Cp * pow(MESH.DeltasMP[LP(i,j,k,2)], 2.0)) / (K + 1e-10) - DiffusiveDeltaT) * ((0.20 * CourantFactor * Rho * Cp * pow(MESH.DeltasMP[LP(i,j,k,2)], 2.0)) / (K + 1e-10) <= DiffusiveDeltaT);
 
 				}
 			}
@@ -134,6 +126,37 @@ double Tpar = 0.20;
 
 	}
 
+	MPI_Allreduce(&DiffusiveDeltaT, &DiffusiveDeltaT, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+
+}
+
+//Cálculo del tiempo entre Steps
+void Solver::Get_StepTime(Mesher MESH){
+int i, j, k;
+DeltaT = DiffusiveDeltaT;
+double Tpar = 0.40;
+	
+	//Comparacion 
+	//a*(a>b) + b*(b>a)
+	//b+=(a-b)*(a>b)
+
+	for(i = Ix[Rango]; i < Fx[Rango]; i++){
+		for(j = 0; j < NY; j++){
+			for(k = 0; k < NZ; k++){	
+				
+				// CFL Convective U
+                DeltaT += (CourantFactor * abs(MESH.DeltasMU[LU(i,j,k,0)] / (U.Pres[LU(i,j,k,0)] + 1e-10)) - DeltaT) * (CourantFactor * abs(MESH.DeltasMU[LU(i,j,k,0)] / (U.Pres[LU(i,j,k,0)] + 1e-10)) <= DeltaT);
+
+				// CFL Convective V
+				DeltaT += (CourantFactor * abs(MESH.DeltasMV[LV(i,j,k,1)] / (V.Pres[LV(i,j,k,0)] + 1e-10)) - DeltaT) * (CourantFactor * abs(MESH.DeltasMV[LV(i,j,k,1)] / (V.Pres[LV(i,j,k,0)] + 1e-10)) <= DeltaT);
+
+				// CFL Convective W
+				DeltaT += (CourantFactor * abs(MESH.DeltasMW[LW(i,j,k,2)] / (W.Pres[LW(i,j,k,0)] + 1e-10)) - DeltaT) * (CourantFactor * abs(MESH.DeltasMW[LW(i,j,k,2)] / (W.Pres[LW(i,j,k,0)] + 1e-10)) <= DeltaT);
+
+			}	
+		}
+	}
+	
 	MPI_Allreduce(&DeltaT, &DeltaT, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
 
 }
@@ -189,11 +212,14 @@ double PhiU;
         // UDS
 		//PhiF = PhiAdimC;
 
+		// SUDS
+		//PhiF = (AdimCoordE / AdimCoordC) * PhiAdimC;
+
         // CDS
-        //PhiF = ((AdimCoordE - AdimCoordC) / (1 - AdimCoordC)) + ((AdimCoordE - 1) / (AdimCoordC - 1)) * PhiAdimC;
+        PhiF = ((AdimCoordE - AdimCoordC) / (1 - AdimCoordC)) + ((AdimCoordE - 1) / (AdimCoordC - 1)) * PhiAdimC;
 
         // QUICK
-		PhiF = AdimCoordE + (((AdimCoordE*(AdimCoordE - 1.0))/(AdimCoordC*(AdimCoordC - 1.0))))*(PhiAdimC - AdimCoordC);
+		//PhiF = AdimCoordE + (((AdimCoordE*(AdimCoordE - 1.0))/(AdimCoordC*(AdimCoordC - 1.0))))*(PhiAdimC - AdimCoordC);
 
 		//Dimensionalizacion
 		PhiObjetivo = PhiU + (PhiD - PhiU)*PhiF;
@@ -273,7 +299,7 @@ void Solver::Get_Update(){
 int i, j, k;
 
 	// Velocity U
-    for(i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
+    for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
         for(j = 0; j < NY; j++){
 		    for(k = 0; k < NZ; k++){
 				U.Pres[LU(i,j,k,0)] = U.Fut[LU(i,j,k,0)];
@@ -305,11 +331,63 @@ int i, j, k;
         	for(j = 0; j < NY; j++){
 		    	for(k = 0; k < NZ; k++){
 					T.Pres[LP(i,j,k,0)] = T.Fut[LP(i,j,k,0)];
+					T.ContributionPast[LP(i,j,k,0)] = T.ContributionPres[LP(i,j,k,0)];
             	}
 			}
 		}
 	}
     
+}
+
+// Function to correct the intermediate velocities
+void Solver::Get_CorrectedVelocities(Mesher MESH, Parallel P1, double *U_MatrixNew, double *V_MatrixNew, double *W_MatrixNew){
+int i, j, k;
+
+	// Calculated Pressure Halo Communication
+	P1.CommunicateDataLP(P.Pres, P.Pres);
+
+	// Velocity U
+    for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
+        for(j = 0; j < NY; j++){
+		    for(k = 0; k < NZ; k++){		
+				U_MatrixNew[LU(i,j,k,0)] = U_MatrixNew[LU(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
+			}
+		}
+	}
+
+    if (Rango == 0){
+        for(j = 0; j < NY; j++){
+		    for(k = 0; k < NZ; k++){		
+				U_MatrixNew[LU(0,j,k,0)] = U.Left[LEFT(0,j,k)];
+			}
+		}
+    }
+    else if (Rango == Procesos - 1){
+        for(j = 0; j < NY; j++){
+		    for(k = 0; k < NZ; k++){		
+				U_MatrixNew[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
+			}
+		}
+    }
+
+    // Velocity V
+    for(i = Ix[Rango]; i < Fx[Rango]; i++){
+		for(j = 1; j < NY; j++){ 
+        	for(k = 0; k < NZ; k++){		
+				V_MatrixNew[LV(i,j,k,0)] = V_MatrixNew[LV(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]);
+			}
+		}
+	}
+
+    // Velocity W
+    for(i = Ix[Rango]; i < Fx[Rango]; i++){
+        for(j = 0; j < NY; j++){
+		    for(k = 1; k < NZ; k++){		
+				W_MatrixNew[LW(i,j,k,0)] = W_MatrixNew[LW(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]);
+			}
+		}
+	}
+
 }
 
 // Function to calculate the new corrected velocities
@@ -335,7 +413,8 @@ int i, j, k;
 			}
 		}
     }
-    else if (Rango == Procesos - 1){
+    
+	if (Rango == Procesos - 1){
         for(j = 0; j < NY; j++){
 		    for(k = 0; k < NZ; k++){		
 				U.Fut[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
@@ -345,8 +424,8 @@ int i, j, k;
 
     // Velocity V
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(k = 0; k < NZ; k++){
-            for(j = 1; j < NY; j++){ 		
+		for(j = 1; j < NY; j++){
+        	for(k = 0; k < NZ; k++){ 		
 				V.Fut[LV(i,j,k,0)] = V.Predictor[LV(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]);
 			}
 		}
@@ -360,5 +439,8 @@ int i, j, k;
 			}
 		}
 	}
+
+	Get_UpdateBoundaryConditions_Velocities(U.Fut, V.Fut, W.Fut);
+	Get_UpdateHalos_Velocity(U.Fut, V.Fut, W.Fut);
 
 }
