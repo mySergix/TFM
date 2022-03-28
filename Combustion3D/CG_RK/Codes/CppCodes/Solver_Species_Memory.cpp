@@ -13,6 +13,8 @@ int n;
     	Species[n].Y_Pres = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*HP, NZ + 2*HP, 1);
     	Species[n].Y_Fut = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*HP, NZ + 2*HP, 1);
 
+		Species[n].X = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*HP, NZ + 2*HP, 1);
+
     	// Equation terms
     	Species[n].Convective = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2 * HP, NY + 2*HP, NZ + 2*HP, 1);
     	Species[n].Diffusive = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2 * HP, NY + 2*HP, NZ + 2*HP, 1);
@@ -20,7 +22,7 @@ int n;
 		Species[n].ContributionPast = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2 * HP, NY + 2*HP, NZ + 2*HP, 1);
 		Species[n].ContributionPres = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2 * HP, NY + 2*HP, NZ + 2*HP, 1);
 
-		Species[n].D_ab = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2 * HP, NY + 2*HP, NZ + 2*HP, 1);
+		Species[n].D_AlphaMix = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2 * HP, NY + 2*HP, NZ + 2*HP, 1);
 
     	if (Rango == 0){
 			Species[n].Left = M1.AllocateDouble(1, NY, NZ, 1);
@@ -40,6 +42,9 @@ int n;
     	Species[n].h_coeff = M1.AllocateDouble(12, 1, 1, 1);
     	Species[n].mu_coeff = M1.AllocateDouble(8, 1, 1, 1);
     	Species[n].lambda_coeff = M1.AllocateDouble(8, 1, 1, 1);
+
+		// Chemical Terms
+		Species[n].wk  = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*HP, NZ + 2*HP, 1);
 
     	if (Rango == 0){
       		Species[n].Global = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);

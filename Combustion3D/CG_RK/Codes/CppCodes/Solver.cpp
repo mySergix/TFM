@@ -12,6 +12,7 @@
 #include "../HeaderCodes/Solver.h"
 
 #define N_Species 3
+#define N_Reactions 4
 
 Solver::Solver(Memory M1, ReadData R1, Parallel P1){
 
@@ -117,3 +118,4 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1){
 // Files of the class (Combustion)
 #include "Solver_Species_Read.cpp"
 #include "Solver_Species_JANAF.cpp"
+#include "Solver_Species_Chemistry.cpp"

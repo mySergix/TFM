@@ -12,6 +12,7 @@
 #include "petsc.h"
 
 #define N_Species 3
+#define N_Reactions 4
 
 using namespace std;
 
@@ -154,6 +155,7 @@ class Solver{
 
             double *Convective;
             double *Diffusive;
+            double *Reactive;
 
             double *ContributionPast;
             double *ContributionPres;
@@ -218,10 +220,15 @@ class Solver{
             string Name; // Name of the species
             double Wmolar; // Molar weight of the species
             double Epsilon; // Characteristic Lennard-Jones energy
+            double Schmidt; // Schmidt number of the specie
+            double Lewis; // Lewis number of the specie
+
             double sigma;
 
             double *Y_Pres;
             double *Y_Fut;
+
+            double *X; // Molar fraction
 
             double *Convective;
             double *Diffusive;
@@ -229,7 +236,7 @@ class Solver{
             double *ContributionPast;
             double *ContributionPres;
 
-            double *D_ab;
+            double *D_AlphaMix;
 
             double *Bottom;
             double *Top;
@@ -245,6 +252,9 @@ class Solver{
             double *h_coeff;
             double *mu_coeff;
             double *lambda_coeff;
+
+            // Chemical Terms
+            double *wk;
 
             double *Global;
         };
@@ -360,11 +370,21 @@ class Solver{
             void Read_SpeciesInformation(Species_Struct&, string);
 
             // Combustion JANAF Calculations
+            double JANAF_CpSpecie(double, int);
             double JANAF_CpHeat(double, int, int, int);
             double JANAF_AbsEnthalpy_Specie(int, double);
             double JANAF_AbsEnthalpy_Specie_Mix(double, int, int, int);
             double JANAF_DynViscosity(double, int, int, int);
             double JANAF_ThermalCond(double, int, int, int);
+
+            // Combustion-Related Calculations
+            void Get_ReactionsEnergy();
+
+            // Diffusion models
+            double Get_Diffusion_Schmidt(int);
+            double Get_Diffusion_Lewis(int, double);
+            double Get_Diffusion_ChampanEnskog(int, double, double, int, int, int);
+            double Get_Diffusion_WilkeLee(int, double, double, int, int, int);
 
             // Run Solver
             void RunSolver(Memory, ReadData, Parallel, Mesher, PostProcessing);

@@ -2,6 +2,21 @@
 //                             CPP FILE FOR JANAF PROPERTIES CALCULATIONS                         //
 //------------------------------------------------------------------------------------------------//
 
+// Function to calculate the CP of a certain spacie
+double Solver::JANAF_CpSpecie(double T, int n){
+double CpSpecie;
+
+    if (T > 200.0 && T <= 1000.0){
+        Cp_specie = R_ideal * (Species[n].Cp_coeff[0] + Species[n].Cp_coeff[1] * T + Species[n].Cp_coeff[2] * pow(T, 2) + Species[n].Cp_coeff[3] * pow(T, 3) + Species[n].Cp_coeff[4] * pow(T, 4));
+    }
+    else if (T > 1000.0 && T < 5000.0){
+        Cp_specie = R_ideal * (Species[n].Cp_coeff[5] + Species[n].Cp_coeff[6] * T + Species[n].Cp_coeff[7] * pow(T, 2) + Species[n].Cp_coeff[8] * pow(T, 3) + Species[n].Cp_coeff[9] * pow(T, 4));
+    }
+    
+    return Cp_global;
+
+}
+
 // Function to calculate the Heat Capacity coefficient of the mixture in a control volume
 double Solver::JANAF_CpHeat(double T, int i, int j, int k){
 int n;

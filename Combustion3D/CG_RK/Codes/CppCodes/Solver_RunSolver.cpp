@@ -43,37 +43,6 @@ int i, j, k;
 	Read_SpeciesName("Species_Data.txt");
 	Read_AllSpeciesData();
 
-	if (Rango == 0){
-		for (n = 0; n < N_Species; n++){
-			cout<<"Name: "<<Species[n].Name<<endl;
-			cout<<"Wmolar: "<<Species[n].Wmolar<<endl;
-			cout<<"Epsilon: "<<Species[n].Epsilon<<endl;
-			cout<<"Sigma: "<<Species[n].sigma<<endl;
-
-			cout<<"Cp Coefficients: "<<endl;
-			for (i = 0; i < 10; i++){
-				cout<<Species[n].Cp_coeff[i]<<endl;
-			}
-			cout<<endl;
-			cout<<"h Coefficients: "<<endl;
-			for (i = 0; i < 12; i++){
-				cout<<Species[n].h_coeff[i]<<endl;
-			}
-			cout<<endl;
-			cout<<"mu Coefficients: "<<endl;
-			for (i = 0; i < 8; i++){
-				cout<<Species[n].mu_coeff[i]<<endl;
-			}
-			cout<<endl;
-			cout<<"lambda Coefficients: "<<endl;
-			for (i = 0; i < 8; i++){
-				cout<<Species[n].lambda_coeff[i]<<endl;
-			}
-
-			cout<<endl;
-			cout<<endl;
-		}
-	}
 	/*
 	// Laplacian Matrix Calculations
 	Get_PoissonCoefficients(MESH);	

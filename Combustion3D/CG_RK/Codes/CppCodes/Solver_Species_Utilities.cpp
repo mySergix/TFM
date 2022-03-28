@@ -104,3 +104,9 @@ int i, j, k, n;
 
 }
 
+// Function to calculate the mlar fraction of each species
+void Solver::Get_MolarFractions(){
+int i, j, k, n;
+
+    for 
+}

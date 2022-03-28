@@ -973,6 +973,30 @@ double Tw, Te, Ts, Tn, Th, Tt;
 
 }
 
+// Function to calculate the energy variation due to species diffusion
+void Solver::Get_SpeciesDiffusionEnergy(Mesher MESH){
+int i, j, k, n;
+
+
+}
+
+// Function to calculate the enthalpy variation due to chemical reactions
+void Solver::Get_ReactionsEnergy(){
+int i, j, k, n;
+ 
+    for (i = Ix[Rango]; i < Fx[Rango]; i++){
+        for (j = 0; j < NY; j++){
+            for (k = 0; k < NZ; k++){
+                T.Reactive[LP(i,j,k,0)] = 0.0;
+                for (n = 0; n < N_Species - 1; n++){
+                    T.Reactive[LP(i,j,k,0)] += Species[n].wk[LP(i,j,k,0)] * JANAF_AbsEnthalpy_Specie(n, T.Pres[LP(i,j,k,0)]);
+                }
+            }
+        }
+    }
+
+}
+
 // Function to calculate the contributions of the energy equation
 void Solver::Get_EnergyContributions(){
 int i, j, k;

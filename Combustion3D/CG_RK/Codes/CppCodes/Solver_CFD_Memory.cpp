@@ -94,6 +94,7 @@ void Solver::Allocate_EnergyMemory(Memory M1){
 
     T.Convective = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     T.Diffusive = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+    T.Reactive = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     
     if (Rango == 0){
 		T.Left = M1.AllocateDouble(1, NY, NZ, 1);
