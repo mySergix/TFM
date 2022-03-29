@@ -1,0 +1,8 @@
+"filename", "language", "C++", "comment", "blank", "total"
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/HeaderCodes/Memory.h", "C++", 12, 6, 8, 26
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/HeaderCodes/Mesher.h", "C++", 68, 13, 28, 109
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/HeaderCodes/Parallel.h", "C++", 37, 11, 17, 65
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/HeaderCodes/PostProcessing.h", "C++", 47, 4, 19, 70
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/HeaderCodes/ReadData.h", "C++", 22, 4, 12, 38
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/HeaderCodes/Solver.h", "C++", 263, 29, 100, 392
+"Total", "-", 449, 67, 184, 700

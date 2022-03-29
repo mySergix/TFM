@@ -94,6 +94,48 @@ Qs = 0.0;
 
 }
 
+// Function to calculate the dynamic viscosity of each control volume
+void Solver::Get_DynamicViscosity(){
+int i, j, k;
+
+	for(i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
+		for(j = 0; j < NY; j++){
+			for(k = 0; k < NZ; k++){	
+				mu_visc[LP(i,j,k,0)] = JANAF_DynViscosity(T.Pres[LP(i,j,k,0)], i, j, k);
+			}
+		}
+	}
+
+}
+
+// Function to calculate the thermal conduction of each control volume
+void Solver::Get_ThermalConductivity(){
+int i, j, k;
+
+	for(i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
+		for(j = 0; j < NY; j++){
+			for(k = 0; k < NZ; k++){	
+				K_Thermal[LP(i,j,k,0)] = JANAF_ThermalCond(T.Pres[LP(i,j,k,0)], i, j, k);
+			}
+		}
+	}
+
+}
+
+// Function to calculate the Cp Heat Value of ech control volume
+void Solver::Get_CpHeat(){
+int i, j, k;
+
+	for(i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
+		for(j = 0; j < NY; j++){
+			for(k = 0; k < NZ; k++){	
+				Cp_Heat[LP(i,j,k,0)] = JANAF_CpHeat(T.Pres[LP(i,j,k,0)], i, j, k);
+			}
+		}
+	}
+
+}
+
 // Function to calculate the DeltaT threshold for the diffusion
 void Solver::Get_DiffusiveTimeStep(Mesher MESH){
 int i, j, k;
@@ -144,6 +186,7 @@ DiffusiveDeltaT = 1000.0;
 		}
 	}
 
+	/*
 	// Mass Diffusion Time Step
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){	
 		for(j = 0; j < NY; j++){
@@ -161,7 +204,8 @@ DiffusiveDeltaT = 1000.0;
 			}
 		}
 	}
-	
+	*/
+
 	MPI_Allreduce(&DiffusiveDeltaT, &DiffusiveDeltaT, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
 
 }

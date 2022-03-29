@@ -69,6 +69,21 @@ int n;
 		
 }
 
+// Function to allocate memory for each reaction of the model
+void Solver::Allocate_StructReactions(Memory M1){
+
+	Reactions.Kf = M1.AllocateDouble(N_Reactions, 1, 1, 1);
+    Reactions.Kr = M1.AllocateDouble(N_Reactions, 1, 1, 1);
+
+    Reactions.A = M1.AllocateDouble(N_Reactions, 1, 1, 1);
+    Reactions.Beta = M1.AllocateDouble(N_Reactions, 1, 1, 1);
+    Reactions.EA = M1.AllocateDouble(N_Reactions, 1, 1, 1);
+	
+	Reactions.DeltaS = M1.AllocateDouble(N_Reactions, 1, 1, 1);
+	Reactions.DeltaH = M1.AllocateDouble(N_Reactions, 1, 1, 1);
+	
+}
+
 // Function to delete all the memory allocated for species transport
 void Solver::Delete_StructSpecies(){
 int n;

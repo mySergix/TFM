@@ -37,6 +37,7 @@ int i, j, k;
     Allocate_PoissonCoeffsMemory(M1);
 	Allocate_EnergyMemory(M1);
 	Allocate_StructSpecies(M1);
+	Allocate_StructReactions(M1);
 	if (Rango == 0){ Allocate_GlobalMemory(M1); }
 
 	// Species Data Reading

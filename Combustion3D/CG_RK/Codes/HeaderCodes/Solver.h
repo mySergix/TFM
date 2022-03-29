@@ -259,8 +259,24 @@ class Solver{
             double *Global;
         };
 
+        struct Reactions_Struct
+        {
+            double *Kf;
+            double *Kr;
+
+            double *A;
+            double *Beta;
+            double *EA;
+
+            double *DeltaS;
+            double *DeltaH;
+
+        };
+
         struct Species_Struct Species[N_Species];
-        
+
+        struct Reactions_Struct Reactions;
+
         struct Velocity_Struct U;
         struct Velocity_Struct V;
         struct Velocity_Struct W;
@@ -377,7 +393,12 @@ class Solver{
             double JANAF_DynViscosity(double, int, int, int);
             double JANAF_ThermalCond(double, int, int, int);
 
+            void Get_DynamicViscosity();
+            void Get_ThermalConductivity();
+            void Get_CpHeat();
+            
             // Combustion-Related Calculations
+            void Allocate_StructReactions(Memory);
             void Get_ReactionsEnergy();
 
             // Diffusion models

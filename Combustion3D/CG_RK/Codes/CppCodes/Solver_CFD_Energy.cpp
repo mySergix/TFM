@@ -10,13 +10,13 @@ int i, j, k;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (j = 1; j < NY - 1; j++){
             for (k = 1; k < NZ - 1; k++){
-                T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+                T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
             }
         }
@@ -26,13 +26,13 @@ int i, j, k;
     j = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (k = 1; k < NZ - 1; k++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
     }
@@ -41,13 +41,13 @@ int i, j, k;
     j = NY - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (k = 1; k < NZ - 1; k++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
     }
@@ -56,13 +56,13 @@ int i, j, k;
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (j = 1; j < NY - 1; j++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
     }
@@ -71,13 +71,13 @@ int i, j, k;
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (j = 1; j < NY - 1; j++){
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
     }
@@ -86,13 +86,13 @@ int i, j, k;
     j = 0;
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
     }
 
@@ -100,13 +100,13 @@ int i, j, k;
     j = 0;
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
     }
 
@@ -115,13 +115,13 @@ int i, j, k;
     j = NY - 1;
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
     }
 
@@ -129,13 +129,13 @@ int i, j, k;
     j = NY - 1;
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
     }
 
@@ -145,13 +145,13 @@ int i, j, k;
         // Center
         for (j = 1; j < NY - 1; j++){
             for (k = 1; k < NZ - 1; k++){
-                T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+                T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
             }
         }
@@ -159,52 +159,52 @@ int i, j, k;
         // Bottom
         j = 0;
         for (k = 1; k < NZ - 1; k++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
 
         // Top
         j = NY - 1;
         for (k = 1; k < NZ - 1; k++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
 
         // Here
         k = 0;
         for (j = 1; j < NY - 1; j++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
 
         // There
         k = NZ - 1;
         for (j = 1; j < NY - 1; j++){
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
 
@@ -212,13 +212,13 @@ int i, j, k;
         j = 0;
         k = 0;
         
-                T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+                T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         
 
@@ -226,13 +226,13 @@ int i, j, k;
         j = 0;
         k = NZ - 1;
         
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         
 
@@ -241,13 +241,13 @@ int i, j, k;
         j = NY - 1;
         k = 0;
         
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         
 
@@ -255,13 +255,13 @@ int i, j, k;
         j = NY - 1;
         k = NZ - 1;
         
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i+1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         
 
@@ -272,13 +272,13 @@ int i, j, k;
         // Center
         for (j = 1; j < NY - 1; j++){
             for (k = 1; k < NZ - 1; k++){
-                T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+                T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
             }
         }
@@ -286,52 +286,52 @@ int i, j, k;
         // Bottom
         j = 0;
         for (k = 1; k < NZ - 1; k++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(I,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(NX,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
 
         // Top
         j = NY - 1;
         for (k = 1; k < NZ - 1; k++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(NX,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
 
         // Here
         k = 0;
         for (j = 1; j < NY - 1; j++){
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
 
         // There
         k = NZ - 1;
         for (j = 1; j < NY - 1; j++){
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         }
 
@@ -339,13 +339,13 @@ int i, j, k;
         j = 0;
         k = 0;
         
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         
 
@@ -353,13 +353,13 @@ int i, j, k;
         j = 0;
         k = NZ - 1;
         
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j+1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         
 
@@ -368,29 +368,28 @@ int i, j, k;
         j = NY - 1;
         k = 0;
         
-            T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] = (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k+1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         
 
         // Top There Corner
         j = NY - 1;
         k = NZ - 1;
-            T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
-                                         + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
-                                         + MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-                                         + MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-                                         - MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+            T.Diffusive[LP(i,j,k,0)] =  (1.0 / (Rho * Cp_Heat[LP(i,j,k,0)] * MESH.VolMP[LP(i,j,k,0)]))*(
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i-1,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (T.Top[TOP(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j-1,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         + K_Thermal[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (T.There[THERE(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+                                         - 0.50 * (K_Thermal[LP(i,j,k,0)] + K_Thermal[LP(i,j,k-1,0)]) * MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
         
-
     }
 
 }
@@ -973,13 +972,6 @@ double Tw, Te, Ts, Tn, Th, Tt;
 
 }
 
-// Function to calculate the energy variation due to species diffusion
-void Solver::Get_SpeciesDiffusionEnergy(Mesher MESH){
-int i, j, k, n;
-
-
-}
-
 // Function to calculate the enthalpy variation due to chemical reactions
 void Solver::Get_ReactionsEnergy(){
 int i, j, k, n;
@@ -989,7 +981,7 @@ int i, j, k, n;
             for (k = 0; k < NZ; k++){
                 T.Reactive[LP(i,j,k,0)] = 0.0;
                 for (n = 0; n < N_Species - 1; n++){
-                    T.Reactive[LP(i,j,k,0)] += Species[n].wk[LP(i,j,k,0)] * JANAF_AbsEnthalpy_Specie(n, T.Pres[LP(i,j,k,0)]);
+                    T.Reactive[LP(i,j,k,0)] += (Species[n].wk[LP(i,j,k,0)] * JANAF_AbsEnthalpy_Specie(n, T.Pres[LP(i,j,k,0)])) / Cp_Heat[LP(i,j,k,0)];
                 }
             }
         }
@@ -1004,7 +996,7 @@ int i, j, k;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (j = 0; j < NY; j++){
             for (k = 0; k < NZ; k++){
-                T.ContributionPres[LP(i,j,k,0)] = T.Diffusive[LP(i,j,k,0)] - T.Convective[LP(i,j,k,0)];
+                T.ContributionPres[LP(i,j,k,0)] = T.Diffusive[LP(i,j,k,0)] - T.Convective[LP(i,j,k,0)] + T.Reactive[LP(i,j,k,0)];
             }
         }
     }
