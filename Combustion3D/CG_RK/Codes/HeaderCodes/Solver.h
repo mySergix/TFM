@@ -116,6 +116,10 @@ class Solver{
 
         double Qs; // Mass Flow
 
+        double *mu_visc;
+        double *K_Thermal;
+        double *Cp_Heat;
+
         struct Velocity_Struct
         {
             double *Predictor;
