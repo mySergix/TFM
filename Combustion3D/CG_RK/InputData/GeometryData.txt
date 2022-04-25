@@ -2,7 +2,7 @@ Datos sobre la geometría del problema a simular
 (No cambiar el formato)
 
 Datos geométricos:
-0.600	Coordenada X de todo el dominio 	(m)
-0.0205	Coordenada Y de todo el dominio 	(m)
-0.298	Coordenada Z de todo el dominio 	(m)
+1.0	Coordenada X de todo el dominio 	(m)
+1.0	Coordenada Y de todo el dominio 	(m)
+0.2	Coordenada Z de todo el dominio 	(m)
 	

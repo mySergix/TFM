@@ -11,8 +11,7 @@
 
 #include "petsc.h"
 
-#define N_Species 3
-#define N_Reactions 4
+#define N_Species 2
 
 using namespace std;
 
@@ -32,6 +31,9 @@ class Solver{
 		double Xdominio;
 		double Ydominio;
 		double Zdominio;
+
+        double Dh;
+        double gamma_geometry;
 
         // Problem Data
 		int NX;
@@ -66,9 +68,15 @@ class Solver{
         double CourantFactor;
         double DiffusiveDeltaT;
 		double DeltaT;
+        double nu;
+        double mu;
 
         double Tleft;
         double Tright;
+        
+        double To;
+		double Beta;
+		double K;
     
         double ConvergenciaGS;
 		double MaxDiffGS;
@@ -90,36 +98,6 @@ class Solver{
         Vec         B_RHS, X_Sol;
         Mat         A_Matrix;
 
-        string *SpeciesString;
-
-        double R_ideal;
-
-        // Channel Mass Transport Study Case Variables
-        double Dh;
-        double Gamma_Geometry;
-
-        double To;
-        double Twater;
-		double Beta;
-        double Beta_Y;
-		double K;
-        double mu;
-
-        double Schmidt;
-        double MW_Air;
-        double MW_Water;
-
-        double w_av;
-        double Co;
-        double hfg;
-        double D_AB;
-
-        double Qs; // Mass Flow
-
-        double *mu_visc;
-        double *K_Thermal;
-        double *Cp_Heat;
-
         struct Velocity_Struct
         {
             double *Predictor;
@@ -140,7 +118,6 @@ class Solver{
             double *Right;
 
             double *Boussinesq;
-            double *Boussinesq_Y;
 
             double *K1;
             double *K2;
@@ -159,7 +136,6 @@ class Solver{
 
             double *Convective;
             double *Diffusive;
-            double *Reactive;
 
             double *ContributionPast;
             double *ContributionPres;
@@ -202,9 +178,6 @@ class Solver{
             double *W;
 
             double *T;
-
-            double *Tbottom;
-            double *Ybottom;
         };
 
         struct Runge_Kutta
@@ -218,68 +191,6 @@ class Solver{
 
             double b1, b2, b3, b4;
         };
-
-        struct Species_Struct
-        {
-            string Name; // Name of the species
-            double Wmolar; // Molar weight of the species
-            double Epsilon; // Characteristic Lennard-Jones energy
-            double Schmidt; // Schmidt number of the specie
-            double Lewis; // Lewis number of the specie
-
-            double sigma;
-
-            double *Y_Pres;
-            double *Y_Fut;
-
-            double *X; // Molar fraction
-
-            double *Convective;
-            double *Diffusive;
-
-            double *ContributionPast;
-            double *ContributionPres;
-
-            double *D_AlphaMix;
-
-            double *Bottom;
-            double *Top;
-
-            double *Here;
-            double *There;
-
-            double *Left;
-            double *Right;
-
-            // JANAF Terms
-            double *Cp_coeff;
-            double *h_coeff;
-            double *mu_coeff;
-            double *lambda_coeff;
-
-            // Chemical Terms
-            double *wk;
-
-            double *Global;
-        };
-
-        struct Reactions_Struct
-        {
-            double *Kf;
-            double *Kr;
-
-            double *A;
-            double *Beta;
-            double *EA;
-
-            double *DeltaS;
-            double *DeltaH;
-
-        };
-
-        struct Species_Struct Species[N_Species];
-
-        struct Reactions_Struct Reactions;
 
         struct Velocity_Struct U;
         struct Velocity_Struct V;
@@ -314,7 +225,6 @@ class Solver{
 
             // Utilities
             void Get_InitialConditions(Mesher);
-            void Get_MassFlowValue(Mesher);
             void Get_DiffusiveTimeStep(Mesher);
             void Get_StepTime(Mesher);
             inline double ConvectiveScheme(double, double, double, double, double, double, double, double, double, double, string);  
@@ -337,7 +247,7 @@ class Solver{
             void Get_UpdateHalos_Velocity(double*, double*, double*);
             
             void Get_StaticBoundaryConditions_Temperatures(Mesher);
-            void Get_UpdateBoundaryConditions_Temperatures(Mesher, double*);
+            void Get_UpdateBoundaryConditions_Temperatures(double*);
             void Get_StaticHalos_Temperatures(double*);
             void Get_UpdateHalos_Temperatures(double*);
 
@@ -363,53 +273,7 @@ class Solver{
             void Get_ConvectionEnergy(Mesher, double*, double*, double*, double*);
             void Get_BoussinesqV(Mesher, double*, double*);
             void Get_EnergyContributions();
-            void Get_NewTemperatures(Mesher);
-
-            // Species Transport Equation
-            void Allocate_StructSpecies(Memory);
-            void Delete_StructSpecies();
-
-            void Get_Species_StaticBoundaryConditions(Mesher);
-            void Get_Species_UpdateBoundaryConditions(Mesher);
-            void Get_Species_StaticHalos();
-            void Get_Species_UpdateHalos();
-
-            void Get_Species_Convection(Mesher);
-            void Get_Species_DiffusionCoefficients();
-            void Get_Species_Diffusion(Mesher);
-
-            void Get_Species_InitialConditions();
-            void Get_Boussinesq_MassFraction(Mesher, double*);
-            void Get_SpeciesContributions();
-            void Get_Species_MassFraction();
-            void Get_Species_MassConservation();
-            
-            // Combustion Data Input
-            void Read_SpeciesName(string);
-            void Read_AllSpeciesData();
-            void Read_SpeciesInformation(Species_Struct&, string);
-
-            // Combustion JANAF Calculations
-            double JANAF_CpSpecie(double, int);
-            double JANAF_CpHeat(double, int, int, int);
-            double JANAF_AbsEnthalpy_Specie(int, double);
-            double JANAF_AbsEnthalpy_Specie_Mix(double, int, int, int);
-            double JANAF_DynViscosity(double, int, int, int);
-            double JANAF_ThermalCond(double, int, int, int);
-
-            void Get_DynamicViscosity();
-            void Get_ThermalConductivity();
-            void Get_CpHeat();
-            
-            // Combustion-Related Calculations
-            void Allocate_StructReactions(Memory);
-            void Get_ReactionsEnergy();
-
-            // Diffusion models
-            double Get_Diffusion_Schmidt(int);
-            double Get_Diffusion_Lewis(int, double);
-            double Get_Diffusion_ChampanEnskog(int, double, double, int, int, int);
-            double Get_Diffusion_WilkeLee(int, double, double, int, int, int);
+            void Get_NewTemperatures();
 
             // Run Solver
             void RunSolver(Memory, ReadData, Parallel, Mesher, PostProcessing);

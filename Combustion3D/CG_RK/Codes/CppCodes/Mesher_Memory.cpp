@@ -5,6 +5,12 @@
 // Memory allocation for each matrix
 void Mesher::Allocate_MesherMemory(Memory M1){
 
+	// Vector of columns
+	NY_ColumnMP = M1.AllocateInt_Matrix2D(Fx[Rango] - Ix[Rango] + 2*HP, 2);
+	NY_ColumnMU = M1.AllocateInt_Matrix2D(Fx[Rango] - Ix[Rango] + 2*Halo + 1, 2);
+	NY_ColumnMV = M1.AllocateInt_Matrix2D(Fx[Rango] - Ix[Rango] + 2*Halo, 2);
+	NY_ColumnMW = M1.AllocateInt_Matrix2D(Fx[Rango] - Ix[Rango] + 2*Halo, 2);
+
     // Code
 	// 0 -> Coordenada X
 	// 1 -> Coordenada Y
@@ -42,12 +48,7 @@ void Mesher::Allocate_MesherMemory(Memory M1){
 		GlobalMeshV = M1.AllocateDouble(NX + 2*HP, NY + 2*HP + 1, NZ + 2*HP, 3);
 		GlobalMeshW = M1.AllocateDouble(NX + 2*HP, NY + 2*HP, NZ + 2*HP + 1, 3);
 
-		GlobalDeltasMP = M1.AllocateDouble(NX + 2*HP, NY + 2*HP, NZ + 2*HP, 3);
-		GlobalDeltasMU = M1.AllocateDouble(NX + 2*HP + 1, NY + 2*HP, NZ + 2*HP, 3);
 		GlobalDeltasMV = M1.AllocateDouble(NX + 2*HP, NY + 2*HP + 1, NZ + 2*HP, 3);
-		GlobalDeltasMW = M1.AllocateDouble(NX + 2*HP, NY + 2*HP, NZ + 2*HP + 1, 3);
-
-		GlobalSupMP = M1.AllocateDouble(NX + 2*HP, NY + 2*HP, NZ + 2*HP, 3);
 	}
 
 }

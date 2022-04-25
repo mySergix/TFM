@@ -1,7 +1,7 @@
 #!/bin/bash  
 
 
-cd ../ParaviewResults/ChannelTransport/
+cd ../ParaviewResults/DrivenCavity/
 
 find -type f -name '*Step*' -delete
 

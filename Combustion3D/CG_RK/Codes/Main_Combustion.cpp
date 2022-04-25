@@ -27,8 +27,8 @@ static char help[] = "Solves a tridiagonal linear system with KSP.\n\n";
 #include "HeaderCodes/ReadData.h"
 #include "HeaderCodes/Parallel.h"
 #include "HeaderCodes/Mesher.h"
-#include "HeaderCodes/PostProcessing.h"
-#include "HeaderCodes/Solver.h"
+//#include "HeaderCodes/PostProcessing.h"
+//#include "HeaderCodes/Solver.h"
 
 using namespace std;
 
@@ -50,13 +50,13 @@ Mesher MESH(M1, R1, P1);
 MESH.ExecuteMesher(M1);
 
 MPI_Barrier(MPI_COMM_WORLD);
-
+/*
 PostProcessing POST1(M1, R1, MESH, P1);
 
 Solver S1(M1, R1, P1);
 
 S1.RunSolver(M1, R1, P1, MESH, POST1);
-
+*/
 PetscFinalize();
 
 

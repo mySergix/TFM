@@ -6,9 +6,68 @@
 void Mesher::Get_LocalMeshes(){
 int i, j, k;
 double I, J, K;
-double nx = NX;
-double ny = NY;
-double nz = NZ;
+double nx;
+double ny;
+double nz;
+
+	// Coordinates X
+	for (i = Ix[Rango] - Halo; i < Fx[Rango] + Halo + 1; i++){
+		I = i;
+		for (j = 0; j < NY; j++){
+			J = j;
+			for (k = 0; k < NZ; k++){
+
+				// Section 1
+				if (i >= 0 && i <= NX_1){
+					nx = NX_1;
+					// Regular
+					if (OptionX_1 == 1){
+						MU[LU(i,j,k,0)] = (I - Ix[Rango]) * (X_1 / nx);
+					}
+					// Right Sided - Hyperbolic Tangent
+					else if (OptionX_1 == 2){
+						MU[LU(i,j,k,0)] = (X_1 / 2.0) * (tanh(SFX_1 * ((I - Ix[Rango]) / nx)) / tanh(SFX_1));
+					}
+					
+				}
+				// Section 2
+				else if (i > NX_1 && i <= NX_1 + NX_2){
+					nx = NX_2;
+					// Regular
+					if (OptionX_2 == 1){
+						MU[LU(i,j,k,0)] = X_1 + (I - Ix[Rango]) * (X_2 / nx);
+					}
+					// Right Sided - Hyperbolic Tangent
+					else if (OptionX_2 == 2){
+						MU[LU(i,j,k,0)] = X_1 + (X_2 / 2.0) * (tanh(SFX_2 * ((I - Ix[Rango]) / nx)) / tanh(SFX_2));
+					}
+
+				}
+				// Section 3
+				else if (i > NX_1 + NX_2){
+					nx = NX_3;
+					// Regular
+					if (OptionX_3 == 1){
+						MU[LU(i,j,k,0)] = X_2 + (I - Ix[Rango]) * (X_3 / nx);
+					}
+					// Right Sided - Hyperbolic Tangent
+					else if (OptionX_3 == 2){
+						MU[LU(i,j,k,0)] = X_2 + (X_3 / 2.0) * (tanh(SFX_3 * ((I - Ix[Rango]) / nx)) / tanh(SFX_3));
+					}
+					// Left Sided - Hyperbolic Tangent
+					else if (OptionX_3 == 3){
+						MU[LU(i,j,k,0)] = X_2 + (X_3 / 2.0) * (tanh(SFX_3 * ((nx - (I - Ix[Rango])) / nx)) / tanh(SFX_3));
+					}
+					// Centered - Hyperbolic Tangent
+					else if (OptionX_3 == 4){
+						MU[LU(i,j,k,0)] = X_2 + (X_3 / 2.0) * (tanh(SFX_3 * (((2.0 * (I - Ix[Rango])) - nx) / nx)) / tanh(SFX_3));
+					}
+				}
+
+			}
+		}
+	}
+
 
 	// Coordinates X
 

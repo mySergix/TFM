@@ -20,27 +20,37 @@ class Mesher{
 		Mesher(Memory, ReadData, Parallel);
 
 		// Datos Numéricos del problema
-		int Problema;
-
-		int ProgresionLineal;
+		string Problema;
 
 		int NX;
 		int NY; 
 		int NZ;
 
-		int OptionX;
-		int OptionY;
+		int NX_1, NX_2, NX_3;
+		int NY_1, NY_2, NY_3;
+
+		int OptionX_1, OptionX_2, OptionX_3;
+		int OptionY_1, OptionY_2, OptionY_3;
 		int OptionZ;
 
-		double SFX;
-		double SFY;
+		double SFX_1, SFX_2, SFX_3;
+		double SFY_1, SFY_2, SFY_3;
 		double SFZ;
 
-		// Datos Geométricos del problma
-		double Xdominio;
-		double Ydominio;
-		double Zdominio;
+		// Datos Geométricos del problema
+		double Width_Inlet;
+		double Width_Slit;
+		double Burner_Wall;
+		double Symmetry_Burner;
+		double Height_Slit;
+		double Height_Burner;
+		double Width_Burner;
 
+		double X_1, X_2, X_3;
+		double Y_1, Y_2, Y_3;
+
+		double Xdomain, Ydomain, Zdomain;
+		
 		// Parámetros de computación paralela
 		int Rango;
 		int Procesos;
@@ -49,6 +59,12 @@ class Mesher{
 
 		int HP;
 		int Halo;
+
+		// Vector of columns
+		double **NY_ColumnMP;
+		double **NY_ColumnMU;
+		double **NY_ColumnMV;
+		double **NY_ColumnMW;
 
 		// Meshes of the simulation
 		double *MP; // Collocated mesh
@@ -81,22 +97,18 @@ class Mesher{
 		double *GlobalMeshV;
 		double *GlobalMeshW;
 
-		double *GlobalDeltasMP;
 		double *GlobalDeltasMV;
-		double *GlobalDeltasMU;
-		double *GlobalDeltasMW;
 		
-		double *GlobalSupMP;
-
 		void Allocate_MesherMemory(Memory); //Alojamiento de memoria para cada matriz
 		void Delete_MesherMemory(); // Borrado de toda la memoria
+
+		void Get_ColumnsNY();
 
 		void Get_LocalMeshes(); //Creación de todas las mallas
 		void Get_GlobalMesh(); // Creation of global collocated meesh
 
 		void Get_Deltas(); //Cálculo de las distancias entre nodos en cada una de las matrices
 		void Get_GlobalDeltas();
-		void Get_GlobalSurfaces();
 
 		void Get_Surfaces(); //Cálculo de las superficies de cada uno de los volúmenes de control
 		void Get_Volumes(); //Cálculo de los volúmenes de control de cada volúmen

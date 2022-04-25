@@ -6,18 +6,10 @@
 #include "../HeaderCodes/ReadData.h"
 #include "../HeaderCodes/Parallel.h"
 
-
-
 using namespace std;
 
 Parallel::Parallel(ReadData R1){
 
-		NX = R1.ProblemNumericalData[2];
-	    NY = R1.ProblemNumericalData[3];
-	    NZ = R1.ProblemNumericalData[4];
-
-		Halo = 2;
-		HP = 2;
 }
 
 // Additional files of the class
@@ -92,7 +84,7 @@ int p;
 }
 
 // Function to execute the parallel class
-void Parallel::RunParallel(Memory M1){
+void Parallel::RunParallel(Memory M1, int NX){
 
     Rango_Procesos();
     Total_Procesos();

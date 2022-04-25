@@ -22,4 +22,6 @@ class Memory{
 			int *AllocateInt(int, int, int, int);
 			double *AllocateDouble(int, int, int, int);
 			
+			int **AllocateInt_Matrix2D(int, int);
+			
 };

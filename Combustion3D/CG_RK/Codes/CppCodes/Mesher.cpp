@@ -13,28 +13,63 @@ using namespace std;
 Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 		
 	//Datos Numéricos del problema
-	Problema = R1.ProblemNumericalData[0];
+	Problema = "Premixed";
 
-	NX = R1.ProblemNumericalData[2];
-	NY = R1.ProblemNumericalData[3];
-	NZ = R1.ProblemNumericalData[4];
-	Halo = 2;
-	HP = 2;
+	NX_1 = 
+	NX_2 =
+	NX_3 = 
 
-	OptionX = R1.ProblemNumericalData[5];
-	OptionY = R1.ProblemNumericalData[6];
-	OptionZ = R1.ProblemNumericalData[7];
+	NY_1 = 
+	NY_2 = 
+	NY_3 = 
 
-	SFX = R1.ProblemData[0];
-	SFY = R1.ProblemData[1];
-	SFZ = R1.ProblemData[2];
+	OptionX_1 = 
+	OptionX_2 = 
+	OptionX_3 = 
 
-	//Datos Geométricos del problma
-	Xdominio = R1.GeometryData[0];
-	Ydominio = R1.GeometryData[1];
-	Zdominio = R1.GeometryData[2];
+	OptionY_1 = 
+	OptionY_2 = 
+	OptionY_3 = 
+
+	OptionZ = 
+
+	SFX_1 = 
+	SFX_2 = 
+	SFX_3 = 
+
+	SFY_1 = 
+	SFY_2 = 
+	SFY_3 = 
+
+	SFZ = 
+
+	NX = NX_1 + NX_2 + NX_3;
+	NY = NY_1 + NY_2 + NY_3; 
+	NZ = ;
+
+	// Datos Geométricos del problema (m)
+	Width_Inlet = 0.002; 
+	Width_Slit = 0.001;
+	Burner_Wall = 0.003;
+	Symmetry_Burner = 0.013;
+	Height_Slit = 0.001;
+	Height_Burner =  0.010;
+	Width_Burner = 0.006;
+
+	X_1 = Width_Inlet;
+	X_2 = Width_Slit;
+	X_3 = Burner_Wall;
+
+	Y_1 = Symmetry_Burner - Height_Burner;
+	Y_2 = Height_Slit;
+	Y_3 = Height_Burner - Height_Slit;
+
+	Xdomain = X_1 + X_2 + X_3;
+	Ydomain = Y_1 + Y_2 + Y_3;
+	Zdomain = 
 
 	//Datos necesarios para computación paralela
+	P1.RunParallel(M1, NX);
 	Rango = P1.Rango;
 	Procesos = P1.Procesos;
 	Ix = M1.AllocateInt(Procesos, 1, 1, 1);
@@ -45,11 +80,135 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
         Fx[i] = P1.Fx[i];
     }
 	
+	Halo = 2;
+	HP = 2;
+
 }
 
 #include "Matrix_Index.cpp"
 #include "Mesher_Memory.cpp"
 #include "Mesher_NodalCoordinates.cpp"
+
+// Seteo del numero de nodos NY por cada columna en direccion X
+void Mesher::Get_ColumnsNY(){
+int i, j;
+
+	if (Problema == "Premixed"){
+
+		// Nodes U
+		for (i = Ix[Rango] - HP; i < Fx[Rango] + HP; i++){
+
+			if (i < NX_1){
+				NY_ColumnMU[i][0] = 0; // Bottom
+				NY_ColumnMU[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 && i <= NX_1 + NX_2){
+				NY_ColumnMU[i][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMU[i][1] = NY; // Top
+			}
+			else if (i > NX_1 + NX_2){
+				NY_ColumnMU[i][0] = NY_1; // Bottom
+				NY_ColumnMU[i][1] = NY; // Top
+			}
+
+		}
+
+		// Nodes P, V and W
+		for (i = Ix[Rango] - HP; i < Fx[Rango] + HP; i++){
+
+			if (i < NX_1){
+				NY_ColumnMP[i][0] = 0; // Bottom
+				NY_ColumnMP[i][1] = NY; // Top
+
+				NY_ColumnMV[i][0] = 0; // Bottom
+				NY_ColumnMV[i][1] = NY + 1; // Top
+
+				NY_ColumnMW[i][0] = 0; // Bottom
+				NY_ColumnMW[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 && i < NX_1 + NX_2){
+				NY_ColumnMP[i][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMP[i][1] = NY; // Top
+
+				NY_ColumnMV[i][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMV[i][1] = NY + 1; // Top
+
+				NY_ColumnMW[i][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMW[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 + NX_2){
+				NY_ColumnMP[i][0] = NY_1; // Bottom
+				NY_ColumnMP[i][1] = NY; // Top
+
+				NY_ColumnMV[i][0] = NY_1; // Bottom
+				NY_ColumnMV[i][1] = NY + 1; // Top
+
+				NY_ColumnMW[i][0] = NY_1; // Bottom
+				NY_ColumnMW[i][1] = NY; // Top
+			}
+
+		}
+
+	}
+	else if (Problema == "NonPremixed"){
+
+		// Nodes U
+		for (i = Ix[Rango] - HP; i < Fx[Rango] + HP; i++){
+
+			if (i < NX_1){
+				NY_ColumnMU[i][0] = NY_1; // Bottom
+				NY_ColumnMU[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 && i <= NX_1 + NX_2){
+				NY_ColumnMU[i][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMU[i][1] = NY; // Top
+			}
+			else if (i > NX_1 + NX_2){
+				NY_ColumnMU[i][0] = NY_1; // Bottom
+				NY_ColumnMU[i][1] = NY; // Top
+			}
+
+		}
+		
+		// Nodes P, V and W
+		for (i = Ix[Rango] - HP; i < Fx[Rango] + HP; i++){
+
+			if (i < NX_1){
+				NY_ColumnMP[i][0] = NY_1; // Bottom
+				NY_ColumnMP[i][1] = NY; // Top
+
+				NY_ColumnMV[i][0] = NY_1; // Bottom
+				NY_ColumnMV[i][1] = NY + 1; // Top
+
+				NY_ColumnMW[i][0] = NY_1; // Bottom
+				NY_ColumnMW[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 && i < NX_1 + NX_2){
+				NY_ColumnMP[i][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMP[i][1] = NY; // Top
+
+				NY_ColumnMV[i][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMV[i][1] = NY + 1; // Top
+
+				NY_ColumnMW[i][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMW[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 + NX_2){
+				NY_ColumnMP[i][0] = NY_1; // Bottom
+				NY_ColumnMP[i][1] = NY; // Top
+
+				NY_ColumnMV[i][0] = NY_1; // Bottom
+				NY_ColumnMV[i][1] = NY + 1; // Top
+
+				NY_ColumnMW[i][0] = NY_1; // Bottom
+				NY_ColumnMW[i][1] = NY; // Top
+			}
+
+		}
+
+	}
+	
+}
 
 //Cálculo de las distancias entre nodos en cada una de las matrices
 void Mesher::Get_Deltas(){
@@ -252,44 +411,6 @@ int i, j, k;
 void Mesher::Get_GlobalDeltas(){
 int i, j, k;
 
-	// Collocated mesh distances
-	for(i = 0; i < NX; i++){
-		for(j = 0; j < NY; j++){
-			for(k = 0; k < NZ; k++){
-				GlobalDeltasMP[GP(i,j,k,0)] = GlobalMeshU[GU(i+1,j,k,0)] - GlobalMeshU[GU(i,j,k,0)]; // Delta X
-				GlobalDeltasMP[GP(i,j,k,1)] = GlobalMeshV[GV(i,j+1,k,1)] - GlobalMeshV[GV(i,j,k,1)]; // Delta Y
-				GlobalDeltasMP[GP(i,j,k,2)] = GlobalMeshW[GW(i,j,k+1,2)] - GlobalMeshW[GW(i,j,k,2)]; // Delta Z
-			}
-		}
-	}
-
-	// Staggered U mesh distances
-	for(i = 1; i < NX; i++){
-		for(j = 0; j < NY; j++){
-			for(k = 0; k < NZ; k++){
-				GlobalDeltasMU[GU(i,j,k,0)] = GlobalMeshP[GP(i,j,k,0)] - GlobalMeshP[GP(i-1,j,k,0)]; // Delta X
-				GlobalDeltasMU[GU(i,j,k,1)] = GlobalMeshV[GV(i,j+1,k,1)] - GlobalMeshV[GV(i,j,k,1)]; // Delta Y
-				GlobalDeltasMU[GU(i,j,k,2)] = GlobalMeshW[GW(i,j,k+1,2)] - GlobalMeshW[GW(i,j,k,2)]; // Delta Z
-			}
-		}
-	}
-	
-	for(j = 0; j < NY; j++){
-		for(k = 0; k < NZ; k++){
-			GlobalDeltasMU[GU(0,j,k,0)] = GlobalMeshP[GP(0,j,k,0)] - GlobalMeshU[GU(0,j,k,0)]; // Delta X Parte Izquierda
-			GlobalDeltasMU[GU(0,j,k,1)] = GlobalMeshV[GV(0,j+1,k,1)] - GlobalMeshV[GV(0,j,k,1)]; // Delta Y Parte Izquierda
-			GlobalDeltasMU[GU(0,j,k,2)] = GlobalMeshW[GW(0,j,k+1,2)] - GlobalMeshW[GW(0,j,k,2)]; // Delta Z Parte Izquierda	
-		}
-	}
-
-	for(j = 0; j < NY; j++){
-		for(k = 0; k < NZ; k++){
-			GlobalDeltasMU[GU(NX,j,k,0)] = GlobalMeshU[GU(NX,j,k,0)] - GlobalMeshP[GP(NX-1,j,k,0)]; //Delta X Parte Derecha
-			GlobalDeltasMU[GU(NX,j,k,1)] = GlobalMeshV[GV(NX-1,j+1,k,1)] - GlobalMeshV[GV(NX-1,j,k,1)]; //Delta Y Parte Derecha
-			GlobalDeltasMU[GU(NX,j,k,2)] = GlobalMeshW[GW(NX-1,j,k+1,2)] - GlobalMeshW[GW(NX-1,j,k,2)]; //Delta Z Parte Derecha			
-		}
-	}
-
 	// Staggered V mesh distances
 	for(i = 0; i < NX; i++){
 		for(k = 0; k < NZ; k++){
@@ -312,45 +433,8 @@ int i, j, k;
 		}
 	}
 
-	// Staggered W mesh distances
-	for(i = 0; i < NX; i++){
-		for(j = 0; j < NY; j++){
-
-			GlobalDeltasMW[GW(i,j,0,0)] = GlobalMeshU[GU(i+1,j,0,0)] - GlobalMeshU[GU(i,j,0,0)]; // Delta X Parte Here
-			GlobalDeltasMW[GW(i,j,NZ,0)] = GlobalMeshU[GU(i+1,j,NZ-1,0)] - GlobalMeshU[GU(i,j,NZ-1,0)]; // Delta X Parte There
-
-			GlobalDeltasMW[GW(i,j,0,1)] = GlobalMeshV[GV(i,j+1,0,1)] - GlobalMeshV[GV(i,j,0,1)]; // Delta Y Parte Here
-			GlobalDeltasMW[GW(i,j,NZ,1)] = GlobalMeshV[GV(i,j+1,NZ-1,1)] - GlobalMeshV[GV(i,j,NZ-1,1)]; // Delta Y Parte There
-
-			GlobalDeltasMW[GW(i,j,0,2)] = GlobalMeshP[GP(i,j,0,2)] - GlobalMeshW[GW(i,j,0,2)]; // Delta Z Parte Here
-			GlobalDeltasMW[GW(i,j,NZ,2)] = GlobalMeshW[GW(i,j,NZ,2)] - GlobalMeshP[GP(i,j,NZ-1,2)]; // Delta Z Parte There
-
-			for(k = 1; k < NZ; k++){
-				GlobalDeltasMW[GW(i,j,k,0)] = GlobalMeshU[GU(i+1,j,k,0)] - GlobalMeshU[GU(i,j,k,0)]; //Delta X
-				GlobalDeltasMW[GW(i,j,k,1)] = GlobalMeshV[GV(i,j+1,k,1)] - GlobalMeshV[GV(i,j,k,1)]; //Delta Y
-				GlobalDeltasMW[GW(i,j,k,2)] = GlobalMeshP[GP(i,j,k,2)] - GlobalMeshP[GP(i,j,k-1,2)]; //Delta Z
-			}
-		}
-	}
-
 }
 
-// Function to calculate the global mesh surfaces
-void Mesher::Get_GlobalSurfaces(){
-int i, j, k;
-
-	// Collocated mesh surfaces
-	for(i = 0; i < NX; i++){
-		for(j = 0; j < NY; j++){
-			for(k = 0; k < NZ; k++){
-				GlobalSupMP[GP(i,j,k,0)] = GlobalDeltasMU[GU(i,j,k,1)]*GlobalDeltasMU[GU(i,j,k,2)]; // Surface X
-				GlobalSupMP[GP(i,j,k,1)] = GlobalDeltasMV[GV(i,j,k,0)]*GlobalDeltasMV[GV(i,j,k,2)]; // Surface Y
-				GlobalSupMP[GP(i,j,k,2)] = GlobalDeltasMW[GW(i,j,k,0)]*GlobalDeltasMW[GW(i,j,k,1)]; // Surface Z
-			}
-		}
-	}
-
-}
 //Ejecutar todos los procesos del mallador
 void Mesher::ExecuteMesher(Memory M1){
 	
@@ -363,7 +447,6 @@ void Mesher::ExecuteMesher(Memory M1){
 	if(Rango == 0){	
 		Get_GlobalMesh();
 		Get_GlobalDeltas();
-		Get_GlobalSurfaces();
 	//	MallaVTK3D("ParaviewResults/MeshResults/", "MallaP", "MallaMP", MP, NX, NY, NZ);
 		cout<<"Mesh created."<<endl;
 	}

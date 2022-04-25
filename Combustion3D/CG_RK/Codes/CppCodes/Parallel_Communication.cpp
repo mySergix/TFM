@@ -109,8 +109,8 @@ MPI_Status ST;
 	
 	if(Rango == 0){
 		for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = - HP; j < NY + HP; j++){
-				for(k = - HP; k < NZ + HP; k++){
+			for(j = 0; j < NY; j++){
+				for(k = 0; k < NZ; k++){
 					GlobalMatrix[GP(i,j,k,0)] = LocalMatrix[LP(i,j,k,0)];
 				}		
 			}
@@ -136,7 +136,7 @@ MPI_Status ST;
 	}
 	
 	if(Rango == 0){
-		for(i = Ix[Rango] - Halo; i < Fx[Rango] + 1; i++){
+		for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
 			for(j = - Halo; j < NY + Halo; j++){
 				for(k = - Halo; k < NZ + Halo; k++){
 					GlobalMatrix[GU(i,j,k,0)] = LocalMatrix[LU(i,j,k,0)];
@@ -208,31 +208,5 @@ MPI_Status ST;
 	}
 
 	MPI_Barrier(MPI_COMM_WORLD);
-
-}
-
-// Function to send the boundary conditions array to process 0
-void Parallel::SendBoCoToZeroMP(double *LocalMatrix, double *GlobalMatrix){
-int i, j, k, p;
-MPI_Status ST;
-
-	if(Rango != 0){
-		MPI_Send(&LocalMatrix[BOTTOM(Ix[Rango], 0, 0)], (Fx[Rango] - Ix[Rango])*(NZ), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-	}
-	
-	if(Rango == 0){
-		for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(k = 0; k < NZ; k++){
-				GlobalMatrix[GBOTTOM(i,0,k)] = LocalMatrix[BOTTOM(i,j,k)];		
-			}
-		}
-		
-		for(p = 1; p < Procesos; p++){
-			MPI_Recv(&GlobalMatrix[GBOTTOM(Ix[p], 0, 0)], (Fx[p] - Ix[p])*(NZ), MPI_DOUBLE, p, 0, MPI_COMM_WORLD, &ST);
-		}
-
-	}
-
-	MPI_Barrier(MPI_COMM_WORLD);	
 
 }

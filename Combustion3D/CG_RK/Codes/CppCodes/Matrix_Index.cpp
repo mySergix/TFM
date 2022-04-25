@@ -61,8 +61,5 @@
 // Linear interpolation macro
 #define Interpolacion(CO, C1, V1, C2, V2) V1 + ((V2 - V1)/(C2 - C1))*(CO - C1)
 
-// Global Index Bottom Surface
-#define GBOTTOM(i,j,k) (NZ)*(i) + (k)
-
 // Mean value macro
 #define Mean(Value1, Value2) 0.50 * (Value1 + Value2)

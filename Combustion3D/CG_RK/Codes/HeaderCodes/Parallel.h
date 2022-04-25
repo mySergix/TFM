@@ -60,5 +60,4 @@ class Parallel{
 				void SendMatrixToZeroMV(double*, double*);
 				void SendMatrixToZeroMW(double*, double*);
 
-				void SendBoCoToZeroMP(double*, double*);
 };
