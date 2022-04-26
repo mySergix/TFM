@@ -15,37 +15,38 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	//Datos Numéricos del problema
 	Problema = "Premixed";
 
-	NX_1 = 
-	NX_2 =
-	NX_3 = 
+	NX_1 = 20;
+	NX_2 = 10;
+	NX_3 = 30;
 
-	NY_1 = 
-	NY_2 = 
-	NY_3 = 
+	NY_1 = 30;
+	NY_2 = 10;
+	NY_3 = 90;
 
-	OptionX_1 = 
-	OptionX_2 = 
-	OptionX_3 = 
+	OptionX_1 = 1;
+	OptionX_2 = 1;
+	OptionX_3 = 1;
 
-	OptionY_1 = 
-	OptionY_2 = 
-	OptionY_3 = 
+	OptionY_1 = 1;
+	OptionY_2 = 1;
+	OptionY_3 = 1;
 
-	OptionZ = 
+	OptionZ = 1;
 
-	SFX_1 = 
-	SFX_2 = 
-	SFX_3 = 
+	SFX_1 = 1.0;
+	SFX_2 = 1.0;
+	SFX_3 = 1.0;
 
-	SFY_1 = 
-	SFY_2 = 
-	SFY_3 = 
+	SFY_1 = 1.0;
+	SFY_2 = 1.0;
+	SFY_3 = 1.0;
 
-	SFZ = 
+	SFZ = 1.0;
 
 	NX = NX_1 + NX_2 + NX_3;
-	NY = NY_1 + NY_2 + NY_3; 
-	NZ = ;
+	if (Problema == "Premixed"){ NY = NY_1 + NY_2 + NY_3; }
+	else if (Problema == "NonPremixed"){ NY = NY_2 + NY_3; }
+	NZ = 10;
 
 	// Datos Geométricos del problema (m)
 	Width_Inlet = 0.002; 
@@ -65,21 +66,29 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	Y_3 = Height_Burner - Height_Slit;
 
 	Xdomain = X_1 + X_2 + X_3;
-	Ydomain = Y_1 + Y_2 + Y_3;
-	Zdomain = 
+	if (Problema == "Premixed"){ Ydomain = Y_1 + Y_2 + Y_3; }
+	else if (Problema == "NonPremixed"){ Ydomain = Y_2 + Y_3; }
+	Zdomain = 0.002;
 
 	//Datos necesarios para computación paralela
-	P1.RunParallel(M1, NX);
 	Rango = P1.Rango;
 	Procesos = P1.Procesos;
 	Ix = M1.AllocateInt(Procesos, 1, 1, 1);
     Fx = M1.AllocateInt(Procesos, 1, 1, 1);
 
+	P1.WorkSplit(NX, Ix, Fx);
+
+	
+
+	/*
+
     for (int i = 0; i < Procesos; i++){
         Ix[i] = P1.Ix[i];
         Fx[i] = P1.Fx[i];
     }
-	
+	*/
+
+	printf("Process number %d of %d with Ix = %d and Fx = %d \n", Rango, Procesos, Ix[Rango], Fx[Rango]);
 	Halo = 2;
 	HP = 2;
 
@@ -88,27 +97,28 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 #include "Matrix_Index.cpp"
 #include "Mesher_Memory.cpp"
 #include "Mesher_NodalCoordinates.cpp"
+#include "Mesher_Paraview.cpp"
 
-// Seteo del numero de nodos NY por cada columna en direccion X
-void Mesher::Get_ColumnsNY(){
+// Seteo del numero de nodos NY por cada columna en direccion X (Local)
+void Mesher::Get_LocalColumnsNY(){
 int i, j;
 
 	if (Problema == "Premixed"){
 
 		// Nodes U
-		for (i = Ix[Rango] - HP; i < Fx[Rango] + HP; i++){
+		for (i = Ix[Rango] - Halo; i < Fx[Rango] + Halo + 1; i++){
 
-			if (i < NX_1){
-				NY_ColumnMU[i][0] = 0; // Bottom
-				NY_ColumnMU[i][1] = NY; // Top
+			if (i <= NX_1){
+				NY_ColumnMU[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMU[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
-			else if (i >= NX_1 && i <= NX_1 + NX_2){
-				NY_ColumnMU[i][0] = NY_1 + NY_2; // Bottom
-				NY_ColumnMU[i][1] = NY; // Top
+			else if (i > NX_1 && i < NX_1 + NX_2){
+				NY_ColumnMU[i + Halo - Ix[Rango]][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMU[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
-			else if (i > NX_1 + NX_2){
-				NY_ColumnMU[i][0] = NY_1; // Bottom
-				NY_ColumnMU[i][1] = NY; // Top
+			else if (i >= NX_1 + NX_2){
+				NY_ColumnMU[i + Halo - Ix[Rango]][0] = NY_1; // Bottom
+				NY_ColumnMU[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
 
 		}
@@ -117,34 +127,34 @@ int i, j;
 		for (i = Ix[Rango] - HP; i < Fx[Rango] + HP; i++){
 
 			if (i < NX_1){
-				NY_ColumnMP[i][0] = 0; // Bottom
-				NY_ColumnMP[i][1] = NY; // Top
+				NY_ColumnMP[i + HP - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMP[i + HP - Ix[Rango]][1] = NY; // Top
 
-				NY_ColumnMV[i][0] = 0; // Bottom
-				NY_ColumnMV[i][1] = NY + 1; // Top
+				NY_ColumnMV[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMV[i + Halo - Ix[Rango]][1] = NY + 1; // Top
 
-				NY_ColumnMW[i][0] = 0; // Bottom
-				NY_ColumnMW[i][1] = NY; // Top
+				NY_ColumnMW[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMW[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
 			else if (i >= NX_1 && i < NX_1 + NX_2){
-				NY_ColumnMP[i][0] = NY_1 + NY_2; // Bottom
-				NY_ColumnMP[i][1] = NY; // Top
+				NY_ColumnMP[i + HP - Ix[Rango]][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMP[i + HP - Ix[Rango]][1] = NY; // Top
 
-				NY_ColumnMV[i][0] = NY_1 + NY_2; // Bottom
-				NY_ColumnMV[i][1] = NY + 1; // Top
+				NY_ColumnMV[i + Halo - Ix[Rango]][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMV[i + Halo - Ix[Rango]][1] = NY + 1; // Top
 
-				NY_ColumnMW[i][0] = NY_1 + NY_2; // Bottom
-				NY_ColumnMW[i][1] = NY; // Top
+				NY_ColumnMW[i + Halo - Ix[Rango]][0] = NY_1 + NY_2; // Bottom
+				NY_ColumnMW[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
 			else if (i >= NX_1 + NX_2){
-				NY_ColumnMP[i][0] = NY_1; // Bottom
-				NY_ColumnMP[i][1] = NY; // Top
+				NY_ColumnMP[i + HP - Ix[Rango]][0] = NY_1; // Bottom
+				NY_ColumnMP[i + HP - Ix[Rango]][1] = NY; // Top
 
-				NY_ColumnMV[i][0] = NY_1; // Bottom
-				NY_ColumnMV[i][1] = NY + 1; // Top
+				NY_ColumnMV[i + Halo - Ix[Rango]][0] = NY_1; // Bottom
+				NY_ColumnMV[i + Halo - Ix[Rango]][1] = NY + 1; // Top
 
-				NY_ColumnMW[i][0] = NY_1; // Bottom
-				NY_ColumnMW[i][1] = NY; // Top
+				NY_ColumnMW[i + Halo - Ix[Rango]][0] = NY_1; // Bottom
+				NY_ColumnMW[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
 
 		}
@@ -155,17 +165,17 @@ int i, j;
 		// Nodes U
 		for (i = Ix[Rango] - HP; i < Fx[Rango] + HP; i++){
 
-			if (i < NX_1){
-				NY_ColumnMU[i][0] = NY_1; // Bottom
-				NY_ColumnMU[i][1] = NY; // Top
+			if (i <= NX_1){
+				NY_ColumnMU[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMU[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
-			else if (i >= NX_1 && i <= NX_1 + NX_2){
-				NY_ColumnMU[i][0] = NY_1 + NY_2; // Bottom
-				NY_ColumnMU[i][1] = NY; // Top
+			else if (i > NX_1 && i < NX_1 + NX_2){
+				NY_ColumnMU[i + Halo - Ix[Rango]][0] = NY_2; // Bottom
+				NY_ColumnMU[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
-			else if (i > NX_1 + NX_2){
-				NY_ColumnMU[i][0] = NY_1; // Bottom
-				NY_ColumnMU[i][1] = NY; // Top
+			else if (i >= NX_1 + NX_2){
+				NY_ColumnMU[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMU[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
 
 		}
@@ -174,40 +184,173 @@ int i, j;
 		for (i = Ix[Rango] - HP; i < Fx[Rango] + HP; i++){
 
 			if (i < NX_1){
-				NY_ColumnMP[i][0] = NY_1; // Bottom
-				NY_ColumnMP[i][1] = NY; // Top
+				NY_ColumnMP[i + HP - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMP[i + HP - Ix[Rango]][1] = NY; // Top
 
-				NY_ColumnMV[i][0] = NY_1; // Bottom
-				NY_ColumnMV[i][1] = NY + 1; // Top
+				NY_ColumnMV[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMV[i + Halo - Ix[Rango]][1] = NY + 1; // Top
 
-				NY_ColumnMW[i][0] = NY_1; // Bottom
-				NY_ColumnMW[i][1] = NY; // Top
+				NY_ColumnMW[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMW[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
 			else if (i >= NX_1 && i < NX_1 + NX_2){
-				NY_ColumnMP[i][0] = NY_1 + NY_2; // Bottom
-				NY_ColumnMP[i][1] = NY; // Top
+				NY_ColumnMP[i + HP - Ix[Rango]][0] = NY_2; // Bottom
+				NY_ColumnMP[i + HP - Ix[Rango]][1] = NY; // Top
 
-				NY_ColumnMV[i][0] = NY_1 + NY_2; // Bottom
-				NY_ColumnMV[i][1] = NY + 1; // Top
+				NY_ColumnMV[i + Halo - Ix[Rango]][0] = NY_2; // Bottom
+				NY_ColumnMV[i + Halo - Ix[Rango]][1] = NY + 1; // Top
 
-				NY_ColumnMW[i][0] = NY_1 + NY_2; // Bottom
-				NY_ColumnMW[i][1] = NY; // Top
+				NY_ColumnMW[i + Halo - Ix[Rango]][0] = NY_2; // Bottom
+				NY_ColumnMW[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
 			else if (i >= NX_1 + NX_2){
-				NY_ColumnMP[i][0] = NY_1; // Bottom
-				NY_ColumnMP[i][1] = NY; // Top
+				NY_ColumnMP[i + HP - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMP[i + HP - Ix[Rango]][1] = NY; // Top
 
-				NY_ColumnMV[i][0] = NY_1; // Bottom
-				NY_ColumnMV[i][1] = NY + 1; // Top
+				NY_ColumnMV[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMV[i + Halo - Ix[Rango]][1] = NY + 1; // Top
 
-				NY_ColumnMW[i][0] = NY_1; // Bottom
-				NY_ColumnMW[i][1] = NY; // Top
+				NY_ColumnMW[i + Halo - Ix[Rango]][0] = 0; // Bottom
+				NY_ColumnMW[i + Halo - Ix[Rango]][1] = NY; // Top
 			}
 
 		}
 
 	}
 	
+}
+
+// Seteo del numero de nodos NY por cada columna en direccion X (Global)
+void Mesher::Get_GlobalColumnsNY(){
+int i;
+
+	if (Problema == "Premixed"){
+
+		// Nodes U
+		for (i = 0; i < NX; i++){
+
+			if (i <= NX_1){
+				GlobalNY_ColumnMU[i][0] = 0; // Bottom
+				GlobalNY_ColumnMU[i][1] = NY; // Top
+			}
+			else if (i > NX_1 && i < NX_1 + NX_2){
+				GlobalNY_ColumnMU[i][0] = NY_1 + NY_2; // Bottom
+				GlobalNY_ColumnMU[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 + NX_2){
+				GlobalNY_ColumnMU[i][0] = NY_1; // Bottom
+				GlobalNY_ColumnMU[i][1] = NY; // Top
+			}
+
+		}
+
+		// Nodes P, V and W
+		for (i = 0; i < NX; i++){
+
+			if (i < NX_1){
+				GlobalNY_ColumnMP[i][0] = 0; // Bottom
+				GlobalNY_ColumnMP[i][1] = NY; // Top
+
+				GlobalNY_ColumnMV[i][0] = 0; // Bottom
+				GlobalNY_ColumnMV[i][1] = NY + 1; // Top
+
+				GlobalNY_ColumnMW[i][0] = 0; // Bottom
+				GlobalNY_ColumnMW[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 && i < NX_1 + NX_2){
+				GlobalNY_ColumnMP[i][0] = NY_1 + NY_2; // Bottom
+				GlobalNY_ColumnMP[i][1] = NY; // Top
+
+				GlobalNY_ColumnMV[i][0] = NY_1 + NY_2; // Bottom
+				GlobalNY_ColumnMV[i][1] = NY + 1; // Top
+
+				GlobalNY_ColumnMW[i][0] = NY_1 + NY_2; // Bottom
+				GlobalNY_ColumnMW[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 + NX_2){
+				GlobalNY_ColumnMP[i][0] = NY_1; // Bottom
+				GlobalNY_ColumnMP[i][1] = NY; // Top
+
+				GlobalNY_ColumnMV[i][0] = NY_1; // Bottom
+				GlobalNY_ColumnMV[i][1] = NY + 1; // Top
+
+				GlobalNY_ColumnMW[i][0] = NY_1; // Bottom
+				GlobalNY_ColumnMW[i][1] = NY; // Top
+			}
+
+		}
+
+	}
+	else if (Problema == "NonPremixed"){
+
+		// Nodes U
+		for (i = 0; i < NX; i++){
+
+			if (i <= NX_1){
+				GlobalNY_ColumnMU[i][0] = 0; // Bottom
+				GlobalNY_ColumnMU[i][1] = NY; // Top
+			}
+			else if (i > NX_1 && i < NX_1 + NX_2){
+				GlobalNY_ColumnMU[i][0] = NY_2; // Bottom
+				GlobalNY_ColumnMU[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 + NX_2){
+				GlobalNY_ColumnMU[i][0] = 0; // Bottom
+				GlobalNY_ColumnMU[i][1] = NY; // Top
+			}
+
+		}
+		
+		// Nodes P, V and W
+		for (i = 0; i < NX; i++){
+
+			if (i < NX_1){
+				GlobalNY_ColumnMP[i][0] = 0; // Bottom
+				GlobalNY_ColumnMP[i][1] = NY; // Top
+
+				GlobalNY_ColumnMV[i][0] = 0; // Bottom
+				GlobalNY_ColumnMV[i][1] = NY + 1; // Top
+
+				GlobalNY_ColumnMW[i][0] = 0; // Bottom
+				GlobalNY_ColumnMW[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 && i < NX_1 + NX_2){
+				GlobalNY_ColumnMP[i][0] = NY_2; // Bottom
+				GlobalNY_ColumnMP[i][1] = NY; // Top
+
+				GlobalNY_ColumnMV[i][0] = NY_2; // Bottom
+				GlobalNY_ColumnMV[i][1] = NY + 1; // Top
+
+				GlobalNY_ColumnMW[i][0] = NY_2; // Bottom
+				GlobalNY_ColumnMW[i][1] = NY; // Top
+			}
+			else if (i >= NX_1 + NX_2){
+				GlobalNY_ColumnMP[i][0] = 0; // Bottom
+				GlobalNY_ColumnMP[i][1] = NY; // Top
+
+				GlobalNY_ColumnMV[i][0] = 0; // Bottom
+				GlobalNY_ColumnMV[i][1] = NY + 1; // Top
+
+				GlobalNY_ColumnMW[i][0] = 0; // Bottom
+				GlobalNY_ColumnMW[i][1] = NY; // Top
+			}
+
+		}
+
+	}
+	
+}
+
+// Function to calculate the total number of nodes in the global mesh
+void Mesher::Get_TotalNodes(){
+int i;
+TotalNodesP = 0;
+
+	// Collocated Pressure Nodes
+	for (i = 0; i < NX; i++){
+		TotalNodesP += (GlobalNY_ColumnMP[i][1] - GlobalNY_ColumnMP[i][0]) * NZ;
+	}
+
 }
 
 //Cálculo de las distancias entre nodos en cada una de las matrices
@@ -440,15 +583,20 @@ void Mesher::ExecuteMesher(Memory M1){
 	
 	Allocate_MesherMemory(M1); // Memory Allocation
 	Get_LocalMeshes(); // Creación de todas las mallas
+	Get_LocalColumnsNY(); // Seteo del numero de nodos por columna (Local)
 	Get_Deltas(); // Cálculo de las distancias entre nodos en cada una de las matrices
 	Get_Surfaces(); // Cálculo de las superficies de cada uno de los volúmenes de control
 	Get_Volumes(); // Cálculo de los volúmenes de control de cada volúmen
 	
 	if(Rango == 0){	
-		Get_GlobalMesh();
-		Get_GlobalDeltas();
-	//	MallaVTK3D("ParaviewResults/MeshResults/", "MallaP", "MallaMP", MP, NX, NY, NZ);
+		Get_GlobalMesh(); // Creacion de la malla global
+		Get_GlobalColumnsNY(); // Seteo del numero de nodos por columna (Global)
+		Get_TotalNodes(); // Calculation of global mesh total nodes
+		Get_GlobalDeltas(); // Calculo de las distancias entre nodos en cada matriz (Global)
+		Get_MeshVTK("Meshes/", "PremixedMesh"); // Importing the mesh to VTK file
+		cout<<"TotalNodes: "<<TotalNodesP<<endl;
 		cout<<"Mesh created."<<endl;
+
 	}
 
 }

@@ -49,6 +49,13 @@ void Mesher::Allocate_MesherMemory(Memory M1){
 		GlobalMeshW = M1.AllocateDouble(NX + 2*HP, NY + 2*HP, NZ + 2*HP + 1, 3);
 
 		GlobalDeltasMV = M1.AllocateDouble(NX + 2*HP, NY + 2*HP + 1, NZ + 2*HP, 3);
+
+		// Vector of columns (Global)
+		GlobalNY_ColumnMP = M1.AllocateInt_Matrix2D(NX, 2);
+		GlobalNY_ColumnMU = M1.AllocateInt_Matrix2D(NX + 1, 2);
+		GlobalNY_ColumnMV = M1.AllocateInt_Matrix2D(NX, 2);
+		GlobalNY_ColumnMW = M1.AllocateInt_Matrix2D(NX, 2);
+		
 	}
 
 }

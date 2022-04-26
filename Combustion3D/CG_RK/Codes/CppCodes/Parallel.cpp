@@ -84,12 +84,11 @@ int p;
 }
 
 // Function to execute the parallel class
-void Parallel::RunParallel(Memory M1, int NX){
+void Parallel::RunParallel(Memory M1){
 
     Rango_Procesos();
     Total_Procesos();
     AllocateMemory(M1);
-    WorkSplit(NX, Ix, Fx);
     
 }
 

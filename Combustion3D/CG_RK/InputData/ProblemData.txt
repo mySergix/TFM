@@ -9,7 +9,7 @@ Datos numéricos:
 0	Progresión lineal en las transiciones 				(En el caso de haber elegido el problema 3)
                                                         (1 -> Activado, 0 -> Desactivado)
 
-60	Número de nodos en la dirección X
+40	Número de nodos en la dirección X
 60	Número de nodos en la dirección Y
 20      Número de nodos en la dirección Z
 

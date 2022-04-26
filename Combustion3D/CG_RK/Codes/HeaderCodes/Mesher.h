@@ -37,6 +37,8 @@ class Mesher{
 		double SFY_1, SFY_2, SFY_3;
 		double SFZ;
 
+		int TotalNodesP;
+
 		// Datos Geométricos del problema
 		double Width_Inlet;
 		double Width_Slit;
@@ -60,11 +62,17 @@ class Mesher{
 		int HP;
 		int Halo;
 
-		// Vector of columns
-		double **NY_ColumnMP;
-		double **NY_ColumnMU;
-		double **NY_ColumnMV;
-		double **NY_ColumnMW;
+		// Vector of columns (Local)
+		int **NY_ColumnMP;
+		int **NY_ColumnMU;
+		int **NY_ColumnMV;
+		int **NY_ColumnMW;
+
+		// Vector of columns (Global)
+		int **GlobalNY_ColumnMP;
+		int **GlobalNY_ColumnMU;
+		int **GlobalNY_ColumnMV;
+		int **GlobalNY_ColumnMW;
 
 		// Meshes of the simulation
 		double *MP; // Collocated mesh
@@ -102,7 +110,9 @@ class Mesher{
 		void Allocate_MesherMemory(Memory); //Alojamiento de memoria para cada matriz
 		void Delete_MesherMemory(); // Borrado de toda la memoria
 
-		void Get_ColumnsNY();
+		void Get_LocalColumnsNY();
+		void Get_GlobalColumnsNY();
+		void Get_TotalNodes();
 
 		void Get_LocalMeshes(); //Creación de todas las mallas
 		void Get_GlobalMesh(); // Creation of global collocated meesh
@@ -113,7 +123,7 @@ class Mesher{
 		void Get_Surfaces(); //Cálculo de las superficies de cada uno de los volúmenes de control
 		void Get_Volumes(); //Cálculo de los volúmenes de control de cada volúmen
 		
-		//void MallaVTK3D(string, string, string, double*, int, int, int); //Pasar todos los resultados escalares en 2D a un archivo VTK
+		void Get_MeshVTK(string, string);
 		void ExecuteMesher(Memory); //Ejecutar todos los procesos del mallador
 
 };
