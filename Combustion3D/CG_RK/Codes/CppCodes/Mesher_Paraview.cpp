@@ -20,26 +20,26 @@ int i, j, k;
     file<<"ASCII"<<endl;
     file<<endl;
     file<<"DATASET STRUCTURED_GRID"<<endl;
-    file<<"DIMENSIONS"<<"   "<<NX<<"   "<<NY<<"   "<<NZ<<endl;
+    file<<"DIMENSIONS"<<"   "<<(NX + 1)<<"   "<<(NY + 1)<<"   "<<(NZ + 1)<<endl;
     file<<endl;
-    file<<"POINTS"<<"   "<<NX*NY*NZ<<"   "<<"double"<<endl;
+    file<<"POINTS"<<"   "<<(NX + 1)*(NY + 1)*(NZ + 1)<<"   "<<"double"<<endl;
 	
-	for(k = 0; k < NZ; k++){
-		for(j = 0; j < NY; j++){
-			for(i = 0; i < NX; i++){	
-				file<<GlobalMeshP[GP(i,j,k,0)]<<"   "<<GlobalMeshP[GP(i,j,k,1)]<<"   "<<GlobalMeshP[GP(i,j,k,2)]<<endl;
+	for(k = 0; k < NZ + 1; k++){
+		for(j = 0; j < NY + 1; j++){
+			for(i = 0; i < NX + 1; i++){	
+				file<<GlobalMeshU[GU(i,j,k,0)]<<"   "<<GlobalMeshV[GV(i,j,k,1)]<<"   "<<GlobalMeshW[GW(i,j,k,2)]<<endl;
 			}
 		}
 	}
         
     file<<endl;
-	file<<"POINT_DATA"<<"   "<<NX*NY*NZ<<endl;
+	file<<"POINT_DATA"<<"   "<<(NX + 1)*(NY + 1)*(NZ + 1)<<endl;
     file<<"SCALARS "<<"GlobalMesh"<<" double"<<endl;
     file<<"LOOKUP_TABLE"<<"   "<<"GlobalMesh"<<endl;
     file<<endl;
-	for(k = 0; k < NZ; k++){
-		for(j = 0; j < NY; j++){
-			for(i = 0; i < NX; i++){	
+	for(k = 0; k < NZ + 1; k++){
+		for(j = 0; j < NY + 1; j++){
+			for(i = 0; i < NX + 1; i++){	
 				file<<0.0<<" ";
 			}
 		}

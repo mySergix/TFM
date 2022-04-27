@@ -8,6 +8,7 @@
 #include <cmath>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 #include <mpi.h>
 
 using namespace std;
@@ -105,7 +106,10 @@ class Mesher{
 		double *GlobalMeshV;
 		double *GlobalMeshW;
 
+		double *GlobalDeltasMP;
+		double *GlobalDeltasMU;
 		double *GlobalDeltasMV;
+		double *GlobalDeltasMW;
 		
 		void Allocate_MesherMemory(Memory); //Alojamiento de memoria para cada matriz
 		void Delete_MesherMemory(); // Borrado de toda la memoria

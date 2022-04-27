@@ -33,6 +33,12 @@ class Parallel{
 		
 		int HP;
 
+		// Vector of columns (Local)
+		int **NY_ColumnMP;
+		int **NY_ColumnMU;
+		int **NY_ColumnMV;
+		int **NY_ColumnMW;
+
 		// Constructor de la clase
 		Parallel(ReadData);
 		
@@ -44,6 +50,7 @@ class Parallel{
 			void AllocateMemory(Memory);
 			void WorkSplit(int, int*, int*);
 			void RunParallel(Memory);
+			void Get_MesherInformation(Memory, int*, int*, int, int, int, int, int, int**, int**, int**, int**);
 			void Delete_ParallelMemory();
 
 			// Communication

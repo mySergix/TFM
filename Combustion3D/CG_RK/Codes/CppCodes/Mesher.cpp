@@ -23,23 +23,36 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	NY_2 = 10;
 	NY_3 = 90;
 
-	OptionX_1 = 1;
-	OptionX_2 = 1;
-	OptionX_3 = 1;
+	// Meshing options:
+	// 1 -> Regular
 
-	OptionY_1 = 1;
-	OptionY_2 = 1;
-	OptionY_3 = 1;
+		// OptionX:
+			// 2 -> Right Sided - Hyperbolic Tangent (More Density on the Right)
+			// 3 -> Left Sided - Hyperbolic Tangent (More Density on the Left)
+			// 4 -> Centered Sided - Hyperbolic Tangent (More Density on both Sides)
+
+		// OptionY:
+			// 2 -> Top Sided - Hyperbolic Tangent (More Density on the Top)
+			// 3 -> Down Sided - Hyperbolic Tangent (More Density on the Down)
+			// 4 -> Centered Sided - Hyperbolic Tangent (More Density on both Sides)
+
+	OptionX_1 = 2;
+	OptionX_2 = 2;
+	OptionX_3 = 2;
+
+	OptionY_1 = 2;
+	OptionY_2 = 2;
+	OptionY_3 = 2;
 
 	OptionZ = 1;
 
-	SFX_1 = 1.0;
-	SFX_2 = 1.0;
-	SFX_3 = 1.0;
+	SFX_1 = 2.0;
+	SFX_2 = 2.0;
+	SFX_3 = 2.0;
 
-	SFY_1 = 1.0;
-	SFY_2 = 1.0;
-	SFY_3 = 1.0;
+	SFY_1 = 2.0;
+	SFY_2 = 2.0;
+	SFY_3 = 2.0;
 
 	SFZ = 1.0;
 
@@ -77,16 +90,6 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
     Fx = M1.AllocateInt(Procesos, 1, 1, 1);
 
 	P1.WorkSplit(NX, Ix, Fx);
-
-	
-
-	/*
-
-    for (int i = 0; i < Procesos; i++){
-        Ix[i] = P1.Ix[i];
-        Fx[i] = P1.Fx[i];
-    }
-	*/
 
 	printf("Process number %d of %d with Ix = %d and Fx = %d \n", Rango, Procesos, Ix[Rango], Fx[Rango]);
 	Halo = 2;
@@ -554,24 +557,78 @@ int i, j, k;
 void Mesher::Get_GlobalDeltas(){
 int i, j, k;
 
+	// Collocated mesh distances
+	for(i = 0; i < NX; i++){
+		for(j = 0; j < NY; j++){
+			for(k = 0; k < NZ; k++){
+				GlobalDeltasMP[GP(i,j,k,0)] = GlobalMeshU[LU(i+1,j,k,0)] - GlobalMeshU[GU(i,j,k,0)]; // Delta X
+				GlobalDeltasMP[GP(i,j,k,1)] = GlobalMeshV[LV(i,j+1,k,1)] - GlobalMeshV[GV(i,j,k,1)]; // Delta Y
+				GlobalDeltasMP[GP(i,j,k,2)] = GlobalMeshW[LW(i,j,k+1,2)] - GlobalMeshW[GW(i,j,k,2)]; // Delta Z
+			}
+		}
+	}
+
+	
+
+	// Staggered U mesh distances
+	for(j = 0; j < NY; j++){
+		for(k = 0; k < NZ; k++){
+
+			GlobalDeltasMU[GU(0,j,k,0)] = GlobalMeshP[GP(0,j,k,0)] - GlobalMeshU[GU(0,j,k,0)]; // Delta X Parte Izquierda
+			GlobalDeltasMU[GU(0,j,k,1)] = GlobalMeshV[GV(0,j+1,k,1)] - GlobalMeshV[GV(0,j,k,1)]; // Delta Y Parte Izquierda
+			GlobalDeltasMU[GU(0,j,k,2)] = GlobalMeshW[GW(0,j,k+1,2)] - GlobalMeshW[GW(0,j,k,2)]; // Delta Z Parte Izquierda
+
+			for(i = 1; i < NX; i++){
+				GlobalDeltasMU[GU(i,j,k,0)] = GlobalMeshP[GP(i,j,k,0)] - GlobalMeshP[GP(i-1,j,k,0)]; // Delta X
+				GlobalDeltasMU[GU(i,j,k,1)] = GlobalMeshV[GV(i,j+1,k,1)] - GlobalMeshV[GV(i,j,k,1)]; // Delta Y
+				GlobalDeltasMU[GU(i,j,k,2)] = GlobalMeshW[GW(i,j,k+1,2)] - GlobalMeshW[GW(i,j,k,2)]; // Delta Z
+			}
+
+			GlobalDeltasMU[GU(NX,j,k,0)] = GlobalMeshU[GU(NX,j,k,0)] - GlobalMeshP[GP(NX-1,j,k,0)]; //Delta X Parte Derecha
+			GlobalDeltasMU[GU(NX,j,k,1)] = GlobalMeshV[GV(NX-1,j+1,k,1)] - GlobalMeshV[GV(NX-1,j,k,1)]; //Delta Y Parte Derecha
+			GlobalDeltasMU[GU(NX,j,k,2)] = GlobalMeshW[GW(NX-1,j,k+1,2)] - GlobalMeshW[GW(NX-1,j,k,2)]; //Delta Z Parte Derecha
+
+		}
+	}
+
 	// Staggered V mesh distances
 	for(i = 0; i < NX; i++){
 		for(k = 0; k < NZ; k++){
 
 			GlobalDeltasMV[GV(i,0,k,0)] = GlobalMeshU[GU(i+1,0,k,0)] - GlobalMeshU[GU(i,0,k,0)]; // Delta X Parte Abajo
-			GlobalDeltasMV[GV(i,NY,k,0)] = GlobalMeshU[GU(i+1,NY-1,k,0)] - GlobalMeshU[GU(i,NY-1,k,0)]; // Delta X Parte Arriba
-
 			GlobalDeltasMV[GV(i,0,k,1)] = GlobalMeshP[GP(i,0,k,1)] - GlobalMeshV[GV(i,0,k,1)]; // Delta Y Parte Abajo
-			GlobalDeltasMV[GV(i,NY,k,1)] = GlobalMeshV[GV(i,NY,k,1)] - GlobalMeshP[GP(i,NY-1,k,1)]; // Delta Y Parte Arriba
-
 			GlobalDeltasMV[GV(i,0,k,2)] = GlobalMeshW[GW(i,0,k+1,2)] - GlobalMeshW[GW(i,0,k,2)]; // Delta Z Parte Abajo
-			GlobalDeltasMV[GV(i,NY,k,2)] = GlobalMeshW[GW(i,NY-1,k+1,2)] - GlobalMeshW[GW(i,NY-1,k,2)]; // Delta Z Parte Arriba
 
 			for(j = 1; j < NY; j++){
 				GlobalDeltasMV[GV(i,j,k,0)] = GlobalMeshU[GU(i+1,j,k,0)] - GlobalMeshU[GU(i,j,k,0)]; //Delta X
 				GlobalDeltasMV[GV(i,j,k,1)] = GlobalMeshP[GP(i,j,k,1)] - GlobalMeshP[GP(i,j-1,k,1)]; //Delta Y
 				GlobalDeltasMV[GV(i,j,k,2)] = GlobalMeshW[GW(i,j,k+1,2)] - GlobalMeshW[GW(i,j,k,2)]; //Delta Z
 			}
+
+			GlobalDeltasMV[GV(i,NY,k,0)] = GlobalMeshU[GU(i+1,NY-1,k,0)] - GlobalMeshU[GU(i,NY-1,k,0)]; // Delta X Parte Arriba
+			GlobalDeltasMV[GV(i,NY,k,1)] = GlobalMeshV[GV(i,NY,k,1)] - GlobalMeshP[GP(i,NY-1,k,1)]; // Delta Y Parte Arriba
+			GlobalDeltasMV[GV(i,NY,k,2)] = GlobalMeshW[GW(i,NY-1,k+1,2)] - GlobalMeshW[GW(i,NY-1,k,2)]; // Delta Z Parte Arriba
+
+		}
+	}
+
+	// Staggered W mesh distances
+	for(i = 0; i < NX; i++){
+		for(j = 0; j < NY; j++){
+
+			GlobalDeltasMW[GW(i,j,0,0)] = GlobalMeshU[GU(i+1,j,0,0)] - GlobalMeshU[GU(i,j,0,0)]; // Delta X Parte Here
+			GlobalDeltasMW[GW(i,j,0,1)] = GlobalMeshV[GV(i,j+1,0,1)] - GlobalMeshV[GV(i,j,0,1)]; // Delta Y Parte Here
+			GlobalDeltasMW[GW(i,j,0,2)] = GlobalMeshP[GP(i,j,0,2)] - GlobalMeshW[GW(i,j,0,2)]; // Delta Z Parte Here
+
+			for(k = 1; k < NZ; k++){
+				GlobalDeltasMW[GW(i,j,k,0)] = GlobalMeshU[GU(i+1,j,k,0)] - GlobalMeshU[GU(i,j,k,0)]; //Delta X
+				GlobalDeltasMW[GW(i,j,k,1)] = GlobalMeshV[GV(i,j+1,k,1)] - GlobalMeshV[GV(i,j,k,1)]; //Delta Y
+				GlobalDeltasMW[GW(i,j,k,2)] = GlobalMeshP[GP(i,j,k,2)] - GlobalMeshP[GP(i,j,k-1,2)]; //Delta Z
+			}
+
+			GlobalDeltasMW[GW(i,j,NZ,0)] = GlobalMeshU[GU(i+1,j,NZ-1,0)] - GlobalMeshU[GU(i,j,NZ-1,0)]; // Delta X Parte There
+			GlobalDeltasMW[GW(i,j,NZ,1)] = GlobalMeshV[GV(i,j+1,NZ-1,1)] - GlobalMeshV[GV(i,j,NZ-1,1)]; // Delta Y Parte There
+			GlobalDeltasMW[GW(i,j,NZ,2)] = GlobalMeshW[GW(i,j,NZ,2)] - GlobalMeshP[GP(i,j,NZ-1,2)]; // Delta Z Parte There
 
 		}
 	}
@@ -580,7 +637,10 @@ int i, j, k;
 
 //Ejecutar todos los procesos del mallador
 void Mesher::ExecuteMesher(Memory M1){
-	
+char Prob[Problema.length()];
+char MeshName[Problema.length() + 5];
+
+
 	Allocate_MesherMemory(M1); // Memory Allocation
 	Get_LocalMeshes(); // Creación de todas las mallas
 	Get_LocalColumnsNY(); // Seteo del numero de nodos por columna (Local)
@@ -593,7 +653,11 @@ void Mesher::ExecuteMesher(Memory M1){
 		Get_GlobalColumnsNY(); // Seteo del numero de nodos por columna (Global)
 		Get_TotalNodes(); // Calculation of global mesh total nodes
 		Get_GlobalDeltas(); // Calculo de las distancias entre nodos en cada matriz (Global)
-		Get_MeshVTK("Meshes/", "PremixedMesh"); // Importing the mesh to VTK file
+
+		strcpy(Prob, Problema.c_str());
+		sprintf(MeshName, "%s_Mesh", Prob);
+		Get_MeshVTK("Meshes/", MeshName); // Importing the mesh to VTK file
+
 		cout<<"TotalNodes: "<<TotalNodesP<<endl;
 		cout<<"Mesh created."<<endl;
 

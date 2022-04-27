@@ -48,6 +48,7 @@ P1.RunParallel(M1);
 
 Mesher MESH(M1, R1, P1);
 MESH.ExecuteMesher(M1);
+P1.Get_MesherInformation(M1, MESH.Ix, MESH.Fx, MESH.NX, MESH.NY, MESH.NZ, MESH.HP, MESH.Halo, MESH.NY_ColumnMP, MESH.NY_ColumnMU, MESH.NY_ColumnMV, MESH.NY_ColumnMW);
 
 MPI_Barrier(MPI_COMM_WORLD);
 /*
