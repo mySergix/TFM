@@ -50,8 +50,8 @@ int i, j, k;
 	
 	
     // Top
+	j = NY - 1;
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		j = NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1;
 		for(k = 1; k < NZ - 1; k++){
 			U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
@@ -314,6 +314,24 @@ int i, j, k;
 			}
 		}
     }
+
+	if (Int_Left){
+		i = NX_1;
+		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+			for(k = 0; k < NZ; k++){	
+				U.Diffusive[LU(NX_1,j,k,0)] = 0.0;
+			}
+		}
+	}
+
+	if (Int_Right){
+		i = NX_1 + NX_2;
+		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+			for(k = 0; k < NZ; k++){	
+				U.Diffusive[LU(NX_1 + NX_2,j,k,0)] = 0.0;
+			}
+		}
+	}
 
 }
 

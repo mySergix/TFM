@@ -312,6 +312,25 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
 			}
 		}
     }
+
+    if (Int_Left){
+		i = NX_1;
+		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+			for(k = 0; k < NZ; k++){	
+				U.Convective[LU(NX_1,j,k,0)] = 0.0;
+			}
+		}
+	}
+
+	if (Int_Right){
+		i = NX_1 + NX_2;
+		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+			for(k = 0; k < NZ; k++){	
+				U.Convective[LU(NX_1 + NX_2,j,k,0)] = 0.0;
+			}
+		}
+	}
+
 }
 
 // Function to calculate the convective term of Velocity V
