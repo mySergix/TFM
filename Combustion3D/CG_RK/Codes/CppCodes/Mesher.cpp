@@ -21,7 +21,8 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 
 	NY_1 = 30;
 	NY_2 = 10;
-	NY_3 = 90;
+	NY_3 = 40;
+	NY_4 = 50;
 
 	// Meshing options:
 	// 1 -> Regular
@@ -43,6 +44,7 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	OptionY_1 = 2;
 	OptionY_2 = 2;
 	OptionY_3 = 2;
+	OptionY_4 = 2;
 
 	OptionZ = 1;
 
@@ -53,12 +55,13 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	SFY_1 = 2.0;
 	SFY_2 = 2.0;
 	SFY_3 = 2.0;
+	SFY_4 = 2.0;
 
 	SFZ = 1.0;
 
 	NX = NX_1 + NX_2 + NX_3;
-	if (Problema == "Premixed"){ NY = NY_1 + NY_2 + NY_3; }
-	else if (Problema == "NonPremixed"){ NY = NY_2 + NY_3; }
+	if (Problema == "Premixed"){ NY = NY_1 + NY_2 + NY_3 + NY_4; }
+	else if (Problema == "NonPremixed"){ NY = NY_2 + NY_3 + NY_4; }
 	NZ = 10;
 
 	// Datos Geométricos del problema (m)
@@ -70,17 +73,20 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	Height_Burner =  0.010;
 	Width_Burner = 0.006;
 
+	FlameFront = 0.004;
+
 	X_1 = Width_Inlet;
 	X_2 = Width_Slit;
 	X_3 = Burner_Wall;
 
 	Y_1 = Symmetry_Burner - Height_Burner;
 	Y_2 = Height_Slit;
-	Y_3 = Height_Burner - Height_Slit;
+	Y_3 = FlameFront;
+	Y_4 = Height_Burner - Height_Slit - FlameFront;
 
 	Xdomain = X_1 + X_2 + X_3;
-	if (Problema == "Premixed"){ Ydomain = Y_1 + Y_2 + Y_3; }
-	else if (Problema == "NonPremixed"){ Ydomain = Y_2 + Y_3; }
+	if (Problema == "Premixed"){ Ydomain = Y_1 + Y_2 + Y_3 + Y_4; }
+	else if (Problema == "NonPremixed"){ Ydomain = Y_2 + Y_3 + Y_4; }
 	Zdomain = 0.002;
 
 	//Datos necesarios para computación paralela

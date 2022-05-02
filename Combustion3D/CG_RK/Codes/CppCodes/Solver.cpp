@@ -8,24 +8,54 @@
 #include "../HeaderCodes/ReadData.h"
 #include "../HeaderCodes/Parallel.h"
 #include "../HeaderCodes/Mesher.h"
-#include "../HeaderCodes/PostProcessing.h"
+//#include "../HeaderCodes/PostProcessing.h"
 #include "../HeaderCodes/Solver.h"
 
-Solver::Solver(Memory M1, ReadData R1, Parallel P1){
+Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 
     //Datos Numéricos del problema
-	Problema = R1.ProblemNumericalData[0];
+	Problema = MESH.Problema;
 
-	NX = R1.ProblemNumericalData[2];
-	NY = R1.ProblemNumericalData[3];
-	NZ = R1.ProblemNumericalData[4];
+	NX = MESH.NX;
+	NY = MESH.NY;
+	NZ = MESH.NZ;
+
+	NX_1 = MESH.NX_1;
+	NX_2 = MESH.NX_2;
+	NX_3 = MESH.NX_3;
+
+	NY_1 = MESH.NY_1;
+	NY_2 = MESH.NY_2;
+	NY_3 = MESH.NY_3;
+	NY_4 = MESH.NY_4;
+	
 	Halo = 2;
 	HP = 2;
 
-    //Datos Geométricos del problma
-	Xdominio = R1.GeometryData[0];
-	Ydominio = R1.GeometryData[1];
-	Zdominio = R1.GeometryData[2];
+	// Geometry Data
+    Width_Inlet = MESH.Width_Inlet; 
+	Width_Slit = MESH.Width_Slit;
+	Burner_Wall = MESH.Burner_Wall;
+	Symmetry_Burner = MESH.Symmetry_Burner;
+	Height_Slit = MESH.Height_Slit;
+	Height_Burner =  MESH.Height_Burner;
+	Width_Burner = MESH.Width_Burner;
+
+	FlameFront = MESH.FlameFront;
+
+	X_1 = Width_Inlet;
+	X_2 = Width_Slit;
+	X_3 = Burner_Wall;
+
+	Y_1 = Symmetry_Burner - Height_Burner;
+	Y_2 = Height_Slit;
+	Y_3 = FlameFront;
+	Y_4 = Height_Burner - Height_Slit - FlameFront;
+
+	Xdomain = X_1 + X_2 + X_3;
+	if (Problema == "Premixed"){ Ydomain = Y_1 + Y_2 + Y_3 + Y_4; }
+	else if (Problema == "NonPremixed"){ Ydomain = Y_2 + Y_3 + Y_4; }
+	Zdomain = 0.002;
 
 	//Datos necesarios para computación paralela
 	Rango = P1.Rango;
@@ -38,35 +68,25 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1){
         Fx[i] = P1.Fx[i];
     }
 
+	Int_Left = false;
+    Int_Right = false;
+
 	CourantFactor = 0.70;
 	// Courant Factor -> Driven ----- RK3 ->(0.80 max) ----- RK4 ->(1.10 max) 
 	//				  -> Differentially ----- RK3 ->( max) ----- RK4 ->(0.70 max) 
 
-    //Datos Físicos del Problema
-	Rho = R1.ProblemPhysicalData[0];
-	Uref = R1.ProblemPhysicalData[1];
-	Reynolds = R1.ProblemPhysicalData[2];
+    // Datos Físicos del Problema
+	Rho = ;
+	Uref = ;
+	Reynolds = ;
 	
-	Rayleigh = R1.ProblemPhysicalData[3];
-	Cp = R1.ProblemPhysicalData[4];
 	Prandtl = R1.ProblemPhysicalData[5];
 
-	U.Gravity = R1.ProblemPhysicalData[6];
-	V.Gravity = R1.ProblemPhysicalData[7];
-	W.Gravity = R1.ProblemPhysicalData[8];
+	U.Gravity = ;
+	V.Gravity = ;
+	W.Gravity = ;
 
-	Tleft = R1.ProblemPhysicalData[9];
-	Tright = R1.ProblemPhysicalData[10];
-
-	if (Problema == 1){
-		mu = (Uref * Xdominio) / Reynolds;
-	}
-	else if (Problema == 2){
-		To = abs(Tleft + Tright) / 2.0; 
-		Beta = 1.0 / To;	
-		mu = sqrt( (pow(Rho,2.0) * abs(V.Gravity) * pow(Xdominio,3) * Beta * abs(Tleft - Tright) * Prandtl) / Rayleigh);
-		K = (Cp * mu) / Prandtl;
-	}
+	mu = (Uref * Xdomain) / Reynolds;
 	
     ConvergenciaGS = R1.ProblemData[3];
 	ConvergenciaGlobal = R1.ProblemData[4];

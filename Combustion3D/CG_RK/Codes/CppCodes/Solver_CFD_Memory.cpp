@@ -55,6 +55,15 @@ void Solver::Allocate_VelocitiesBoundaryConditionsMemory(Memory M1, Velocity_Str
     StructName.Here = M1.AllocateDouble(NodesX, NodesY, 1, 1);
     StructName.There = M1.AllocateDouble(NodesX, NodesY, 1, 1);
 
+    // Internal walls Boundary Conditions
+    if (Int_Left == true){
+        StructName.I_Left = M1.AllocateDouble(1, NY - (NY_3 + NY_4), NodesZ, 1);
+    }
+
+    if (Int_Right == true){
+        StructName.I_Right = M1.AllocateDouble(1, NY_2, NodesZ, 1);
+    }
+
 }
 
 // Function to allocate all the memory needed for Solver class

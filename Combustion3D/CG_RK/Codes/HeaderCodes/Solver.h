@@ -25,20 +25,30 @@ class Solver{
         Solver(Memory, ReadData, Parallel);
 
         // Problem type
-		int Problema;
+		string Problema;
 
-        // Geometry Data
-		double Xdominio;
-		double Ydominio;
-		double Zdominio;
-
-        double Dh;
-        double gamma_geometry;
-
-        // Problem Data
 		int NX;
 		int NY; 
 		int NZ;
+
+		int NX_1, NX_2, NX_3;
+		int NY_1, NY_2, NY_3, NY_4;
+
+        // Geometry Data
+		double Width_Inlet;
+		double Width_Slit;
+		double Burner_Wall;
+		double Symmetry_Burner;
+		double Height_Slit;
+		double Height_Burner;
+		double Width_Burner;
+
+		double FlameFront;
+		
+		double X_1, X_2, X_3;
+		double Y_1, Y_2, Y_3, Y_4;
+
+		double Xdomain, Ydomain, Zdomain;
 
         string EsquemaLargo;
 		string EsquemaCorto;
@@ -52,6 +62,9 @@ class Solver{
 		int *Ix;
 		int *Fx;
 		
+        bool Int_Left;
+        bool Int_Right;
+        
         // Physical Data
 		double Rho;
 		double Uref;
@@ -61,22 +74,11 @@ class Solver{
 		double Cp;
 		double Prandtl;
 
-		double gx;
-		double gy;
-		double gz;
-
         double CourantFactor;
         double DiffusiveDeltaT;
 		double DeltaT;
         double nu;
         double mu;
-
-        double Tleft;
-        double Tright;
-        
-        double To;
-		double Beta;
-		double K;
     
         double ConvergenciaGS;
 		double MaxDiffGS;
@@ -116,6 +118,9 @@ class Solver{
 
             double *Left;
             double *Right;
+
+            double *I_Left; // Internal Left
+            double *I_Right; // Internal Right
 
             double *Boussinesq;
 
@@ -225,6 +230,7 @@ class Solver{
 
             // Utilities
             void Get_InitialConditions(Mesher);
+            void Get_ProcessesInternalCheck();
             void Get_DiffusiveTimeStep(Mesher);
             void Get_StepTime(Mesher);
             inline double ConvectiveScheme(double, double, double, double, double, double, double, double, double, double, string);  

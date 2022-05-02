@@ -43,6 +43,11 @@
 // Local Index There Side
 #define THERE(i,j,k) NY*((i) - Ix[Rango] + 1) + (j) 
 
+// Local Internal Left Side
+#define ILEFT(i,j,k) (NZ*(j)) + (k)
+
+// Local Internal Right Side
+#define IRIGHT(i,j,k) (NZ*(j)) + (k)
 
 // Global Index of Collocated and Staggered Matrix
 

@@ -28,14 +28,14 @@ class Mesher{
 		int NZ;
 
 		int NX_1, NX_2, NX_3;
-		int NY_1, NY_2, NY_3;
+		int NY_1, NY_2, NY_3, NY_4;
 
 		int OptionX_1, OptionX_2, OptionX_3;
-		int OptionY_1, OptionY_2, OptionY_3;
+		int OptionY_1, OptionY_2, OptionY_3, OptionY_4;
 		int OptionZ;
 
 		double SFX_1, SFX_2, SFX_3;
-		double SFY_1, SFY_2, SFY_3;
+		double SFY_1, SFY_2, SFY_3, SFY_4;
 		double SFZ;
 
 		int TotalNodesP;
@@ -49,8 +49,10 @@ class Mesher{
 		double Height_Burner;
 		double Width_Burner;
 
+		double FlameFront;
+		
 		double X_1, X_2, X_3;
-		double Y_1, Y_2, Y_3;
+		double Y_1, Y_2, Y_3, Y_4;
 
 		double Xdomain, Ydomain, Zdomain;
 		

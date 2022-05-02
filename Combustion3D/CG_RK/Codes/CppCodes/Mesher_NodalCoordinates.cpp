@@ -138,7 +138,7 @@ double nz;
 
 					}
 					// Section 3 (Y Direction)
-					else if (j > NY_1 + NY_2){
+					else if (j > NY_1 + NY_2 && j <= NY_1 + NY_2 + NY_3){
 						ny = NY_3;
 						// Regular
 						if (OptionY_3 == 1){
@@ -155,6 +155,26 @@ double nz;
 						// Centered - Hyperbolic Tangent
 						else if (OptionY_3 == 4){
 							MV[LV(i,j,k,1)] = Y_1 + Y_2 + (Y_3 / 2.0) * (tanh(SFY_3 * (((2.0 * (J - (NY_1 + NY_2))) - ny) / ny)) / tanh(SFY_3));
+						}
+					}
+					// Section 4 (Y Direction)
+					else if (j > NY_1 + NY_2 + NY_3){
+						ny = NY_4;
+						// Regular
+						if (OptionY_4 == 1){
+							MV[LV(i,j,k,1)] = Y_1 + Y_2 + Y_3 + (J - (NY_1 + NY_2 + NY_3)) * (Y_4 / ny);
+						}
+						// Top Sided - Hyperbolic Tangent
+						else if (OptionY_4 == 2){
+							MV[LV(i,j,k,1)] = Y_1 + Y_2 + Y_3 + (Y_4 / 2.0) * (tanh(SFY_4 * ((J - (NY_1 + NY_2 + NY_3)) / ny)) / tanh(SFY_4));
+						}
+						// Down Sided - Hyperbolic Tangent
+						else if (OptionY_4 == 3){
+							MV[LV(i,j,k,1)] = Y_1 + Y_2 + Y_3 + (Y_4 / 2.0) * (tanh(SFY_4 * ((ny - (J - (NY_1 + NY_2 + NY_3))) / ny)) / tanh(SFY_4));
+						}
+						// Centered - Hyperbolic Tangent
+						else if (OptionY_4 == 4){
+							MV[LV(i,j,k,1)] = Y_1 + Y_2 + Y_3 + (Y_4 / 2.0) * (tanh(SFY_4 * (((2.0 * (J - (NY_1 + NY_2 + NY_3))) - ny) / ny)) / tanh(SFY_4));
 						}
 					}
 
@@ -185,7 +205,7 @@ double nz;
 
 					}
 					// Section 3 (Y Direction)
-					else if (j > NY_2){
+					else if (j > NY_2 && j <= NY_2 + NY_3){
 						ny = NY_3;
 						// Regular
 						if (OptionY_3 == 1){
@@ -202,6 +222,26 @@ double nz;
 						// Centered - Hyperbolic Tangent
 						else if (OptionY_3 == 4){
 							MV[LV(i,j,k,1)] = Y_2 + (Y_3 / 2.0) * (tanh(SFY_3 * (((2.0 * (J - NY_2)) - ny) / ny)) / tanh(SFY_3));
+						}
+					}
+					// Section 4 (Y Direction)
+					else if (j > NY_2 + NY_3){
+						ny = NY_4;
+						// Regular
+						if (OptionY_4 == 1){
+							MV[LV(i,j,k,1)] = Y_2 + Y_3 + (J - (NY_2 + NY_3)) * (Y_4 / ny);
+						}
+						// Top Sided - Hyperbolic Tangent
+						else if (OptionY_4 == 2){
+							MV[LV(i,j,k,1)] = Y_2 + Y_3 + (Y_4 / 2.0) * (tanh(SFY_4 * ((J - (NY_2 + NY_3)) / ny)) / tanh(SFY_4));
+						}
+						// Down Sided - Hyperbolic Tangent
+						else if (OptionY_4 == 3){
+							MV[LV(i,j,k,1)] = Y_2 + Y_3 + (Y_4 / 2.0) * (tanh(SFY_4 * ((ny - (J - (NY_2 + NY_3))) / ny)) / tanh(SFY_4));
+						}
+						// Centered - Hyperbolic Tangent
+						else if (OptionY_4 == 4){
+							MV[LV(i,j,k,1)] = Y_2 + Y_3 + (Y_4 / 2.0) * (tanh(SFY_4 * (((2.0 * (J - (NY_2 + NY_3))) - ny) / ny)) / tanh(SFY_4));
 						}
 					}
 
@@ -429,7 +469,7 @@ double nz = NZ;
 
 					}
 					// Section 3 (Y Direction)
-					else if (j > NY_1 + NY_2){
+					else if (j > NY_1 + NY_2 && j <= NY_1 + NY_2 + NY_3){
 						ny = NY_3;
 						// Regular
 						if (OptionY_3 == 1){
@@ -446,6 +486,26 @@ double nz = NZ;
 						// Centered - Hyperbolic Tangent
 						else if (OptionY_3 == 4){
 							GlobalMeshV[GV(i,j,k,1)] = Y_1 + Y_2 + (Y_3 / 2.0) * (tanh(SFY_3 * (((2.0 * (J - (NY_1 + NY_2))) - ny) / ny)) / tanh(SFY_3));
+						}
+					}
+					// Section 4 (Y Direction)
+					else if (j > NY_1 + NY_2 + NY_3){
+						ny = NY_4;
+						// Regular
+						if (OptionY_4 == 1){
+							GlobalMeshV[GV(i,j,k,1)] = Y_1 + Y_2 + Y_3 + (J - (NY_1 + NY_2 + NY_3)) * (Y_4 / ny);
+						}
+						// Right Sided - Hyperbolic Tangent
+						else if (OptionY_4 == 2){
+							GlobalMeshV[GV(i,j,k,1)] = Y_1 + Y_2 + Y_3 + Y_4 * (tanh(SFY_4 * ((J - (NY_1 + NY_2 + NY_3)) / ny)) / tanh(SFY_4));
+						}
+						// Left Sided - Hyperbolic Tangent
+						else if (OptionY_4 == 3){
+							GlobalMeshV[GV(i,j,k,1)] = Y_1 + Y_2 + Y_3 + Y_4 * (tanh(SFY_4 * ((ny - (J - (NY_1 + NY_2 + NY_3))) / ny)) / tanh(SFY_4));
+						}
+						// Centered - Hyperbolic Tangent
+						else if (OptionY_4 == 4){
+							GlobalMeshV[GV(i,j,k,1)] = Y_1 + Y_2 + Y_3 + (Y_4 / 2.0) * (tanh(SFY_4 * (((2.0 * (J - (NY_1 + NY_2 + NY_3))) - ny) / ny)) / tanh(SFY_4));
 						}
 					}
 
@@ -476,7 +536,7 @@ double nz = NZ;
 
 					}
 					// Section 3 (Y Direction)
-					else if (j > NY_2){
+					else if (j > NY_2 && j <= NY_2 + NY_3){
 						ny = NY_3;
 						// Regular
 						if (OptionY_3 == 1){
@@ -493,6 +553,26 @@ double nz = NZ;
 						// Centered - Hyperbolic Tangent
 						else if (OptionY_3 == 4){
 							GlobalMeshV[GV(i,j,k,1)] = Y_2 + (Y_3 / 2.0) * (tanh(SFY_3 * (((2.0 * (J - NY_2)) - ny) / ny)) / tanh(SFY_3));
+						}
+					}
+					// Section 4 (Y Direction)
+					else if (j > NY_2 + NY_3){
+						ny = NY_4;
+						// Regular
+						if (OptionY_4 == 1){
+							GlobalMeshV[GV(i,j,k,1)] = Y_2 + Y_3 + (J - (NY_2 + NY_3)) * (Y_4 / ny);
+						}
+						// Right Sided - Hyperbolic Tangent
+						else if (OptionY_4 == 2){
+							GlobalMeshV[GV(i,j,k,1)] = Y_2 + Y_3 + Y_4 * (tanh(SFY_4 * ((J - (NY_2 + NY_3)) / ny)) / tanh(SFY_4));
+						}
+						// Left Sided - Hyperbolic Tangent
+						else if (OptionY_4 == 3){
+							GlobalMeshV[GV(i,j,k,1)] = Y_2 + Y_3 + Y_4 * (tanh(SFY_4 * ((ny - (J - (NY_2 + NY_3))) / ny)) / tanh(SFY_4));
+						}
+						// Centered - Hyperbolic Tangent
+						else if (OptionY_4 == 4){
+							GlobalMeshV[GV(i,j,k,1)] = Y_2 + Y_3 + (Y_4 / 2.0) * (tanh(SFY_4 * (((2.0 * (J - (NY_2 + NY_3))) - ny) / ny)) / tanh(SFY_4));
 						}
 					}
 
