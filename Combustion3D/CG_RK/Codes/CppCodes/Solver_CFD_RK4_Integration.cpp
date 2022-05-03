@@ -44,7 +44,7 @@ int i, j, k;
 
     // Velocity U
 	for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = 0; j < NY; j++){
+        for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){
 				Contribution_Matrix_U[LU(i,j,k,0)] = DeltaT * (U.Diffusive[LU(i,j,k,0)] - U.Convective[LU(i,j,k,0)]);
 			}
@@ -53,7 +53,7 @@ int i, j, k;
 
 	// Velocity V
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = 1; j < NY; j++){
+        for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    for(k = 0; k < NZ; k++){
 				Contribution_Matrix_V[LV(i,j,k,0)] = DeltaT * (V.Diffusive[LV(i,j,k,0)] - V.Convective[LV(i,j,k,0)] + V.Boussinesq[LV(i,j,k,0)]);
 			}
@@ -62,7 +62,7 @@ int i, j, k;
 
     // Velocity W
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = 0; j < NY; j++){
+        for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 1; k < NZ; k++){
 				Contribution_Matrix_W[LW(i,j,k,0)] = DeltaT * (W.Diffusive[LW(i,j,k,0)] - W.Convective[LW(i,j,k,0)]);
 			}
@@ -103,7 +103,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-            for(j = 0; j < NY; j++){
+            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
 				    U.New_Velocity[LU(i,j,k,0)] = U.Pres[LU(i,j,k,0)] + RK.a21 * U.K1[LU(i,j,k,0)];
 			    }
@@ -112,7 +112,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = 1; j < NY; j++){
+			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){  
 				    V.New_Velocity[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.a21 * V.K1[LV(i,j,k,0)];
 			    }
@@ -121,7 +121,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor W
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-            for(j = 0; j < NY; j++){
+			for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 1; k < NZ; k++){
 				    W.New_Velocity[LW(i,j,k,0)] = W.Pres[LW(i,j,k,0)] + RK.a21 * W.K1[LW(i,j,k,0)];
 			    }
@@ -164,7 +164,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-            for(j = 0; j < NY; j++){
+            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
 				    U.New_Velocity[LU(i,j,k,0)] = U.Pres[LU(i,j,k,0)] + RK.a32 * U.K2[LU(i,j,k,0)];
 			    }
@@ -173,7 +173,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = 1; j < NY; j++){
+			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){ 
 				    V.New_Velocity[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.a32 * V.K2[LV(i,j,k,0)];
 			    }
@@ -182,7 +182,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor W
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-            for(j = 0; j < NY; j++){
+            for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 1; k < NZ; k++){
 				    W.New_Velocity[LW(i,j,k,0)] = W.Pres[LW(i,j,k,0)] + RK.a32 * W.K2[LW(i,j,k,0)];
 			    }
@@ -225,7 +225,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-            for(j = 0; j < NY; j++){
+            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
 				    U.New_Velocity[LU(i,j,k,0)] = U.Pres[LU(i,j,k,0)] + RK.a43 * U.K3[LU(i,j,k,0)];
 			    }
@@ -234,7 +234,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = 1; j < NY; j++){
+			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){ 
 				    V.New_Velocity[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.a43 * V.K3[LV(i,j,k,0)];
 			    }
@@ -243,7 +243,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor W
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-            for(j = 0; j < NY; j++){
+            for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 1; k < NZ; k++){
 				    W.New_Velocity[LW(i,j,k,0)] = W.Pres[LW(i,j,k,0)] + RK.a43 * W.K3[LW(i,j,k,0)];
 			    }
@@ -286,7 +286,7 @@ int i, j, k;
 
         // Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-            for(j = 0; j < NY; j++){
+            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
 				    U.Predictor[LU(i,j,k,0)] = U.Pres[LU(i,j,k,0)] + RK.b1 * U.K1[LU(i,j,k,0)] + RK.b2 * U.K2[LU(i,j,k,0)] + RK.b3 * U.K3[LU(i,j,k,0)] + RK.b4 * U.K4[LU(i,j,k,0)];
 			    }
@@ -295,7 +295,7 @@ int i, j, k;
 
         // Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = 1; j < NY; j++){
+			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){ 
 				    V.Predictor[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.b1 * V.K1[LV(i,j,k,0)] + RK.b2 * V.K2[LV(i,j,k,0)] + RK.b3 * V.K3[LV(i,j,k,0)] + RK.b4 * V.K4[LV(i,j,k,0)];
 			    }
@@ -304,7 +304,7 @@ int i, j, k;
 
         // Velocity Predictor W
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-            for(j = 0; j < NY; j++){   
+            for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 1; k < NZ; k++){
 				    W.Predictor[LW(i,j,k,0)] = W.Pres[LW(i,j,k,0)] + RK.b1 * W.K1[LW(i,j,k,0)] + RK.b2 * W.K2[LW(i,j,k,0)] + RK.b3 * W.K3[LW(i,j,k,0)] + RK.b4 * W.K4[LW(i,j,k,0)];
 			    }

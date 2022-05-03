@@ -12,7 +12,7 @@ using namespace std;
 
 PostProcessing::PostProcessing(Memory M1, ReadData R1, Mesher MESH, Parallel P1){
 	
-    Problema = R1.ProblemNumericalData[0];
+    Problema = MESH.Problema;
 
     NX = MESH.NX;
     NY = MESH.NY;
@@ -21,9 +21,9 @@ PostProcessing::PostProcessing(Memory M1, ReadData R1, Mesher MESH, Parallel P1)
 	Halo = 2;
 	HP = 2;
 
-	Rayleigh = R1.ProblemPhysicalData[3];
-	Tleft = R1.ProblemPhysicalData[9];
-	Tright = R1.ProblemPhysicalData[10];
+	Rayleigh = ;
+	Tleft = ;
+	Tright = ;
 	
 	//Datos necesarios para computación paralela
 	Rango = P1.Rango;
@@ -63,27 +63,27 @@ int i, j, k;
     file<<"ASCII"<<endl;
     file<<endl;
     file<<"DATASET STRUCTURED_GRID"<<endl;
-    file<<"DIMENSIONS"<<"   "<<NX<<"   "<<NY<<"   "<<NZ<<endl;
+    file<<"DIMENSIONS"<<"   "<<(NX + 1)<<"   "<<(NY + 1)<<"   "<<(NZ + 1)<<endl;
     file<<endl;
-    file<<"POINTS"<<"   "<<NX*NY*NZ<<"   "<<"double"<<endl;
+    file<<"POINTS"<<"   "<<(NX + 1)*(NY + 1)*(NZ + 1)<<"   "<<"double"<<endl;
 	
-	for(k = 0; k < NZ; k++){
-		for(j = 0; j < NY; j++){
-			for(i = 0; i < NX; i++){
-				file<<MESH.GlobalMeshP[GP(i,j,k,0)]<<"   "<<MESH.GlobalMeshP[GP(i,j,k,1)]<<"   "<<MESH.GlobalMeshP[GP(i,j,k,2)]<<endl;
+	for(k = 0; k < NZ + 1; k++){
+		for(j = 0; j < NY + 1; j++){
+			for(i = 0; i < NX + 1; i++){
+				file<<GlobalMeshU[GU(i,j,k,0)]<<"   "<<GlobalMeshV[GV(i,j,k,1)]<<"   "<<GlobalMeshW[GW(i,j,k,2)]<<endl;
 			}
 		}
 	}
         
     file<<endl;
-	file<<"POINT_DATA"<<"   "<<NX*NY*NZ<<endl;
+	file<<"POINT_DATA"<<"   "<<(NX + 1)*(NY + 1)*(NZ + 1)<<endl;
     file<<"SCALARS "<<Variable<<" double"<<endl;
     file<<"LOOKUP_TABLE"<<"   "<<Variable<<endl;
     file<<endl;
-	for(k = 0; k < NZ; k++){
-		for(j = 0; j < NY; j++){
-			for(i = 0; i < NX; i++){
-				file<<PropertyMatrix[GP(i,j,k,0)]<<" ";
+	for(k = 0; k < NZ + 1; k++){
+		for(j = 0; j < NY + 1; j++){
+			for(i = 0; i < NX + 1; i++){
+				file<<(1.0 / 6.0) * (PropertyMatrix[GP(i-1,j,k,0)] + PropertyMatrix[GP(i,j-1,k,0)] + PropertyMatrix[GP(i,j,k-1,0)] + PropertyMatrix[GP(i,j,k,0)] + PropertyMatrix[GP(i,j,k,0)] + PropertyMatrix[GP(i,j,k,0)])<<" ";
 			}
 		}
 	}
@@ -110,27 +110,27 @@ int i, j, k;
     file<<"ASCII"<<endl;
     file<<endl;
     file<<"DATASET STRUCTURED_GRID"<<endl;
-    file<<"DIMENSIONS"<<"   "<<NX<<"   "<<NY<<"   "<<NZ<<endl;
+    file<<"DIMENSIONS"<<"   "<<(NX + 1)<<"   "<<(NY + 1)<<"   "<<(NZ + 1)<<endl;
     file<<endl;
-    file<<"POINTS"<<"   "<<NX*NY*NZ<<"   "<<"double"<<endl;
+    file<<"POINTS"<<"   "<<(NX + 1)*(NY + 1)*(NZ + 1)<<"   "<<"double"<<endl;
 	
-	for(k = 0; k < NZ; k++){
-		for(j = 0; j < NY; j++){
-			for(i = 0; i < NX; i++){
-				file<<MESH.GlobalMeshP[GP(i,j,k,0)]<<"   "<<MESH.GlobalMeshP[GP(i,j,k,1)]<<"   "<<MESH.GlobalMeshP[GP(i,j,k,2)]<<endl;
+	for(k = 0; k < NZ + 1; k++){
+		for(j = 0; j < NY + 1; j++){
+			for(i = 0; i < NX + 1; i++){
+				file<<GlobalMeshU[GU(i,j,k,0)]<<"   "<<GlobalMeshV[GV(i,j,k,1)]<<"   "<<GlobalMeshW[GW(i,j,k,2)]<<endl;
 			}
 		}
 	}
         
     file<<endl;
-    file<<"POINT_DATA"<<"   "<<NX*NY*NZ<<endl;
+    file<<"POINT_DATA"<<"   "<<(NX + 1)*(NY + 1)*(NZ + 1)<<endl;
     file<<"VECTORS "<<Variable<<" double"<<endl;
     file<<endl;
 
-	for(k = 0; k < NZ; k++){
-		for(j = 0; j < NY; j++){	
-			for(i = 0; i < NX; i++){
-				file<<0.50*(Field1[GU(i,j,k,0)] + Field1[GU(i+1,j,k,0)])<<" "<<0.50*(Field2[GV(i,j,k,0)] + Field2[GV(i,j+1,k,0)])<<" "<<0.50*(Field3[GW(i,j,k,0)] + Field3[GW(i,j,k+1,0)])<<endl;
+	for(k = 0; k < NZ + 1; k++){
+		for(j = 0; j < NY + 1; j++){
+			for(i = 0; i < NX + 1; i++){
+				file<<Field1[GU(i,j,k,0)]<<" "<<Field2[GV(i,j,k,0)]<<" "<<Field3[GW(i,j,k,0)]<<endl;
 			}
 		}
 	}

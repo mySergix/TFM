@@ -396,18 +396,29 @@ int i, j, k;
 	}
 
     if (Rango == 0){
+		i = 0;
         for(j = MESH.NY_ColumnMU[0 - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[0 - Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){		
-				U_MatrixNew[LU(0,j,k,0)] = U.Left[LEFT(0,j,k)];
+				U_MatrixNew[LU(0,j,k,0)] = U_MatrixNew[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
 			}
 		}
     }
     else if (Rango == Procesos - 1){
-        for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
-		    for(k = 0; k < NZ; k++){		
-				U_MatrixNew[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
+		i = NX;
+		if (Problema == "Premixed"){
+			for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
+		    	for(k = 0; k < NZ; k++){		
+					U_MatrixNew[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
+				}
 			}
 		}
+		else if (Problema == "NonPremixed"){
+			for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
+		    	for(k = 0; k < NZ; k++){		
+					U_MatrixNew[LU(NX,j,k,0)] = U_MatrixNew[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
+				}
+			}
+		} 
     }
 
     // Velocity V
@@ -424,6 +435,70 @@ int i, j, k;
         for(j = MESH.NY_ColumnMW[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i - Halo - Ix[Rango]][1]; j++){
 		    for(k = 1; k < NZ; k++){		
 				W_MatrixNew[LW(i,j,k,0)] = W_MatrixNew[LW(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]);
+			}
+		}
+	}
+
+}
+
+// Function to get the external halos Pressure Value
+void Solver::Get_PressureHalos(){
+int i, j, k;
+
+	// Left
+	if (Rango == 0){
+		for (i = - HP; i < Ix[Rango]; i++){
+			for (j = 0; j < NY; j++){
+				for (k = 0; k < NZ; k++){
+					P.Pres[LP(i,j,k,0)] = P.Pres[LP(0,j,k,0)];
+				}
+			}
+		}
+	}
+
+	// Right
+	if (Rango == Procesos - 1){
+		for (i = Fx[Rango]; i < Fx[Rango] + HP; i++){
+			for (j = 0; j < NY; j++){
+				for (k = 0; k < NZ; k++){
+					P.Pres[LP(i,j,k,0)] = P.Pres[LP(NX-1,j,k,0)];
+				}
+			}
+		}
+	}
+
+	// Bottom
+	for (i = Ix[Rango]; i < Fx[Rango]; i++){
+		for (j = - HP; j < 0; j++){
+			for (k = 0; k < NZ; k++){
+				P.Pres[LP(i,j,k,0)] = P.Pres[LP(i,0,k,0)];
+			}
+		}
+	}
+
+	// Top
+	for (i = Ix[Rango]; i < Fx[Rango]; i++){
+		for (j = NY; j < NY + HP; j++){
+			for (k = 0; k < NZ; k++){
+				P.Pres[LP(i,j,k,0)] = P.Pres[LP(i,NY-1,k,0)];
+			}
+		}
+	}
+
+	// Here
+	for (i = Ix[Rango]; i < Fx[Rango]; i++){
+		for (j = 0; j < NY; j++){
+			for (k = - HP; k < 0; k++){
+				P.Pres[LP(i,j,k,0)] = P.Pres[LP(i,j,0,0)];
+			}
+		}
+	}
+
+	// There
+	for (i = Ix[Rango]; i < Fx[Rango]; i++){
+		for (j = 0; j < NY; j++){
+			for (k = NZ; k < NZ + HP; k++){
+				P.Pres[LP(i,j,k,0)] = P.Pres[LP(i,j,NZ-1,0)];
 			}
 		}
 	}
@@ -457,19 +532,30 @@ int i, j, k;
 	}
 
     if (Rango == 0){
+		i = 0;
         for(j = MESH.NY_ColumnMU[0 - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[0 - Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){		
-				U.Fut[LU(0,j,k,0)] = U.Left[LEFT(0,j,k)];
+				U.Fut[LU(0,j,k,0)] = U.Predictor[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
 			}
 		}
     }
     
 	if (Rango == Procesos - 1){
-        for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
-		    for(k = 0; k < NZ; k++){		
-				U.Fut[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
+		i = NX;
+		if (Problema == "Premixed"){
+			for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
+		    	for(k = 0; k < NZ; k++){		
+					U.Fut[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
+				}
 			}
 		}
+		else if (Problema == "NonPremixed"){
+			for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
+		    	for(k = 0; k < NZ; k++){		
+					U.Fut[LU(NX,j,k,0)] = U.Predictor[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
+				}
+			}
+		} 
     }
 
     // Velocity V

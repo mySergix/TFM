@@ -16,7 +16,7 @@ class PostProcessing{
 		PostProcessing(Memory, ReadData, Mesher, Parallel);
 		
 		//Datos de la clase
-		int Problema;
+		string Problema;
 
     	int NX;
     	int NY;

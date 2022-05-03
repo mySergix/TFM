@@ -68,8 +68,11 @@ class Solver{
         // Physical Data
 		double Rho;
 		double Uref;
+        double Uref_NonPremixed;
 		double Reynolds;
-
+        double Twalls;
+        double T_FlowInlet;
+        
 		double Rayleigh;
 		double Cp;
 		double Prandtl;
@@ -153,6 +156,9 @@ class Solver{
 
             double *Left;
             double *Right;
+
+            double *I_Left; // Internal Left
+            double *I_Right; // Internal Right
         }; 
 
         struct Poisson_Coeffs
@@ -237,6 +243,7 @@ class Solver{
             void Get_PredictorsDivergence(Mesher);
             void Get_CorrectedVelocities(Mesher, Parallel, double*, double*, double*);
             void Get_Velocities(Mesher, Parallel);
+            void Get_PressureHalos();
             void Get_Stop();
             void Get_Update();
 

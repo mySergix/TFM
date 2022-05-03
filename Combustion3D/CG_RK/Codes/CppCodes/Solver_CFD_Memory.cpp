@@ -114,6 +114,14 @@ void Solver::Allocate_EnergyMemory(Memory M1){
     T.Here = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2, NY, 1, 1);
     T.There = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2, NY, 1, 1);
 
+    // Internal walls Boundary Conditions
+    if (Int_Left == true){
+        T.I_Left = M1.AllocateDouble(1, NY - (NY_3 + NY_4), NZ, 1);
+    }
+
+    if (Int_Right == true){
+        T.I_Right = M1.AllocateDouble(1, NY_2, NZ, 1);
+    }
 }
 
 // Function to allocate memory for the global matrix in core 0

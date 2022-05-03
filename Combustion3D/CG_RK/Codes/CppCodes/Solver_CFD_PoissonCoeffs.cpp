@@ -7,15 +7,54 @@ void Solver::Get_PoissonCoefficients(Mesher MESH){
 int i, j, k;
 
     // West and East Coefficients (aw, ae)
-    for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = 0; j < NY; j++){
-		    for(k = 0; k < NZ; k++){	
-                A.aw[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,0)]/MESH.DeltasMU[LU(i,j,k,0)];
-                A.ae[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,0)]/MESH.DeltasMU[LU(i+1,j,k,0)];
+
+    if (Problema == "Premixed"){
+        for(i = Ix[Rango]; i < Fx[Rango]; i++){
+            for(j = 0; j < NY; j++){
+		        for(k = 0; k < NZ; k++){	
+
+                    // Core
+                    A.aw[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,0)]/MESH.DeltasMU[LU(i,j,k,0)];
+                    A.ae[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,0)]/MESH.DeltasMU[LU(i+1,j,k,0)];
+
+                    // Internal Left
+                    if (i == NX_1 - 1 && j < NY_1 + NY_2){
+                        A.ae[LA(i,j,k,0)] = 0.0;
+                    }
+                
+                    // Internal Right
+                    if (i == NX_1 + NX_2 && j >= NY_1 && j < NY_1 + NY_2){
+                        A.aw[LA(i,j,k,0)] = 0.0;
+                    }
+
+                }
             }
         }
     }
+    else if (Problema == "NonPremixed"){
+        for(i = Ix[Rango]; i < Fx[Rango]; i++){
+            for(j = 0; j < NY; j++){
+		        for(k = 0; k < NZ; k++){	
 
+                    // Core
+                    A.aw[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,0)]/MESH.DeltasMU[LU(i,j,k,0)];
+                    A.ae[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,0)]/MESH.DeltasMU[LU(i+1,j,k,0)];
+
+                    // Internal Left
+                    if (i == NX_1 - 1 && j < NY_2){
+                        A.ae[LA(i,j,k,0)] = 0.0;
+                    }
+                
+                    // Internal Right
+                    if (i == NX_1 + NX_2 && j < NY_2){
+                        A.aw[LA(i,j,k,0)] = 0.0;
+                    }
+
+                }
+            }
+        }
+    }
+    
     if (Rango == 0){
         for(k = 0; k < NZ; k++){
 			for(j = 0; j < NY; j++){
@@ -44,8 +83,15 @@ int i, j, k;
             A.an[LA(i,0,k,0)] = MESH.SupMP[LP(i,0,k,1)]/MESH.DeltasMV[LV(i,1,k,1)];
 
 			for(j = 1; j < NY - 1; j++){
+
+                // Core
                 A.as[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,1)]/MESH.DeltasMV[LV(i,j,k,1)];
                 A.an[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,1)]/MESH.DeltasMV[LV(i,j+1,k,1)];
+
+                if (j == NY_ColumnMP[i + Halo - Ix[Rango]][0]){
+                    A.as[LA(i,j,k,0)] = 0.0;
+                }
+                
             }
         }
     }
