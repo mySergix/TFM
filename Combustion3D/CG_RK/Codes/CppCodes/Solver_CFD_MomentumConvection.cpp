@@ -10,7 +10,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
 
     // Center
     for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ - 1; k++){
                 
                 // Core
@@ -77,7 +77,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
 
     // Bottom 
     for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        j = NY_ColumnMU[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0];
         for (k = 1; k < NZ - 1; k++){
                 
             uW_pred = Interpolacion(MESH.MP[LP(i-1,j,k,0)], MESH.MU[LU(i-1,j,k,0)], U_Matrix[LU(i-1,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)]); 
@@ -110,7 +110,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
     // Here
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
                 
             uW_pred = Interpolacion(MESH.MP[LP(i-1,j,k,0)], MESH.MU[LU(i-1,j,k,0)], U_Matrix[LU(i-1,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)]); 
             uE_pred = Interpolacion(MESH.MP[LP(i,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MU[LU(i+1,j,k,0)], U_Matrix[LU(i+1,j,k,0)]);
@@ -142,7 +142,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
     // There
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
                 
             uW_pred = Interpolacion(MESH.MP[LP(i-1,j,k,0)], MESH.MU[LU(i-1,j,k,0)], U_Matrix[LU(i-1,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)]); 
             uE_pred = Interpolacion(MESH.MP[LP(i,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MU[LU(i+1,j,k,0)], U_Matrix[LU(i+1,j,k,0)]);
@@ -174,7 +174,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
     // Bottom Here Corner
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        j = NY_ColumnMU[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0];
 
         uW_pred = Interpolacion(MESH.MP[LP(i-1,j,k,0)], MESH.MU[LU(i-1,j,k,0)], U_Matrix[LU(i-1,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)]); 
         uE_pred = Interpolacion(MESH.MP[LP(i,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MU[LU(i+1,j,k,0)], U_Matrix[LU(i+1,j,k,0)]);
@@ -205,7 +205,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
     // Bottom There Corner
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        j = NY_ColumnMU[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0];
 
         uW_pred = Interpolacion(MESH.MP[LP(i-1,j,k,0)], MESH.MU[LU(i-1,j,k,0)], U_Matrix[LU(i-1,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)]); 
         uE_pred = Interpolacion(MESH.MP[LP(i,j,k,0)], MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MU[LU(i+1,j,k,0)], U_Matrix[LU(i+1,j,k,0)]);
@@ -306,7 +306,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
     }
     else if (Rango == Procesos - 1){
         i = NX;
-        for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){	
 				U.Convective[LU(NX,j,k,0)] = 0.0;
 			}
@@ -315,7 +315,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
 
     if (Int_Left){
 		i = NX_1;
-		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
 				U.Convective[LU(NX_1,j,k,0)] = 0.0;
 			}
@@ -324,7 +324,7 @@ double uW, uE, vS, vN, uS, uN, wH, wT, uH, uT;
 
 	if (Int_Right){
 		i = NX_1 + NX_2;
-		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
 				U.Convective[LU(NX_1 + NX_2,j,k,0)] = 0.0;
 			}
@@ -341,7 +341,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
 
     // Center
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ - 1; k++){
 
                 // Core
@@ -387,7 +387,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
     // Here
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 
             // Core
             uW = Interpolacion(MESH.MV[LV(i,j,k,1)], MESH.MU[LU(i,j-1,k,1)], U_Matrix[LU(i,j-1,k,0)], MESH.MU[LU(i,j,k,1)], U_Matrix[LU(i,j,k,0)]);
@@ -431,7 +431,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
     // There
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 
             // Core
             uW = Interpolacion(MESH.MV[LV(i,j,k,1)], MESH.MU[LU(i,j-1,k,1)], U_Matrix[LU(i,j-1,k,0)], MESH.MU[LU(i,j,k,1)], U_Matrix[LU(i,j,k,0)]);
@@ -571,7 +571,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
         i = NX - 1;
 
         // Center
-        for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ - 1; k++){
 
                 uW = Interpolacion(MESH.MV[LV(i,j,k,1)], MESH.MU[LU(i,j-1,k,1)], U_Matrix[LU(i,j-1,k,0)], MESH.MU[LU(i,j,k,1)], U_Matrix[LU(i,j,k,0)]);
@@ -603,7 +603,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
 
         // Here
         k = 0;
-        for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 
             uW = Interpolacion(MESH.MV[LV(i,j,k,1)], MESH.MU[LU(i,j-1,k,1)], U_Matrix[LU(i,j-1,k,0)], MESH.MU[LU(i,j,k,1)], U_Matrix[LU(i,j,k,0)]);
 			uE = U.Right[RIGHT(i,j,k)];
@@ -633,7 +633,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
 
         // There
         k = NZ - 1;
-        for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 
             uW = Interpolacion(MESH.MV[LV(i,j,k,1)], MESH.MU[LU(i,j-1,k,1)], U_Matrix[LU(i,j-1,k,0)], MESH.MU[LU(i,j,k,1)], U_Matrix[LU(i,j,k,0)]);
 			uE = U.Right[RIGHT(i,j,k)];
@@ -673,7 +673,7 @@ double wH, wT, uW, uE, wW, wE, vS, vN, wS, wN;
 
     // Center
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ; k++){
                 
                 // Core
@@ -718,7 +718,7 @@ double wH, wT, uW, uE, wW, wE, vS, vN, wS, wN;
 
     // Bottom
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        j = NY_ColumnMW[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0];
         for (k = 1; k < NZ; k++){
                 
             // Core
@@ -893,7 +893,7 @@ double wH, wT, uW, uE, wW, wE, vS, vN, wS, wN;
         i = NX - 1;
 
         // Center
-        for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ; k++){
                 
 				wH_pred = Interpolacion(MESH.MP[LP(i,j,k-1,2)], MESH.MW[LW(i,j,k-1,2)], W_Matrix[LW(i,j,k-1,0)], MESH.MW[LW(i,j,k,2)], W_Matrix[LW(i,j,k,0)]);
@@ -924,7 +924,7 @@ double wH, wT, uW, uE, wW, wE, vS, vN, wS, wN;
         }
 
         // Bottom
-        j = NY_ColumnMW[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0];
         for (k = 1; k < NZ; k++){
             
 			wH_pred = Interpolacion(MESH.MP[LP(i,j,k-1,2)], MESH.MW[LW(i,j,k-1,2)], W_Matrix[LW(i,j,k-1,0)], MESH.MW[LW(i,j,k,2)], W_Matrix[LW(i,j,k,0)]);
@@ -954,7 +954,7 @@ double wH, wT, uW, uE, wW, wE, vS, vN, wS, wN;
         }
 
         // Top
-        j = NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1;
+        j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1;
         for (k = 1; k < NZ; k++){
                 
 			wH_pred = Interpolacion(MESH.MP[LP(i,j,k-1,2)], MESH.MW[LW(i,j,k-1,2)], W_Matrix[LW(i,j,k-1,0)], MESH.MW[LW(i,j,k,2)], W_Matrix[LW(i,j,k,0)]);

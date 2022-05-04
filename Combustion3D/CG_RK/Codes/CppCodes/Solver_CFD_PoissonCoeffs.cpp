@@ -88,7 +88,7 @@ int i, j, k;
                 A.as[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,1)]/MESH.DeltasMV[LV(i,j,k,1)];
                 A.an[LA(i,j,k,0)] = MESH.SupMP[LP(i,j,k,1)]/MESH.DeltasMV[LV(i,j+1,k,1)];
 
-                if (j == NY_ColumnMP[i + Halo - Ix[Rango]][0]){
+                if (j == MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]){
                     A.as[LA(i,j,k,0)] = 0.0;
                 }
                 

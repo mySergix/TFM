@@ -8,7 +8,7 @@ int i, j, k;
 
     // Centro
 	for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    for(k = 1; k < NZ - 1; k++){	
 
 				// Core
@@ -24,7 +24,7 @@ int i, j, k;
 				// Internal Left
 				if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 					U.Diffusive[LU(i,j,k,0)] =  (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
-                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
+                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
@@ -36,7 +36,7 @@ int i, j, k;
 				else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 					U.Diffusive[LU(i,j,k,0)] =  (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
-                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
+                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
 										 + MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -66,7 +66,7 @@ int i, j, k;
 	
 	// Bottom
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		j = NY_ColumnMU[i + Halo - Ix[Rango]][0];
+		j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0];
 		for(k = 1; k < NZ - 1; k++){
 
 			// Core
@@ -82,7 +82,7 @@ int i, j, k;
 			// Internal Left
 			if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 				U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
-                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
+                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
@@ -94,7 +94,7 @@ int i, j, k;
 			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 				U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
-                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
+                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
 										 + MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -108,7 +108,7 @@ int i, j, k;
 	// Here
     k = 0;
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 
 			// Core
 			U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
@@ -123,7 +123,7 @@ int i, j, k;
 			// Internal Left
 			if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 				U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
-                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
+                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
@@ -135,7 +135,7 @@ int i, j, k;
 			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 				U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
-                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
+                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
 										 + MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -149,7 +149,7 @@ int i, j, k;
 	// There
     k = NZ - 1;
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 
 			// Core
 			U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
@@ -164,7 +164,7 @@ int i, j, k;
 			// Internal Left
 			if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 				U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
-                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
+                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
@@ -176,7 +176,7 @@ int i, j, k;
 			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 				U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
-                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
+                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
 										 + MESH.SupMU[LU(i,j,k,2)] * (U.There[THERE(i,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -190,7 +190,7 @@ int i, j, k;
     // Bottom Here Corner
     k = 0;
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		j = NY_ColumnMU[i + Halo - Ix[Rango]][0];
+		j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0];
 
 		// Core
 		U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
@@ -205,7 +205,7 @@ int i, j, k;
 		// Internal Left
 		if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 			U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
-                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
+                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(0,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
@@ -217,7 +217,7 @@ int i, j, k;
 		else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 			U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
-                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
+                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
 										 + MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -230,7 +230,7 @@ int i, j, k;
     // Bottom There Corner
     k = NZ - 1;
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		j = NY_ColumnMU[i + Halo - Ix[Rango]][0];
+		j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0];
 
 		// Core
 		U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
@@ -245,7 +245,7 @@ int i, j, k;
 		// Internal Left
 		if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 			U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
-                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
+                                         + MESH.SupMU[LU(i,j,k,0)] * (U.I_Left[ILEFT(i+1,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
@@ -257,7 +257,7 @@ int i, j, k;
 		else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 			U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
-                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
+                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
 										 + MESH.SupMU[LU(i,j,k,2)] * (U.There[THERE(i,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -270,7 +270,7 @@ int i, j, k;
     // Top Here Corner
     k = 0;
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		j = NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1;
+		j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1;
 
         U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
@@ -285,7 +285,7 @@ int i, j, k;
     // Top There Corner
     k = NZ - 1;
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		j = NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1;
+		j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1;
 
         U.Diffusive[LU(i,j,k,0)] = (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
                                          + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
@@ -418,7 +418,7 @@ int i, j, k;
 		i = NX;
 
 		if (Problema == "Premixed"){
-			for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+			for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    	for(k = 0; k < NZ; k++){	
 					U.Diffusive[LU(NX,j,k,0)] = 0.0;
 				}
@@ -542,7 +542,7 @@ int i, j, k;
 
 	if (Int_Left){
 		i = NX_1;
-		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
 				U.Diffusive[LU(NX_1,j,k,0)] = 0.0;
 			}
@@ -551,7 +551,7 @@ int i, j, k;
 
 	if (Int_Right){
 		i = NX_1 + NX_2;
-		for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
 				U.Diffusive[LU(NX_1 + NX_2,j,k,0)] = 0.0;
 			}
@@ -566,7 +566,7 @@ int i, j, k;
 
     // Center
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 			for(k = 1; k < NZ - 1; k++){
 			
 				// Core 
@@ -582,7 +582,7 @@ int i, j, k;
 				// Internal Left
 				if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 					V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
-										 + MESH.SupMV[LV(i,j,k,0)] * (V.I_Left[ILEFT(0,j,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+										 + MESH.SupMV[LV(i,j,k,0)] * (V.I_Left[ILEFT(0,j,k)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
 										 + MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j+1,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,1)]
                                          - MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i,j-1,k,0)]) / MESH.DeltasMP[LP(i,j-1,k,1)]
@@ -594,7 +594,7 @@ int i, j, k;
 				else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 					V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
 										 + MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i+1,j,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V.I_Right[IRIGHT(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
+                                         - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V.I_Right[IRIGHT(0,j - MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMU[LU(i,j,k,0)]	
 										 + MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j+1,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,1)]
                                          - MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i,j-1,k,0)]) / MESH.DeltasMP[LP(i,j-1,k,1)]
 										 + MESH.SupMV[LV(i,j,k,2)] * (V_Matrix[LV(i,j,k+1,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -609,7 +609,7 @@ int i, j, k;
     // Here
     k = 0;
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 
 			// Core
 			V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
@@ -624,7 +624,7 @@ int i, j, k;
 			// Internal Left
 			if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 				V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
-										 + MESH.SupMV[LV(i,j,k,0)] * (V.I_Left[ILEFT(0,j,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+										 + MESH.SupMV[LV(i,j,k,0)] * (V.I_Left[ILEFT(0,j,k)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
 										 + MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j+1,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,1)]
                                          - MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i,j-1,k,0)]) / MESH.DeltasMP[LP(i,j-1,k,1)]
@@ -636,7 +636,7 @@ int i, j, k;
 			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 				V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
 										 + MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i+1,j,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V.I_Right[IRIGHT(0,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
+                                         - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V.I_Right[IRIGHT(0,j - MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMU[LU(i,j,k,0)]	
 										 + MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j+1,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,1)]
                                          - MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i,j-1,k,0)]) / MESH.DeltasMP[LP(i,j-1,k,1)]
 										 + MESH.SupMV[LV(i,j,k,2)] * (V_Matrix[LV(i,j,k+1,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -650,7 +650,7 @@ int i, j, k;
     // There
     k = NZ - 1;
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 
 			// Core
 			V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
@@ -665,7 +665,7 @@ int i, j, k;
 			// Internal Left
 			if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 				V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
-										 + MESH.SupMV[LV(i,j,k,0)] * (V.I_Left[ILEFT(i+1,j,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+										 + MESH.SupMV[LV(i,j,k,0)] * (V.I_Left[ILEFT(i+1,j,k)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
 										 + MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j+1,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,1)]
                                          - MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i,j-1,k,0)]) / MESH.DeltasMP[LP(i,j-1,k,1)]
@@ -677,7 +677,7 @@ int i, j, k;
 			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 				V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
 										 + MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i+1,j,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V.I_Right[IRIGHT(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
+                                         - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V.I_Right[IRIGHT(0,j - MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMU[LU(i,j,k,0)]	
 										 + MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j+1,k,0)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,1)]
                                          - MESH.SupMV[LV(i,j,k,1)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i,j-1,k,0)]) / MESH.DeltasMP[LP(i,j-1,k,1)]
 										 + MESH.SupMV[LV(i,j,k,2)] * (V.There[THERE(i,j,k)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -735,7 +735,7 @@ int i, j, k;
 
         i = NX - 1;
 		for(k = 1; k < NZ - 1; k++){
-			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 				V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
 										 + MESH.SupMV[LV(i,j,k,0)] * (V.Right[RIGHT(i,j,k)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
@@ -749,7 +749,7 @@ int i, j, k;
 
         // Here
         k = 0;
-		for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 			V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
 										 + MESH.SupMV[LV(i,j,k,0)] * (V.Right[RIGHT(i,j,k)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
@@ -762,7 +762,7 @@ int i, j, k;
 
         // There
         k = NZ - 1;
-		for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 			V.Diffusive[LV(i,j,k,0)] = (mu/(Rho*MESH.VolMV[LV(i,j,k,0)]))*(
 										 + MESH.SupMV[LV(i,j,k,0)] * (V.Right[RIGHT(i,j,k)] - V_Matrix[LV(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMV[LV(i,j,k,0)] * (V_Matrix[LV(i,j,k,0)] - V_Matrix[LV(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]	
@@ -783,7 +783,7 @@ int i, j, k;
 
     // Center
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1; j++){
 			for(k = 1; k < NZ; k++){
 
 				// Core
@@ -799,7 +799,7 @@ int i, j, k;
 				// Internal Left
 				if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 					W.Diffusive[LW(i,j,k,0)] = (mu/(Rho*MESH.VolMW[LW(i,j,k,0)]))*(
-										 + MESH.SupMW[LW(i,j,k,0)] * (W.I_Left[ILEFT(0,j,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+										 + MESH.SupMW[LW(i,j,k,0)] * (W.I_Left[ILEFT(0,j,k)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
 										 + MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
@@ -811,7 +811,7 @@ int i, j, k;
 				else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 					W.Diffusive[LW(i,j,k,0)] = (mu/(Rho*MESH.VolMW[LW(i,j,k,0)]))*(
 										 + MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i+1,j,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W.I_Right[IRIGHT(0,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         - MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W.I_Right[IRIGHT(0,j - MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMU[LU(i,j,k,0)]
 										 + MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
 										 + MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k+1,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,2)]
@@ -825,7 +825,7 @@ int i, j, k;
 
     // Bottom
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		j = NY_ColumnMW[i + Halo - Ix[Rango]][0];
+		j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0];
 		for(k = 1; k < NZ; k++){
 
 			// Core
@@ -841,7 +841,7 @@ int i, j, k;
 			// Internal Left
 			if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 				W.Diffusive[LW(i,j,k,0)] = (mu/(Rho*MESH.VolMW[LW(i,j,k,0)]))*(
-										 + MESH.SupMW[LW(i,j,k,0)] * (W.I_Left[ILEFT(0,j,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
+										 + MESH.SupMW[LW(i,j,k,0)] * (W.I_Left[ILEFT(0,j,k)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
 										 + MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
@@ -853,7 +853,7 @@ int i, j, k;
 			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 				W.Diffusive[LW(i,j,k,0)] = (mu/(Rho*MESH.VolMW[LW(i,j,k,0)]))*(
 										 + MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i+1,j,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W.I_Right[IRIGHT(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         - MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W.I_Right[IRIGHT(0,j - MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0],k)]) / MESH.DeltasMU[LU(i,j,k,0)]
 										 + MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
 										 + MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k+1,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,2)]
@@ -926,7 +926,7 @@ int i, j, k;
 
         i = NX - 1;
 		for(k = 1; k < NZ; k++){
-			for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1; j++){
+			for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1; j++){
 				W.Diffusive[LW(i,j,k,0)] = (mu/(Rho*MESH.VolMW[LW(i,j,k,0)]))*(
 										 + MESH.SupMW[LW(i,j,k,0)] * (W.Right[RIGHT(i,j,k)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
@@ -939,7 +939,7 @@ int i, j, k;
 		}
 
         // Bottom
-        j = NY_ColumnMW[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0];
 		for(k = 1; k < NZ; k++){
 			W.Diffusive[LW(i,j,k,0)] = (mu/(Rho*MESH.VolMW[LW(i,j,k,0)]))*(
 										 + MESH.SupMW[LW(i,j,k,0)] * (W.Right[RIGHT(i,j,k)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
@@ -952,7 +952,7 @@ int i, j, k;
 		}
 
         // Top
-        j = NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1;
+        j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1] - 1;
 		for(k = 1; k < NZ; k++){
 				W.Diffusive[LW(i,j,k,0)] = (mu/(Rho*MESH.VolMW[LW(i,j,k,0)]))*(
 										 + MESH.SupMW[LW(i,j,k,0)] * (W.Right[RIGHT(i,j,k)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]

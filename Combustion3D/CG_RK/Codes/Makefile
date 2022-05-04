@@ -25,7 +25,7 @@ INCLUDE=-I${PETSC_DIR}/${PETSC_ARCH}/include  -I${PETSC_DIR}/include
 LIB=-Wl,-rpath,${PETSC_DIR}/${PETSC_ARCH}/lib -L${PETSC_DIR}/${PETSC_ARCH}/lib -lpetsc
 
 $(MainCode): $(MainCode).cpp
-	$(Compilador) -std=c++11 $(INCLUDE) $(MainCode).cpp -o $(ExecutableName)  $(Directorio_Clases)$(Class_1).cpp $(Directorio_Clases)$(Class_2).cpp $(Directorio_Clases)$(Class_3).cpp $(Directorio_Clases)$(Class_4).cpp $(LIB) $(Optimisation) 
+	$(Compilador) -std=c++11 $(INCLUDE) $(MainCode).cpp -o $(ExecutableName)  $(Directorio_Clases)$(Class_1).cpp $(Directorio_Clases)$(Class_2).cpp $(Directorio_Clases)$(Class_3).cpp $(Directorio_Clases)$(Class_4).cpp $(Directorio_Clases)$(Class_5).cpp $(Directorio_Clases)$(Class_6).cpp  $(LIB) $(Optimisation) 
 
 clean:
 	- $(RM) $(CLEAN) $(ExecutableName)

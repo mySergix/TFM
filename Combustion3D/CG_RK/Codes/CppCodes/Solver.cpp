@@ -8,7 +8,7 @@
 #include "../HeaderCodes/ReadData.h"
 #include "../HeaderCodes/Parallel.h"
 #include "../HeaderCodes/Mesher.h"
-//#include "../HeaderCodes/PostProcessing.h"
+#include "../HeaderCodes/PostProcessing.h"
 #include "../HeaderCodes/Solver.h"
 
 Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
@@ -76,30 +76,39 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	//				  -> Differentially ----- RK3 ->( max) ----- RK4 ->(0.70 max) 
 
     // Datos Físicos del Problema
-	Rho = ;
-	Uref = ;
-	Reynolds = ;
+	Rho = 1.0;
+	Uref = 1.5;
+	Reynolds = 100;
 	
 	Prandtl = R1.ProblemPhysicalData[5];
-
-	U.Gravity = ;
-	V.Gravity = ;
-	W.Gravity = ;
+	K = 1.0;
+	
+	U.Gravity = 0.0;
+	V.Gravity = 0.0;
+	W.Gravity = 0.0;
 
 	mu = (Uref * Xdomain) / Reynolds;
 	
     ConvergenciaGS = R1.ProblemData[3];
 	ConvergenciaGlobal = R1.ProblemData[4];
 
+	printf("Process number %d of %d with Ix = %d and Fx = %d \n", Rango, Procesos, Ix[Rango], Fx[Rango]);
+
+	//for (int i = Ix[Rango]; i < Fx[Rango] + 1; i++){
+	//	cout<<"Inicio NY: "<<MESH.NY_ColumnMU[i - Halo - Ix[Rango]][0]<<endl;
+	//	cout<<"Final NY: "<<MESH.NY_ColumnMU[i - Halo - Ix[Rango]][1]<<endl;
+	//}
+	
 }
 
 // Files of the class (CFD)
 #include "Matrix_Index.cpp"
 #include "Solver_CFD_Memory.cpp"
 #include "Solver_CFD_Utilities.cpp"
-//#include "Solver_CFD_BoundaryConditions_Driven.cpp"
-#include "Solver_CFD_BoundaryConditions_Differentially.cpp"
-#include "Solver_CFD_BoundaryConditions_Differentially_T.cpp"
+#include "Solver_CFD_BoundaryConditions_Premixed.cpp"
+#include "Solver_CFD_BoundaryConditions_Premixed_T.cpp"
+//#include "Solver_CFD_BoundaryConditions_NonPremixed.cpp"
+//#include "Solver_CFD_BoundaryConditions_NonPremixed_T.cpp"
 #include "Solver_CFD_PoissonCoeffs.cpp"
 #include "Solver_CFD_MomentumDiffusion.cpp"
 #include "Solver_CFD_MomentumConvection.cpp"

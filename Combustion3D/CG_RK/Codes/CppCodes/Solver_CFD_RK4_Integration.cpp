@@ -39,12 +39,12 @@ void Solver::Get_RK_Coefficients(Runge_Kutta &RK_Struct){
 }
 
 // Function to sum the contributions of the flow
-void Solver::Get_RK_VelocityContributions(double *Contribution_Matrix_U, double *Contribution_Matrix_V, double *Contribution_Matrix_W){
+void Solver::Get_RK_VelocityContributions(Mesher MESH, double *Contribution_Matrix_U, double *Contribution_Matrix_V, double *Contribution_Matrix_W){
 int i, j, k;
 
     // Velocity U
 	for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){
 				Contribution_Matrix_U[LU(i,j,k,0)] = DeltaT * (U.Diffusive[LU(i,j,k,0)] - U.Convective[LU(i,j,k,0)]);
 			}
@@ -53,7 +53,7 @@ int i, j, k;
 
 	// Velocity V
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    for(k = 0; k < NZ; k++){
 				Contribution_Matrix_V[LV(i,j,k,0)] = DeltaT * (V.Diffusive[LV(i,j,k,0)] - V.Convective[LV(i,j,k,0)] + V.Boussinesq[LV(i,j,k,0)]);
 			}
@@ -62,7 +62,7 @@ int i, j, k;
 
     // Velocity W
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 1; k < NZ; k++){
 				Contribution_Matrix_W[LW(i,j,k,0)] = DeltaT * (W.Diffusive[LW(i,j,k,0)] - W.Convective[LW(i,j,k,0)]);
 			}
@@ -93,17 +93,17 @@ int i, j, k;
 		Get_ConvectionW(MESH, U.Pres, V.Pres, W.Pres);
 
         // Boussinesq Thermal Buoyancy Term
-        if (Problema == 2){ Get_BoussinesqV(MESH, V.Pres, T.Pres); }
+        //Get_BoussinesqV(MESH, V.Pres, T.Pres);
 
     // 2. Calculo K1    
     
-        Get_RK_VelocityContributions(U.K1, V.K1, W.K1);
+        Get_RK_VelocityContributions(MESH, U.K1, V.K1, W.K1);
         
     // 3. Calculo Nueva Velocidad
 
         // Intermediate Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+            for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
 				    U.New_Velocity[LU(i,j,k,0)] = U.Pres[LU(i,j,k,0)] + RK.a21 * U.K1[LU(i,j,k,0)];
 			    }
@@ -112,7 +112,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){  
 				    V.New_Velocity[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.a21 * V.K1[LV(i,j,k,0)];
 			    }
@@ -121,7 +121,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor W
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
+			for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 1; k < NZ; k++){
 				    W.New_Velocity[LW(i,j,k,0)] = W.Pres[LW(i,j,k,0)] + RK.a21 * W.K1[LW(i,j,k,0)];
 			    }
@@ -135,8 +135,8 @@ int i, j, k;
     // 5. Calculo Diffusion + Convection + Boussinesq
 
         // Boundary Conditions Update
-        Get_UpdateBoundaryConditions_Velocities(U.New_Velocity, V.New_Velocity, W.New_Velocity);
-        Get_UpdateHalos_Velocity(U.New_Velocity, V.New_Velocity, W.New_Velocity);
+        Get_UpdateBoundaryConditions_Velocities(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+        Get_UpdateHalos_Velocity(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
         // Halos communication
 		P1.CommunicateDataLU(U.New_Velocity, U.New_Velocity);
@@ -154,17 +154,17 @@ int i, j, k;
 		Get_ConvectionW(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
         // Boussinesq Thermal Buoyancy Term
-        if (Problema == 2){ Get_BoussinesqV(MESH, V.New_Velocity, T.Pres); }
+        //Get_BoussinesqV(MESH, V.New_Velocity, T.Pres);
 
     // 6. Calculo K2;
 
-        Get_RK_VelocityContributions(U.K2, V.K2, W.K2);
+        Get_RK_VelocityContributions(MESH, U.K2, V.K2, W.K2);
 
     // 7. Calculo Nueva Velocidad
 
         // Intermediate Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+            for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
 				    U.New_Velocity[LU(i,j,k,0)] = U.Pres[LU(i,j,k,0)] + RK.a32 * U.K2[LU(i,j,k,0)];
 			    }
@@ -173,7 +173,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){ 
 				    V.New_Velocity[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.a32 * V.K2[LV(i,j,k,0)];
 			    }
@@ -182,7 +182,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor W
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-            for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
+            for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 1; k < NZ; k++){
 				    W.New_Velocity[LW(i,j,k,0)] = W.Pres[LW(i,j,k,0)] + RK.a32 * W.K2[LW(i,j,k,0)];
 			    }
@@ -196,8 +196,8 @@ int i, j, k;
     // 9. Calculo Diffusion + Convection + Boussinesq
 
         // Boundary Conditions Update
-        Get_UpdateBoundaryConditions_Velocities(U.New_Velocity, V.New_Velocity, W.New_Velocity);
-        Get_UpdateHalos_Velocity(U.New_Velocity, V.New_Velocity, W.New_Velocity);
+        Get_UpdateBoundaryConditions_Velocities(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+        Get_UpdateHalos_Velocity(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
         // Halos communication
 		P1.CommunicateDataLU(U.New_Velocity, U.New_Velocity);
@@ -215,17 +215,17 @@ int i, j, k;
 		Get_ConvectionW(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
         // Boussinesq Buoyancy Term
-        if (Problema == 2){Get_BoussinesqV(MESH, V.New_Velocity, T.Pres); }
+        //Get_BoussinesqV(MESH, V.New_Velocity, T.Pres);
 		
     // 10. Calculo K3;
 
-        Get_RK_VelocityContributions(U.K3, V.K3, W.K3);
+        Get_RK_VelocityContributions(MESH, U.K3, V.K3, W.K3);
 
 	// 11. Calculo Nueva Velocidad
 
         // Intermediate Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+            for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
 				    U.New_Velocity[LU(i,j,k,0)] = U.Pres[LU(i,j,k,0)] + RK.a43 * U.K3[LU(i,j,k,0)];
 			    }
@@ -234,7 +234,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){ 
 				    V.New_Velocity[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.a43 * V.K3[LV(i,j,k,0)];
 			    }
@@ -243,7 +243,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor W
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-            for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
+            for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 1; k < NZ; k++){
 				    W.New_Velocity[LW(i,j,k,0)] = W.Pres[LW(i,j,k,0)] + RK.a43 * W.K3[LW(i,j,k,0)];
 			    }
@@ -257,8 +257,8 @@ int i, j, k;
 	// 13. Calculo Diffusion + Convection + Boussinesq
 
         // Boundary Conditions Update
-        Get_UpdateBoundaryConditions_Velocities(U.New_Velocity, V.New_Velocity, W.New_Velocity);
-        Get_UpdateHalos_Velocity(U.New_Velocity, V.New_Velocity, W.New_Velocity);
+        Get_UpdateBoundaryConditions_Velocities(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+        Get_UpdateHalos_Velocity(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
         // Halos communication
 		P1.CommunicateDataLU(U.New_Velocity, U.New_Velocity);
@@ -276,17 +276,17 @@ int i, j, k;
 		Get_ConvectionW(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
         // Boussinesq Buoyancy Term
-        if (Problema == 2){Get_BoussinesqV(MESH, V.New_Velocity, T.Pres); }
+        //Get_BoussinesqV(MESH, V.New_Velocity, T.Pres);
 		
     // 14. Calculo K4;
 
-        Get_RK_VelocityContributions(U.K4, V.K4, W.K4);
+        Get_RK_VelocityContributions(MESH, U.K4, V.K4, W.K4);
 
     // 15. Calculo predictora final
 
         // Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+            for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
 				    U.Predictor[LU(i,j,k,0)] = U.Pres[LU(i,j,k,0)] + RK.b1 * U.K1[LU(i,j,k,0)] + RK.b2 * U.K2[LU(i,j,k,0)] + RK.b3 * U.K3[LU(i,j,k,0)] + RK.b4 * U.K4[LU(i,j,k,0)];
 			    }
@@ -295,7 +295,7 @@ int i, j, k;
 
         // Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){ 
 				    V.Predictor[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.b1 * V.K1[LV(i,j,k,0)] + RK.b2 * V.K2[LV(i,j,k,0)] + RK.b3 * V.K3[LV(i,j,k,0)] + RK.b4 * V.K4[LV(i,j,k,0)];
 			    }
@@ -304,13 +304,13 @@ int i, j, k;
 
         // Velocity Predictor W
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-            for(j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
+            for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		        for(k = 1; k < NZ; k++){
 				    W.Predictor[LW(i,j,k,0)] = W.Pres[LW(i,j,k,0)] + RK.b1 * W.K1[LW(i,j,k,0)] + RK.b2 * W.K2[LW(i,j,k,0)] + RK.b3 * W.K3[LW(i,j,k,0)] + RK.b4 * W.K4[LW(i,j,k,0)];
 			    }
 		    }
 	    }
 
-		Get_UpdateBoundaryConditions_PredictorVelocities();
-
+		Get_UpdateBoundaryConditions_PredictorVelocities(MESH);
+		
 }

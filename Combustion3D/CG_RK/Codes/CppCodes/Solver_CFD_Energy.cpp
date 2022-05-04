@@ -8,7 +8,7 @@ int i, j, k;
 
     // Center
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ - 1; k++){
 
                 // Core
@@ -49,7 +49,7 @@ int i, j, k;
     }
 
     // Bottom
-    j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+    j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (k = 1; k < NZ - 1; k++){
 
@@ -107,7 +107,7 @@ int i, j, k;
     // Here
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
 
             // Core
             T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
@@ -123,7 +123,7 @@ int i, j, k;
 			if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
                 T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
                                          + MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i+1,j,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
-                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.I_Left[ILEFT]) / MESH.DeltasMU[LU(i,j,k,0)]
+                                         - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T.I_Left[ILEFT(0,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                          + MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j+1,k,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
                                          - MESH.SupMP[LP(i,j,k,1)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
                                          + MESH.SupMP[LP(i,j,k,2)] * (T_Matrix[LP(i,j,k+1,0)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
@@ -148,7 +148,7 @@ int i, j, k;
     // There
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
 
             // Core
             T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
@@ -187,7 +187,7 @@ int i, j, k;
     }
 
     // Bottom Here Corner
-    j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+    j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
 
@@ -227,7 +227,7 @@ int i, j, k;
     }
 
     // Bottom There Corner
-    j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+    j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
 
@@ -476,7 +476,7 @@ int i, j, k;
         i = NX - 1;
 
         // Center
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ - 1; k++){
                 T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
                                          + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
@@ -490,7 +490,7 @@ int i, j, k;
         }
 
         // Bottom
-        j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
         for (k = 1; k < NZ - 1; k++){
             T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
                                          + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(I,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
@@ -517,7 +517,7 @@ int i, j, k;
 
         // Here
         k = 0;
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
                                          + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
@@ -530,7 +530,7 @@ int i, j, k;
 
         // There
         k = NZ - 1;
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
                                          + MESH.SupMP[LP(i,j,k,0)] * (T.Right[RIGHT(i,j,k)] - T_Matrix[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - MESH.SupMP[LP(i,j,k,0)] * (T_Matrix[LP(i,j,k,0)] - T_Matrix[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
@@ -542,7 +542,7 @@ int i, j, k;
         }
 
         // Bottom Here Corner
-        j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
         k = 0;
         
             T.Diffusive[LP(i,j,k,0)] = (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
@@ -556,7 +556,7 @@ int i, j, k;
         
 
         // Bottom There Corner
-        j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
         k = NZ - 1;
         
             T.Diffusive[LP(i,j,k,0)] =  (K / (Rho * Cp * MESH.VolMP[LP(i,j,k,0)]))*(
@@ -608,7 +608,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
 
     // Center
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ - 1; k++){
 
                 // Core
@@ -641,7 +641,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
     }
 
     // Bottom
-    j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+    j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (k = 1; k < NZ - 1; k++){
 
@@ -698,7 +698,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
     // Here
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             
             // Core
             Tw = ConvectiveScheme(MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MP[LP(i-2,j,k,0)], T_Matrix[LP(i-2,j,k,0)], MESH.MP[LP(i-1,j,k,0)], T_Matrix[LP(i-1,j,k,0)], MESH.MP[LP(i,j,k,0)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i+1,j,k,0)], T_Matrix[LP(i+1,j,k,0)], EsquemaLargo);
@@ -731,7 +731,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
     // There
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
 
             // Core
             Tw = ConvectiveScheme(MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MP[LP(i-2,j,k,0)], T_Matrix[LP(i-2,j,k,0)], MESH.MP[LP(i-1,j,k,0)], T_Matrix[LP(i-1,j,k,0)], MESH.MP[LP(i,j,k,0)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i+1,j,k,0)], T_Matrix[LP(i+1,j,k,0)], EsquemaLargo);
@@ -762,7 +762,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
     }
 
     // Bottom Here Corner
-    j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+    j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
     k = 0;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
 
@@ -794,7 +794,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
     }
 
     // Bottom There Corner
-    j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+    j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
     k = NZ - 1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
 
@@ -1058,7 +1058,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
         i = NX - 1;
 
         // Center
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 1; k < NZ - 1; k++){
                 Tw = ConvectiveScheme(MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MP[LP(i-2,j,k,0)], T_Matrix[LP(i-2,j,k,0)], MESH.MP[LP(i-1,j,k,0)], T_Matrix[LP(i-1,j,k,0)], MESH.MP[LP(i,j,k,0)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i+1,j,k,0)], T_Matrix[LP(i+1,j,k,0)], EsquemaLargo);
                 Te = T.Right[RIGHT(i,j,k)];
@@ -1079,7 +1079,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
         }
 
         // Bottom
-        j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
         for (k = 1; k < NZ - 1; k++){
             Tw = ConvectiveScheme(MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MP[LP(i-2,j,k,0)], T_Matrix[LP(i-2,j,k,0)], MESH.MP[LP(i-1,j,k,0)], T_Matrix[LP(i-1,j,k,0)], MESH.MP[LP(i,j,k,0)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i+1,j,k,0)], T_Matrix[LP(i+1,j,k,0)], EsquemaLargo);
             Te = T.Right[RIGHT(i,j,k)];
@@ -1120,7 +1120,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
 
         // Here
         k = 0;
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             Tw = ConvectiveScheme(MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MP[LP(i-2,j,k,0)], T_Matrix[LP(i-2,j,k,0)], MESH.MP[LP(i-1,j,k,0)], T_Matrix[LP(i-1,j,k,0)], MESH.MP[LP(i,j,k,0)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i+1,j,k,0)], T_Matrix[LP(i+1,j,k,0)], EsquemaLargo);
             Te = T.Right[RIGHT(i,j,k)];
 
@@ -1140,7 +1140,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
 
         // There
         k = NZ - 1;
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             Tw = ConvectiveScheme(MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MP[LP(i-2,j,k,0)], T_Matrix[LP(i-2,j,k,0)], MESH.MP[LP(i-1,j,k,0)], T_Matrix[LP(i-1,j,k,0)], MESH.MP[LP(i,j,k,0)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i+1,j,k,0)], T_Matrix[LP(i+1,j,k,0)], EsquemaLargo);
             Te = T.Right[RIGHT(i,j,k)];
 
@@ -1159,7 +1159,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
         }
 
         // Bottom Here Corner
-        j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
         k = 0;
     
         Tw = ConvectiveScheme(MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MP[LP(i-2,j,k,0)], T_Matrix[LP(i-2,j,k,0)], MESH.MP[LP(i-1,j,k,0)], T_Matrix[LP(i-1,j,k,0)], MESH.MP[LP(i,j,k,0)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i+1,j,k,0)], T_Matrix[LP(i+1,j,k,0)], EsquemaLargo);
@@ -1180,7 +1180,7 @@ double Tw, Te, Ts, Tn, Th, Tt;
     
 
         // Bottom There Corner
-        j = NY_ColumnMP[i + Halo - Ix[Rango]][0];
+        j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0];
         k = NZ - 1;
     
         Tw = ConvectiveScheme(MESH.MU[LU(i,j,k,0)], U_Matrix[LU(i,j,k,0)], MESH.MP[LP(i-2,j,k,0)], T_Matrix[LP(i-2,j,k,0)], MESH.MP[LP(i-1,j,k,0)], T_Matrix[LP(i-1,j,k,0)], MESH.MP[LP(i,j,k,0)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i+1,j,k,0)], T_Matrix[LP(i+1,j,k,0)], EsquemaLargo);
@@ -1246,11 +1246,11 @@ double Tw, Te, Ts, Tn, Th, Tt;
 }
 
 // Function to calculate the contributions of the energy equation
-void Solver::Get_EnergyContributions(){
+void Solver::Get_EnergyContributions(Mesher MESH){
 int i, j, k;
 
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
                 T.ContributionPres[LP(i,j,k,0)] = T.Diffusive[LP(i,j,k,0)] - T.Convective[LP(i,j,k,0)];
             }
@@ -1265,10 +1265,10 @@ int i, j, k;
 double Temp;
 
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - 1; j++){
             for (k = 0; k < NZ; k++){
                 Temp = ConvectiveScheme(MESH.MV[LV(i,j,k,1)], V_Matrix[LV(i,j,k,0)], MESH.MP[LP(i,j-2,k,1)], T_Matrix[LP(i,j-2,k,0)], MESH.MP[LP(i,j-1,k,1)], T_Matrix[LP(i,j-1,k,0)], MESH.MP[LP(i,j,k,1)], T_Matrix[LP(i,j,k,0)], MESH.MP[LP(i,j+1,k,1)], T_Matrix[LP(i,j+1,k,0)], EsquemaLargo);
-                V.Boussinesq[LV(i,j,k,0)] = Rho * V.Gravity * (1.0 - Beta * (Temp - To));
+                V.Boussinesq[LV(i,j,k,0)] = Rho * V.Gravity;
             }
         }
     }
@@ -1276,11 +1276,11 @@ double Temp;
 }
 
 // Function to calculate the new temperature field
-void Solver::Get_NewTemperatures(){
+void Solver::Get_NewTemperatures(Mesher MESH){
 int i, j, k;
 
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
                 T.Fut[LP(i,j,k,0)] = T.Pres[LP(i,j,k,0)] + DeltaT * (1.50 * T.ContributionPres[LP(i,j,k,0)] - 0.50 * T.ContributionPast[LP(i,j,k,0)]);
             }

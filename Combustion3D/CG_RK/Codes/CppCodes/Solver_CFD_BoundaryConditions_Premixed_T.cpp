@@ -21,7 +21,7 @@ int i, j, k;
     // Internal Left
     if (Int_Left){
         i = NX_1 - 1;
-		for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
 				T.I_Left[ILEFT(0,j,k)] = Twalls;
 			}
@@ -31,9 +31,9 @@ int i, j, k;
     // Internal Right
     if (Int_Right){
 		i = NX_1 + NX_2 + 1;
-		for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
-				T.I_Right[IRIGHT(0,j,k)] = Twalls;
+				T.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)] = Twalls;
 			}
 		}
 	}
@@ -41,7 +41,7 @@ int i, j, k;
     // Right
     if (Rango == Procesos - 1){ 
         i = NX - 1;
-        for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
                 T.Right[RIGHT(NX,j,k)] = Twalls;
             }
@@ -51,7 +51,7 @@ int i, j, k;
 }
 
 // Function to update the temperatures boundary conditions
-void Solver::Get_UpdateBoundaryConditions_Temperatures(double *T_Matrix){
+void Solver::Get_UpdateBoundaryConditions_Temperatures(Mesher MESH, double *T_Matrix){
 int i, j, k;
 
     // Left (Symmetry)
@@ -87,7 +87,7 @@ int i, j, k;
 }
 
 // Function to set all the corresponding static temperatures halos (no changing)
-void Solver::Get_StaticHalos_Temperatures(double *T_Matrix){
+void Solver::Get_StaticHalos_Temperatures(Mesher MESH, double *T_Matrix){
 int i, j, k;
 
     // Bottom
@@ -103,7 +103,7 @@ int i, j, k;
     if (Int_Left){
         
         for (i = NX_1; i < NX_1 + HP; i++){
-            for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
                     T_Matrix[LP(i,j,k,0)] = T.I_Left[ILEFT(0,j,k)];
 			    }
@@ -114,9 +114,9 @@ int i, j, k;
     // Internal Right
     if (Int_Right){
         for (i = NX_1 + NX_2 - Halo; i < NX_1 + NX_2; i++){
-            for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
-                    T_Matrix[LP(i,j,k,0)] = T.I_Right[IRIGHT(0,j,k)];
+                    T_Matrix[LP(i,j,k,0)] = T.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)];
 			    }
 		    }
         }
@@ -125,7 +125,7 @@ int i, j, k;
     // Right
     if (Rango == Procesos - 1){
         for (i = Fx[Rango]; i < Fx[Rango] + Halo; i++){
-            for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+            for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
                 for (k = 0; k < NZ; k++){
                     T_Matrix[LP(i,j,k,0)] = T.Right[RIGHT(NX,j,k)];
                 }
@@ -136,7 +136,7 @@ int i, j, k;
 }
 
 // Function to update the temperature halos
-void Solver::Get_UpdateHalos_Temperatures(double *T_Matrix){
+void Solver::Get_UpdateHalos_Temperatures(Mesher MESH, double *T_Matrix){
 int i, j, k;
 
     // Left

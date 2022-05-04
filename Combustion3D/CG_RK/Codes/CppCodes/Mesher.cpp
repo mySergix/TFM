@@ -97,7 +97,6 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 
 	P1.WorkSplit(NX, Ix, Fx);
 
-	printf("Process number %d of %d with Ix = %d and Fx = %d \n", Rango, Procesos, Ix[Rango], Fx[Rango]);
 	Halo = 2;
 	HP = 2;
 

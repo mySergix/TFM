@@ -38,7 +38,7 @@ int i, j, k;
     // Int Left
     if (Int_Left){
         i = NX_1 - 1;
-		for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
 				U.I_Left[ILEFT(0,j,k)] = 0.0;
                 V.I_Left[ILEFT(0,j,k)] = 0.0;
@@ -50,11 +50,11 @@ int i, j, k;
     // Int Right
     if (Int_Right){
 		i = NX_1 + NX_2 + 1;
-		for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
-				U.I_Right[IRIGHT(0,j,k)] = 0.0;
-                V.I_Right[IRIGHT(0,j,k)] = 0.0;
-                W.I_Right[IRIGHT(0,j,k)] = 0.0;
+				U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)] = 0.0;
+                V.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)] = 0.0;
+                W.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)] = 0.0;
 			}
 		}
 	}
@@ -64,7 +64,7 @@ int i, j, k;
 }
 
 // Function to update the velocity boundary conditions
-void Solver::Get_UpdateBoundaryConditions_Velocities(double *U_Matrix, double *V_Matrix, double *W_Matrix){
+void Solver::Get_UpdateBoundaryConditions_Velocities(Mesher MESH, double *U_Matrix, double *V_Matrix, double *W_Matrix){
 int i, j, k;
 
     // Left (Symmmetry)
@@ -90,7 +90,7 @@ int i, j, k;
     // Right (Symmetry)
     if (Rango == Procesos - 1){
         i = NX - 1;
-        for (j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
                 U.Right[RIGHT(NX,j,k)] = U_Matrix[LU(NX,j,k,0)];
                 V.Right[RIGHT(NX,j,k)] = V_Matrix[LV(NX-1,j,k,0)];
@@ -110,28 +110,28 @@ int i, j, k;
 
     // Here
     for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
-        for (j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             U.Here[HERE(i,j,0)] = U_Matrix[LU(i,j,0,0)];
             V.Here[HERE(i,j,0)] = V_Matrix[LV(i,j,0,0)];
         }
     }
 
     for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
-        for (j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             W.Here[HERE(i,j,0)] = W_Matrix[LW(i,j,1,0)];
         }
     }
 
     // There
     for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
-        for (j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             U.There[THERE(i,j,NZ)] = U_Matrix[LU(i,j,NZ-1,0)];
             V.There[THERE(i,j,NZ)] = V_Matrix[LV(i,j,NZ-1,0)];
         }
     }
 
     for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
-        for (j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             W.There[THERE(i,j,NZ)] = W_Matrix[LW(i,j,NZ-1,0)];
         }
     }
@@ -139,7 +139,7 @@ int i, j, k;
 }
 
 // Function to update the predictor velocities boundary conditions
-void Solver::Get_UpdateBoundaryConditions_PredictorVelocities(){
+void Solver::Get_UpdateBoundaryConditions_PredictorVelocities(Mesher MESH){
 int i, j, k;
 
     // Left (Symmetry)
@@ -153,7 +153,7 @@ int i, j, k;
 
     // Right
     if (Rango == Procesos - 1){
-        for (j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
                 U.Predictor[LU(NX,j,k,0)] = U.Pres[LU(NX,j,k,0)];
             }
@@ -163,7 +163,7 @@ int i, j, k;
     // Bottom
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (k = 0; k < NZ; k++){
-			V.Predictor[LV(i,NY_ColumnMP[i + Halo - Ix[Rango]][0],k,0)] = V.Pres[LV(i,NY_ColumnMP[i + Halo - Ix[Rango]][0],k,0)];
+			V.Predictor[LV(i,MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k,0)] = V.Pres[LV(i,MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k,0)];
         }
     }
 
@@ -191,12 +191,12 @@ int i, j, k;
 }
 
 // Function to set all the corresponding static velocity halos (no changing)
-void Solver::Get_StaticHalos_Velocity(double *U_Matrix, double *V_Matrix, double *W_Matrix){
+void Solver::Get_StaticHalos_Velocity(Mesher MESH, double *U_Matrix, double *V_Matrix, double *W_Matrix){
 int i, j, k;
 
     // Bottom
     for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
-        for (j = NY_ColumnMP[i + Halo - Ix[Rango]][0] - Halo; j < NY_ColumnMP[i + Halo - Ix[Rango]][0]; j++){
+        for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0] - Halo; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j++){
             for (k = 0; k < NZ; k++){
                     U_Matrix[LU(i,j,k,0)] = U.Bottom[BOTTOM(i,0,k)];
                     W_Matrix[LW(i,j,k,0)] = W.Bottom[BOTTOM(i,0,k)];
@@ -205,7 +205,7 @@ int i, j, k;
     }
     
     for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
-        for (j = NY_ColumnMV[i + Halo - Ix[Rango]][0] - Halo; j <= NY_ColumnMV[i + Halo - Ix[Rango]][0]; j++){
+        for (j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] - Halo; j <= MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0]; j++){
             for (k = 0; k < NZ; k++){
                     V_Matrix[LV(i,j,k,0)] = V.Bottom[BOTTOM(i,0,k)];
             }
@@ -216,7 +216,7 @@ int i, j, k;
     if (Int_Left){
         
         for (i = NX_1; i < NX_1 + Halo; i++){
-            for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
                     V_Matrix[LV(i,j,k,0)] = V.I_Left[ILEFT(0,j,k)];
                     W_Matrix[LW(i,j,k,0)] = W.I_Left[ILEFT(0,j,k)];
@@ -225,7 +225,7 @@ int i, j, k;
         }
 		
         for (i = NX_1; i < NX_1 + Halo + 1; i++){
-            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
 				    U_Matrix[LU(i,j,k,0)] = U.I_Left[ILEFT(0,j,k)];
 			    }
@@ -237,18 +237,18 @@ int i, j, k;
     // Int Right
     if (Int_Right){
         for (i = NX_1 + NX_2 + 1 - Halo; i < NX_1 + NX_2; i++){
-            for(j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
-                    V_Matrix[LV(i,j,k,0)] = V.I_Right[IRIGHT(0,j,k)];
-                    W_Matrix[LW(i,j,k,0)] = W.I_Right[IRIGHT(0,j,k)];
+                    V_Matrix[LV(i,j,k,0)] = V.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)];
+                    W_Matrix[LW(i,j,k,0)] = W.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)];
 			    }
 		    }
         }
 		
 		for (i = NX_1 + NX_2 + 1 - Halo; i < NX_1 + NX_2 + 1; i++){
-            for(j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
-				    U_Matrix[LU(i,j,k,0)] = U.I_Right[IRIGHT(0,j,k)];
+				    U_Matrix[LU(i,j,k,0)] = U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0],k)];
 			    }
 		    }
         }
@@ -257,7 +257,7 @@ int i, j, k;
 }
 
 // Function to update the boundary conditions
-void Solver::Get_UpdateHalos_Velocity(double *U_Matrix, double *V_Matrix, double *W_Matrix){
+void Solver::Get_UpdateHalos_Velocity(Mesher MESH, double *U_Matrix, double *V_Matrix, double *W_Matrix){
 int i, j, k;
 
     // Left

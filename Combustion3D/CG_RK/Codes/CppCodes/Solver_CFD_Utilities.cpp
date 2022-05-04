@@ -22,6 +22,8 @@ double I;
 				U.Pres[LU(i,j,k,0)] = 0.0;
 				U.Fut[LU(i,j,k,0)] = 0.0;
 
+				U.Predictor[LU(i,j,k,0)] = 0.0;
+
 				U.Convective[LU(i,j,k,0)] = 0.0;
 				U.Diffusive[LU(i,j,k,0)] = 0.0;	
 
@@ -35,6 +37,8 @@ double I;
 			for(k = 0; k < NZ; k++){	
 				V.Pres[LV(i,j,k,0)] = 0.0;
 				V.Fut[LV(i,j,k,0)] = 0.0;
+
+				V.Predictor[LV(i,j,k,0)] = 0.0;
 
 				V.Convective[LV(i,j,k,0)] = 0.0;
 				V.Diffusive[LV(i,j,k,0)] = 0.0;	
@@ -50,6 +54,8 @@ double I;
 				W.Pres[LW(i,j,k,0)] = 0.0;
 				W.Fut[LW(i,j,k,0)] = 0.0;
 				
+				W.Predictor[LW(i,j,k,0)] = 0.0;
+
 				W.Convective[LW(i,j,k,0)] = 0.0;
 				W.Diffusive[LW(i,j,k,0)] = 0.0;	
 			}
@@ -61,8 +67,8 @@ double I;
 		I = i;
 		for(j = 0; j < NY; j++){
 			for(k = 0; k < NZ; k++){	
-				T.Pres[LP(i,j,k,0)] = Tleft + (Tright - Tleft) * (I / NX);
-				T.Fut[LP(i,j,k,0)] = Tleft + (Tright - Tleft) * (I / NX);
+				T.Pres[LP(i,j,k,0)] = Twalls;
+				T.Fut[LP(i,j,k,0)] = Twalls;
 
 				T.Convective[LP(i,j,k,0)] = 0.0;
 				T.Diffusive[LP(i,j,k,0)] = 0.0;	
@@ -101,7 +107,7 @@ DiffusiveDeltaT = 1000.0;
 
 	// Diffusive U Velocity
 	for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		for (j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+		for (j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 			for (k = 0; k < NZ + 1; k++){
 
 				// CFL Diffusive U
@@ -115,7 +121,7 @@ DiffusiveDeltaT = 1000.0;
 
 	// Diffusive V Velocity
 	for (i = Ix[Rango]; i < Fx[Rango]; i++){
-		for (j = NY_ColumnMV[i + Halo - Ix[Rango]][0]; j < NY_ColumnMV[i + Halo - Ix[Rango]][1]; j++){
+		for (j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1]; j++){
 			for (k = 0; k < NZ + 1; k++){
 
 				// CFL Diffusive V
@@ -129,7 +135,7 @@ DiffusiveDeltaT = 1000.0;
 
 	// Diffusive W Velocity
 	for (i = Ix[Rango]; i < Fx[Rango]; i++){
-		for (j = NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
+		for (j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 			for (k = 0; k < NZ + 1; k++){
 
 				// CFL Diffusive W
@@ -141,9 +147,10 @@ DiffusiveDeltaT = 1000.0;
 		}
 	}
 
+	/*
 	// Heat Diffusion Time Step
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){	
-		for (j = NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+		for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
 			for(k = 0; k < NZ; k++){
 
 				// Heat Diffusion (X Direction)
@@ -155,9 +162,10 @@ DiffusiveDeltaT = 1000.0;
 				// Heat Diffusion (Z Direction)
 				DiffusiveDeltaT += ((0.20 * CourantFactor * Rho * Cp * pow(MESH.DeltasMP[LP(i,j,k,2)], 2.0)) / (K + 1e-10) - DiffusiveDeltaT) * ((0.20 * CourantFactor * Rho * Cp * pow(MESH.DeltasMP[LP(i,j,k,2)], 2.0)) / (K + 1e-10) <= DiffusiveDeltaT);
 
-				}
 			}
 		}
+	}
+	*/
 
 	MPI_Allreduce(&DiffusiveDeltaT, &DiffusiveDeltaT, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
 
@@ -175,7 +183,7 @@ double Tpar = 0.40;
 
 	// CFL Convection
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for (j = NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+		for (j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 			for(k = 0; k < NZ; k++){	
 				
 				// CFL Convective U
@@ -268,7 +276,7 @@ void Solver::Get_PredictorsDivergence(Mesher MESH){
 int i, j, k;
 
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMP[i - HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i - HP - Ix[Rango]][1]; j++){
+        for(j = 0; j < NY; j++){
 		    for(k = 0; k < NZ; k++){
 				RHS[LA(i,j,k,0)] =  + (Rho/DeltaT)*(
 								    + MESH.SupMP[LP(i,j,k,0)] * (U.Predictor[LU(i+1,j,k,0)] - U.Predictor[LU(i,j,k,0)])
@@ -282,13 +290,13 @@ int i, j, k;
 }
 
 // Function to Check the difference between time steps
-void Solver::Get_Stop(){
+void Solver::Get_Stop(Mesher MESH){
 int i, j, k;
 MaxDiffGlobal = 0.0;
 
 	// Velocity U
 	for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = MESH.NY_ColumnMU[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){
 				MaxDiffGlobal += (abs((U.Fut[LU(i,j,k,0)] - U.Pres[LU(i,j,k,0)])/(U.Pres[LU(i,j,k,0)] + 1e-15)) - MaxDiffGlobal)*(abs((U.Fut[LU(i,j,k,0)] - U.Pres[LU(i,j,k,0)])/(U.Pres[LU(i,j,k,0)] + 1e-15)) >= MaxDiffGlobal);
 			}
@@ -297,7 +305,7 @@ MaxDiffGlobal = 0.0;
 
 	// Velocity V
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMV[i - Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i - Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 		    for(k = 0; k < NZ; k++){
 				MaxDiffGlobal += (abs((V.Fut[LV(i,j,k,0)] - V.Pres[LV(i,j,k,0)])/(V.Pres[LV(i,j,k,0)] + 1e-10)) - MaxDiffGlobal)*(abs((V.Fut[LV(i,j,k,0)] - V.Pres[LV(i,j,k,0)])/(V.Pres[LV(i,j,k,0)] + 1e-10)) >= MaxDiffGlobal);
 			}
@@ -306,7 +314,7 @@ MaxDiffGlobal = 0.0;
 
 	// Velocity W
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMW[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 1; k < NZ; k++){
 				MaxDiffGlobal += (abs((W.Fut[LW(i,j,k,0)] - W.Pres[LW(i,j,k,0)])/(W.Pres[LW(i,j,k,0)] + 1e-10)) - MaxDiffGlobal)*(abs((W.Fut[LW(i,j,k,0)] - W.Pres[LW(i,j,k,0)])/(W.Pres[LW(i,j,k,0)] + 1e-10)) >= MaxDiffGlobal);
 			}
@@ -315,7 +323,7 @@ MaxDiffGlobal = 0.0;
 	
 	// Temperature T
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMP[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){
 				MaxDiffGlobal += (abs((T.Fut[LP(i,j,k,0)] - T.Pres[LP(i,j,k,0)])/(T.Pres[LP(i,j,k,0)] + 1e-10)) - MaxDiffGlobal)*(abs((T.Fut[LP(i,j,k,0)] - T.Pres[LP(i,j,k,0)])/(T.Pres[LP(i,j,k,0)] + 1e-10)) >= MaxDiffGlobal);
 			}
@@ -327,12 +335,12 @@ MaxDiffGlobal = 0.0;
 }
 
 // Function to update the matrix fields
-void Solver::Get_Update(){
+void Solver::Get_Update(Mesher MESH){
 int i, j, k;
 
 	// Velocity U
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = MESH.NY_ColumnMU[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){
 				U.Pres[LU(i,j,k,0)] = U.Fut[LU(i,j,k,0)];
             }
@@ -341,7 +349,7 @@ int i, j, k;
 
 	// Velocity V
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMV[i - Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i - Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 		    for(k = 0; k < NZ; k++){
 				V.Pres[LV(i,j,k,0)] = V.Fut[LV(i,j,k,0)];
             }
@@ -350,7 +358,7 @@ int i, j, k;
 
 	// Velocity W
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMW[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 1; k < NZ; k++){
 				W.Pres[LW(i,j,k,0)] = W.Fut[LW(i,j,k,0)];
             }
@@ -359,7 +367,7 @@ int i, j, k;
 	
 	// Temperature T
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMP[i - HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i - HP - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){
 				T.Pres[LP(i,j,k,0)] = T.Fut[LP(i,j,k,0)];
 				T.ContributionPast[LP(i,j,k,0)] = T.ContributionPres[LP(i,j,k,0)];
@@ -378,16 +386,18 @@ int i, j, k;
 
 	// Velocity U
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = MESH.NY_ColumnMU[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){	
 				
-				if (i != NX_1 && i != NX_1 + NX_2){
-					U_MatrixNew[LU(i,j,k,0)] = U_MatrixNew[LU(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
-				}
-				else if (i == NX_1){
+				// Core
+				U_MatrixNew[LU(i,j,k,0)] = U_MatrixNew[LU(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
+				
+				// Internal Left
+				if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 					U_MatrixNew[LU(i,j,k,0)] = U.I_Left[ILEFT(0,j,k)];
-				}	
-				else if (i == NX_1 + NX_2){
+				}
+				// Internal Right
+				else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
 					U_MatrixNew[LU(i,j,k,0)] = U.I_Right[IRIGHT(0,j,k)];
 				}
 
@@ -397,7 +407,7 @@ int i, j, k;
 
     if (Rango == 0){
 		i = 0;
-        for(j = MESH.NY_ColumnMU[0 - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[0 - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMU[0 + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[0 + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){		
 				U_MatrixNew[LU(0,j,k,0)] = U_MatrixNew[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
 			}
@@ -406,14 +416,14 @@ int i, j, k;
     else if (Rango == Procesos - 1){
 		i = NX;
 		if (Problema == "Premixed"){
-			for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
+			for(j = MESH.NY_ColumnMU[NX + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX + Halo - Ix[Rango]][1]; j++){
 		    	for(k = 0; k < NZ; k++){		
 					U_MatrixNew[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
 				}
 			}
 		}
 		else if (Problema == "NonPremixed"){
-			for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
+			for(j = MESH.NY_ColumnMU[NX + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX + Halo - Ix[Rango]][1]; j++){
 		    	for(k = 0; k < NZ; k++){		
 					U_MatrixNew[LU(NX,j,k,0)] = U_MatrixNew[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
 				}
@@ -423,7 +433,7 @@ int i, j, k;
 
     // Velocity V
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for(j = MESH.NY_ColumnMV[i - Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i - Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
         	for(k = 0; k < NZ; k++){		
 				V_MatrixNew[LV(i,j,k,0)] = V_MatrixNew[LV(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]);
 			}
@@ -432,7 +442,7 @@ int i, j, k;
 
     // Velocity W
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMW[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 1; k < NZ; k++){		
 				W_MatrixNew[LW(i,j,k,0)] = W_MatrixNew[LW(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]);
 			}
@@ -514,26 +524,28 @@ int i, j, k;
 
 	// Velocity U
     for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-        for(j = MESH.NY_ColumnMU[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){	
 
-				if (i != NX_1 && i != NX_1 + NX_2){
-					U.Fut[LU(i,j,k,0)] = U.Predictor[LU(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
-				}
-				else if (i == NX_1){
+				// Core
+				U.Fut[LU(i,j,k,0)] = U.Predictor[LU(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
+				
+				// Internal Left
+				if (i == NX_1 - 1 && j < NY - (NY_3 + NY_4)){
 					U.Fut[LU(i,j,k,0)] = U.I_Left[ILEFT(0,j,k)];
-				}	
-				else if (i == NX_1 + NX_2){
-					U.Fut[LU(i,j,k,0)] = U.I_Right[IRIGHT(0,j,k)];
 				}
-		
+				// Internal Right
+				else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
+					U.Fut[LU(i,j,k,0)] = U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0],k)];
+				}
+
 			}
 		}
 	}
 
     if (Rango == 0){
 		i = 0;
-        for(j = MESH.NY_ColumnMU[0 - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[0 - Halo - Ix[Rango]][1]; j++){
+        for(j = 0; j < NY; j++){
 		    for(k = 0; k < NZ; k++){		
 				U.Fut[LU(0,j,k,0)] = U.Predictor[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
 			}
@@ -543,16 +555,16 @@ int i, j, k;
 	if (Rango == Procesos - 1){
 		i = NX;
 		if (Problema == "Premixed"){
-			for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
+			for(j = MESH.NY_ColumnMU[NX + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX + Halo - Ix[Rango]][1]; j++){
 		    	for(k = 0; k < NZ; k++){		
 					U.Fut[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
 				}
 			}
 		}
 		else if (Problema == "NonPremixed"){
-			for(j = MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX - Halo - Ix[Rango]][1]; j++){
+			for(j = MESH.NY_ColumnMU[NX + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[NX + Halo - Ix[Rango]][1]; j++){
 		    	for(k = 0; k < NZ; k++){		
-					U.Fut[LU(NX,j,k,0)] = U.Predictor[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
+					U.Fut[LU(NX,j,k,0)] = U.Predictor[LU(i,j,k,0)]; 
 				}
 			}
 		} 
@@ -560,7 +572,7 @@ int i, j, k;
 
     // Velocity V
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for(j = MESH.NY_ColumnMV[i - Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i - Halo - Ix[Rango]][1] - 1; j++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
         	for(k = 0; k < NZ; k++){ 		
 				V.Fut[LV(i,j,k,0)] = V.Predictor[LV(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]);
 			}
@@ -569,14 +581,14 @@ int i, j, k;
 
     // Velocity W
     for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMW[i - Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i - Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 1; k < NZ; k++){		
 				W.Fut[LW(i,j,k,0)] = W.Predictor[LW(i,j,k,0)] - (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]);
 			}
 		}
 	}
 
-	Get_UpdateBoundaryConditions_Velocities(U.Fut, V.Fut, W.Fut);
-	Get_UpdateHalos_Velocity(U.Fut, V.Fut, W.Fut);
+	Get_UpdateBoundaryConditions_Velocities(MESH, U.Fut, V.Fut, W.Fut);
+	Get_UpdateHalos_Velocity(MESH, U.Fut, V.Fut, W.Fut);
 
 }
