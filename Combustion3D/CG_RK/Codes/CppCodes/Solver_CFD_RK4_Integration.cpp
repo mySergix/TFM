@@ -53,7 +53,7 @@ int i, j, k;
 
 	// Velocity V
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+        for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 		    for(k = 0; k < NZ; k++){
 				Contribution_Matrix_V[LV(i,j,k,0)] = DeltaT * (V.Diffusive[LV(i,j,k,0)] - V.Convective[LV(i,j,k,0)] + V.Boussinesq[LV(i,j,k,0)]);
 			}
@@ -100,7 +100,7 @@ int i, j, k;
         Get_RK_VelocityContributions(MESH, U.K1, V.K1, W.K1);
         
     // 3. Calculo Nueva Velocidad
-
+	
         // Intermediate Velocity Predictor U
         for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
             for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
@@ -112,7 +112,7 @@ int i, j, k;
 
         // Intermediate Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){  
 				    V.New_Velocity[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.a21 * V.K1[LV(i,j,k,0)];
 			    }
@@ -130,7 +130,7 @@ int i, j, k;
 
 	// 4. Intermediate Velocities Correction
 	
-		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+		//Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
     // 5. Calculo Diffusion + Convection + Boussinesq
 
@@ -159,7 +159,7 @@ int i, j, k;
     // 6. Calculo K2;
 
         Get_RK_VelocityContributions(MESH, U.K2, V.K2, W.K2);
-
+	
     // 7. Calculo Nueva Velocidad
 
         // Intermediate Velocity Predictor U
@@ -191,7 +191,7 @@ int i, j, k;
 
 	// 8. Intermediate Velocities Correction
 	
-		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+		//Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
     // 9. Calculo Diffusion + Convection + Boussinesq
 
@@ -252,7 +252,7 @@ int i, j, k;
 
 	// 12. Intermediate Velocities Correction
 	
-		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+		//Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
 
 	// 13. Calculo Diffusion + Convection + Boussinesq
 
@@ -281,7 +281,7 @@ int i, j, k;
     // 14. Calculo K4;
 
         Get_RK_VelocityContributions(MESH, U.K4, V.K4, W.K4);
-
+	
     // 15. Calculo predictora final
 
         // Velocity Predictor U
@@ -295,7 +295,7 @@ int i, j, k;
 
         // Velocity Predictor V
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
-			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - 1; j++){
+			for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 		    	for(k = 0; k < NZ; k++){ 
 				    V.Predictor[LV(i,j,k,0)] = V.Pres[LV(i,j,k,0)] + RK.b1 * V.K1[LV(i,j,k,0)] + RK.b2 * V.K2[LV(i,j,k,0)] + RK.b3 * V.K3[LV(i,j,k,0)] + RK.b4 * V.K4[LV(i,j,k,0)];
 			    }

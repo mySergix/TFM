@@ -369,7 +369,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
                     vE = 0.0;
                 }
                 // Internal Right
-				else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
+				else if (i == NX_1 + NX_2 && j < NY - (NY_3 + NY_4)){
                     uW = 0.0;
                     vW = 0.0;
                 }
@@ -414,7 +414,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
                 vE = 0.0;
             }
             // Internal Right
-			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
+			else if (i == NX_1 + NX_2 && j < NY - (NY_3 + NY_4)){
                 uW = 0.0;
                 vW = 0.0;
             }
@@ -458,7 +458,7 @@ double uW, uE, vW, vE, vS, vN, wH, wT, vH, vT;
                 vE = 0.0;
             }
             // Internal Right
-			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
+			else if (i == NX_1 + NX_2 && j < NY - (NY_3 + NY_4)){
                 uW = 0.0;
                 vW = 0.0;
             }
@@ -701,7 +701,7 @@ double wH, wT, uW, uE, wW, wE, vS, vN, wS, wN;
                     wE = 0.0;
                 }
                 // Internal Right
-				else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
+				else if (i == NX_1 + NX_2 && j < NY - (NY_3 + NY_4)){
                     uW = 0.0;
                     wW = 0.0;
                 }
@@ -746,7 +746,7 @@ double wH, wT, uW, uE, wW, wE, vS, vN, wS, wN;
                 wE = 0.0;
             }
             // Internal Right
-			else if (i == NX_1 + NX_2 + 1 && j < NY - (NY_3 + NY_4)){
+			else if (i == NX_1 + NX_2 && j < NY - (NY_3 + NY_4)){
                 uW = 0.0;
                 wW = 0.0;
             }

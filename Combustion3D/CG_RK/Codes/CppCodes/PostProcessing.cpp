@@ -37,6 +37,25 @@ PostProcessing::PostProcessing(Memory M1, ReadData R1, Mesher MESH, Parallel P1)
 // Files of the class
 #include "Matrix_Index.cpp"
 
+// Function to set the global halos of the vectorial matrix
+void PostProcessing::Get_GlobalVectorialHalos(double *U_matrix, double *V_Matrix, double *W_Matrix){
+int i, j, k;
+
+    // Velocity V
+    for (j = 0; j < NY + 1; j++){
+        for (k = 0; k < NZ + 1; k++){
+            V_Matrix[GV(NX,j,k,0)] = V_Matrix[GV(NX-1,j,k,0)];
+        }
+    }
+
+    for (i = 0; i < NX + 1; i++){
+        for (j = 0; j < NY + 1; j++){
+            V_Matrix[GV(i,j,NZ,0)] = V_Matrix[GV(i,j,NZ-1,0)];
+        }
+    }
+
+}
+
 // Function to write a .VTK to see scalar fields results in Paraview
 void PostProcessing::VTK_GlobalScalar3D(string Carpeta, string Variable, string NombreFile, Mesher MESH, double *PropertyMatrix){
 int i, j, k;
@@ -75,7 +94,8 @@ int i, j, k;
 	for(k = 0; k < NZ + 1; k++){
 		for(j = 0; j < NY + 1; j++){
 			for(i = 0; i < NX + 1; i++){
-				file<<(1.0 / 6.0) * (PropertyMatrix[GP(i-1,j,k,0)] + PropertyMatrix[GP(i,j-1,k,0)] + PropertyMatrix[GP(i,j,k-1,0)] + PropertyMatrix[GP(i,j,k,0)] + PropertyMatrix[GP(i,j,k,0)] + PropertyMatrix[GP(i,j,k,0)])<<" ";
+                file<<PropertyMatrix[GP(i,j,k,0)]<<" ";
+				//file<<(1.0 / 6.0) * (PropertyMatrix[GP(i-1,j,k,0)] + PropertyMatrix[GP(i,j-1,k,0)] + PropertyMatrix[GP(i,j,k-1,0)] + PropertyMatrix[GP(i,j,k,0)] + PropertyMatrix[GP(i,j,k,0)] + PropertyMatrix[GP(i,j,k,0)])<<" ";
 			}
 		}
 	}

@@ -55,7 +55,7 @@ int i, j, k;
 	
 	Get_CSR_LaplacianMatrix();
 	Get_RHS_VectorIndex();
-
+	
 	MatCreate(PETSC_COMM_WORLD, &A_Matrix);
 	
 	MatCreateMPIAIJWithArrays(PETSC_COMM_WORLD, m, n, PETSC_DECIDE, PETSC_DECIDE, Row_Ptr, Col_Ind, Val_Laplacian, &A_Matrix);
@@ -67,10 +67,10 @@ int i, j, k;
 	KSPSetOperators(ksp, A_Matrix, A_Matrix);
 	KSPSetType(ksp, KSPCG);
 	KSPGetPC(ksp, &pc);
-	KSPSetTolerances(ksp, 1e-5, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
-	MatNullSpaceCreate(PETSC_COMM_WORLD, PETSC_TRUE, 0, 0, &nullspace_Amatrix);
-	MatSetNullSpace(A_Matrix, nullspace_Amatrix);
-	MatSetTransposeNullSpace(A_Matrix, nullspace_Amatrix);
+	KSPSetTolerances(ksp, 1e-2, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
+	//MatNullSpaceCreate(PETSC_COMM_WORLD, PETSC_TRUE, 0, 0, &nullspace_Amatrix);
+	//MatSetNullSpace(A_Matrix, nullspace_Amatrix);
+	//MatSetTransposeNullSpace(A_Matrix, nullspace_Amatrix);
 	KSPSetFromOptions(ksp);
 	KSPSetUp(ksp);
 	
@@ -86,14 +86,18 @@ int i, j, k;
 	Get_InitialConditions(MESH);
     Get_StaticBoundaryConditions_Velocities(MESH);
 	Get_StaticHalos_Velocity(MESH, U.Pres, V.Pres, W.Pres);
-
+	Get_StaticHalos_Velocity(MESH, U.Fut, V.Fut, W.Fut);
+	Get_StaticHalos_Velocity(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+	
 	Get_UpdateBoundaryConditions_Velocities(MESH, U.Pres, V.Pres, W.Pres);
+	Get_UpdateBoundaryConditions_Velocities(MESH, U.Fut, V.Fut, W.Fut);
+
 	Get_UpdateHalos_Velocity(MESH, U.Pres, V.Pres, W.Pres);
+	Get_UpdateHalos_Velocity(MESH, U.Fut, V.Fut, W.Fut);
 
 	Get_StaticBoundaryConditions_Temperatures(MESH);
 	Get_StaticHalos_Temperatures(MESH, T.Pres);
 	
-
 	Get_DiffusiveTimeStep(MESH);
 
 	// Communication to global matrix at step 0
@@ -115,8 +119,8 @@ int i, j, k;
 		POST1.VTK_GlobalVectorial3D("DrivenCavity/", "Velocidades", FileName_1, MESH, Global.U, Global.V, Global.W);
 	}
 	
-	//MaxDiffGlobal >= ConvergenciaGlobal
-	while(Step < 10){
+	
+	while(MaxDiffGlobal >= ConvergenciaGlobal){
 		
 		// New Step
 		Step++;
@@ -127,10 +131,10 @@ int i, j, k;
         
 		// RK Integration (Velocity Predictor)
 		Get_RK_Integration(MESH, P1);
-				
+		
 		// Predictors Divergence
         Get_PredictorsDivergence(MESH);
-		/*
+		
 		// RHS Vector Assembly
 		VecSetValues(B_RHS, m, (const PetscInt*)RHS_Ind, (const PetscScalar*)RHS, INSERT_VALUES);
 		VecAssemblyBegin(B_RHS);
@@ -142,7 +146,7 @@ int i, j, k;
 
 		VecGetArray(X_Sol, &X_Sol_Array);
 		Get_LocalSolution();
-*/
+		
 		// New Velocities Calculation
 		Get_Velocities(MESH, P1);
 		
@@ -156,7 +160,7 @@ int i, j, k;
 		Get_ConvectionEnergy(MESH, T.Pres, U.Pres, V.Pres, W.Pres);
 		Get_EnergyContributions(MESH);
         Get_NewTemperatures(MESH);
-*/
+		*/
 
 		if (Step%1 == 0){
 			// Checking Convergence Criteria
@@ -174,7 +178,7 @@ int i, j, k;
 		Get_Update(MESH);
 		
 		if(Step%10 == 0){
-			/*
+			
 			// Pressure Halos
 			Get_PressureHalos();
 
@@ -188,6 +192,8 @@ int i, j, k;
 			// Print of .VTK files
 			if(Rango == 0){
 				
+				POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
+
 				sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
 				POST1.VTK_GlobalScalar3D("DrivenCavity/", "Presion", FileName_1, MESH, Global.P);
 		
@@ -198,12 +204,12 @@ int i, j, k;
 				POST1.VTK_GlobalVectorial3D("DrivenCavity/", "Velocidades", FileName_1, MESH, Global.U, Global.V, Global.W);
 		
 			}
-			*/
+			
 		}
 		
 	}
 
-/*
+
 	// Communication to global matrix
 	P1.SendMatrixToZeroMP(P.Pres, Global.P);
 	P1.SendMatrixToZeroMU(U.Fut, Global.U);
@@ -213,6 +219,8 @@ int i, j, k;
 
 	// Print of .VTK files
 	if(Rango == 0){		
+		
+		POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
 		
 		sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
 		POST1.VTK_GlobalScalar3D("DrivenCavity/", "Presion", FileName_1, MESH, Global.P);
@@ -230,7 +238,7 @@ int i, j, k;
 		cout<<endl;
 		
 	}
-	*/
+	
 /*
 	// Petsc Memory free
 	PetscFree(Val_Laplacian);
@@ -269,7 +277,7 @@ int i, j, k;
 		Delete_EnergyMemory(T);
 		Delete_PoissonMemory(A);
 		Delete_SolverMemory();
-		*/
+	*/	
 	if (Rango == 0){
 		cout<<endl;
 		cout<<"Memory Deleted."<<endl;

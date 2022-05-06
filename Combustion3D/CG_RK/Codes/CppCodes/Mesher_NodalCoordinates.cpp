@@ -37,11 +37,11 @@ double nz;
 					nx = NX_2;
 					// Regular
 					if (OptionX_2 == 1){
-						MU[LU(i,j,k,0)] = X_1 + (I - Ix[Rango] - NX_1) * (X_2 / nx);
+						MU[LU(i,j,k,0)] = X_1 + (I - NX_1) * (X_2 / nx);
 					}
 					// Right Sided - Hyperbolic Tangent
 					else if (OptionX_2 == 2){
-						MU[LU(i,j,k,0)] = X_1 + (X_2 / 2.0) * (tanh(SFX_2 * ((I - Ix[Rango] - NX_1) / nx)) / tanh(SFX_2));
+						MU[LU(i,j,k,0)] = X_1 + (X_2 / 2.0) * (tanh(SFX_2 * ((I - NX_1) / nx)) / tanh(SFX_2));
 					}
 
 				}
@@ -50,19 +50,19 @@ double nz;
 					nx = NX_3;
 					// Regular
 					if (OptionX_3 == 1){
-						MU[LU(i,j,k,0)] = X_1 + X_2 + (I - Ix[Rango] - (NX_1 + NX_2)) * (X_3 / nx);
+						MU[LU(i,j,k,0)] = X_1 + X_2 + (I - (NX_1 + NX_2)) * (X_3 / nx);
 					}
 					// Right Sided - Hyperbolic Tangent
 					else if (OptionX_3 == 2){
-						MU[LU(i,j,k,0)] = X_1 + X_2 + (X_3 / 2.0) * (tanh(SFX_3 * ((I - Ix[Rango] - (NX_1 + NX_2)) / nx)) / tanh(SFX_3));
+						MU[LU(i,j,k,0)] = X_1 + X_2 + (X_3 / 2.0) * (tanh(SFX_3 * ((I - (NX_1 + NX_2)) / nx)) / tanh(SFX_3));
 					}
 					// Left Sided - Hyperbolic Tangent
 					else if (OptionX_3 == 3){
-						MU[LU(i,j,k,0)] = X_1 + X_2 + (X_3 / 2.0) * (tanh(SFX_3 * ((nx - (I - Ix[Rango] - (NX_1 + NX_2))) / nx)) / tanh(SFX_3));
+						MU[LU(i,j,k,0)] = X_1 + X_2 + (X_3 / 2.0) * (tanh(SFX_3 * ((nx - (I - (NX_1 + NX_2))) / nx)) / tanh(SFX_3));
 					}
 					// Centered - Hyperbolic Tangent
 					else if (OptionX_3 == 4){
-						MU[LU(i,j,k,0)] = X_1 + X_2 + (X_3 / 2.0) * (tanh(SFX_3 * (((2.0 * (I - Ix[Rango] - (NX_1 + NX_2))) - nx) / nx)) / tanh(SFX_3));
+						MU[LU(i,j,k,0)] = X_1 + X_2 + (X_3 / 2.0) * (tanh(SFX_3 * (((2.0 * (I - (NX_1 + NX_2))) - nx) / nx)) / tanh(SFX_3));
 					}
 				}
 

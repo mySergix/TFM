@@ -33,6 +33,8 @@ class PostProcessing{
 		int *Fx;
 
 		//Metodos de la clase
+		void Get_GlobalVectorialHalos(double*, double*, double*);
+
 		void VTK_GlobalScalar3D(string, string, string, Mesher, double*);
 		void VTK_GlobalVectorial3D(string, string, string, Mesher, double*, double*, double*);
 

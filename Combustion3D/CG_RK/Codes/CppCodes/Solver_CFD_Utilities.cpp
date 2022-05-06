@@ -17,8 +17,8 @@ double I;
 	
 	// Velocity U
 	for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		for(j = 0; j < NY; j++){
-			for(k = 0; k < NZ; k++){	
+		for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+			for(k = 0; k < NZ + 1; k++){	
 				U.Pres[LU(i,j,k,0)] = 0.0;
 				U.Fut[LU(i,j,k,0)] = 0.0;
 
@@ -32,9 +32,9 @@ double I;
 	}
 	
     // Velocity V
-	for(i = Ix[Rango]; i < Fx[Rango]; i++){
-		for(j = 0; j < NY + 1; j++){
-			for(k = 0; k < NZ; k++){	
+	for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1]; j++){
+			for(k = 0; k < NZ + 1; k++){	
 				V.Pres[LV(i,j,k,0)] = 0.0;
 				V.Fut[LV(i,j,k,0)] = 0.0;
 
@@ -108,7 +108,7 @@ DiffusiveDeltaT = 1000.0;
 	// Diffusive U Velocity
 	for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
 		for (j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
-			for (k = 0; k < NZ + 1; k++){
+			for (k = 0; k < NZ; k++){
 
 				// CFL Diffusive U
 				DiffusiveDeltaT += ((CourantFactor * Rho * pow(MESH.DeltasMU[LU(i,j,k,0)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,0)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
@@ -122,7 +122,7 @@ DiffusiveDeltaT = 1000.0;
 	// Diffusive V Velocity
 	for (i = Ix[Rango]; i < Fx[Rango]; i++){
 		for (j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1]; j++){
-			for (k = 0; k < NZ + 1; k++){
+			for (k = 0; k < NZ; k++){
 
 				// CFL Diffusive V
 				DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu + 1e-10) <= DiffusiveDeltaT);
@@ -320,7 +320,7 @@ MaxDiffGlobal = 0.0;
 			}
 		}
 	}
-	
+	/*
 	// Temperature T
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
         for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
@@ -329,7 +329,7 @@ MaxDiffGlobal = 0.0;
 			}
 		}
 	}
-	
+	*/
 	MPI_Allreduce(&MaxDiffGlobal, &MaxDiffGlobal, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
 }
@@ -547,7 +547,7 @@ int i, j, k;
 		i = 0;
         for(j = 0; j < NY; j++){
 		    for(k = 0; k < NZ; k++){		
-				U.Fut[LU(0,j,k,0)] = U.Predictor[LU(i,j,k,0)] + (DeltaT / Rho) * ((P.Pres[LP(i,j,k,0)] - P.Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]); 
+				U.Fut[LU(0,j,k,0)] = U.Predictor[LU(0,j,k,0)]; 
 			}
 		}
     }
