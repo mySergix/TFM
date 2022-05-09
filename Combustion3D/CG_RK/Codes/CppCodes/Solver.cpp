@@ -74,14 +74,14 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	Int_Left = false;
     Int_Right = false;
 
-	CourantFactor = 0.80;
+	CourantFactor = 0.60;
 	// Courant Factor -> Driven ----- RK3 ->(0.80 max) ----- RK4 ->(1.10 max) 
 	//				  -> Differentially ----- RK3 ->( max) ----- RK4 ->(0.70 max) 
 
     // Datos Físicos del Problema
 	Rho = 1.0;
 	Uref = 1.0;
-	Reynolds = 200;
+	Reynolds = 100;
 	
 	Prandtl = R1.ProblemPhysicalData[5];
 	K = 1.0;

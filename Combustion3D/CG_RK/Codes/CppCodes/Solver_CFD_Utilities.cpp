@@ -132,7 +132,7 @@ DiffusiveDeltaT = 1000.0;
 			}
 		}
 	}
-
+/*
 	// Diffusive W Velocity
 	for (i = Ix[Rango]; i < Fx[Rango]; i++){
 		for (j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
@@ -146,7 +146,7 @@ DiffusiveDeltaT = 1000.0;
 			}
 		}
 	}
-
+*/
 	/*
 	// Heat Diffusion Time Step
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){	

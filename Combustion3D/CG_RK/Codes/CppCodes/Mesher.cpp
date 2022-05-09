@@ -15,11 +15,11 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	//Datos Numéricos del problema
 	Problema = "Premixed";
 
-	NX_1 = 20;
-	NX_2 = 30;
+	NX_1 = 40;
+	NX_2 = 20;
 	NX_3 = 60;
 
-	NY_1 = 20;
+	NY_1 = 40;
 	NY_2 = 20;
 	NY_3 = 50;
 	NY_4 = 50;
@@ -37,13 +37,13 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 			// 3 -> Down Sided - Hyperbolic Tangent (More Density on the Down)
 			// 4 -> Centered Sided - Hyperbolic Tangent (More Density on both Sides)
 
-	OptionX_1 = 2;
+	OptionX_1 = 1;
 	OptionX_2 = 1;
 	OptionX_3 = 1;
 
-	OptionY_1 = 2;
-	OptionY_2 = 2;
-	OptionY_3 = 3;
+	OptionY_1 = 1;
+	OptionY_2 = 1;
+	OptionY_3 = 1;
 	OptionY_4 = 1;
 
 	OptionZ = 1;
