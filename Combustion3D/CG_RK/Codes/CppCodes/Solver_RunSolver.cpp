@@ -8,11 +8,11 @@ int i, j, k;
 
 	// PETSc Library
 	PetscMPIInt rank, size;
-	PetscInt	m = (Fx[Rango] - Ix[Rango]) * (NY) * (NZ); // Number of local rows
-	PetscInt	n = (Fx[Rango] - Ix[Rango]) * (NY) * (NZ); // Number of local columns
+	PetscInt	m = ProcessNodesP; // Number of local rows
+	PetscInt	n = ProcessNodesP; // Number of local columns
 
-	PetscInt	M = (NX) * (NY) * (NZ); // Number of global rows
-	PetscInt	N = (NX) * (NY) * (NZ); // Number of global columns
+	PetscInt	M = TotalNodesP; // Number of global rows
+	PetscInt	N = TotalNodesP; // Number of global columns
  
 	KSP         ksp; // Krylov Subspace Solver
  	PC          pc; // Preconditioner
@@ -53,8 +53,8 @@ int i, j, k;
 	PetscMalloc1(m, &RHS_Ind);  
 	PetscMalloc1(m, &RHS);  
 	
-	Get_CSR_LaplacianMatrix();
-	Get_RHS_VectorIndex();
+	Get_CSR_LaplacianMatrix(MESH);
+	Get_RHS_VectorIndex(MESH);
 	
 	MatCreate(PETSC_COMM_WORLD, &A_Matrix);
 	
@@ -67,10 +67,10 @@ int i, j, k;
 	KSPSetOperators(ksp, A_Matrix, A_Matrix);
 	KSPSetType(ksp, KSPCG);
 	KSPGetPC(ksp, &pc);
-	KSPSetTolerances(ksp, 1e-2, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
-	//MatNullSpaceCreate(PETSC_COMM_WORLD, PETSC_TRUE, 0, 0, &nullspace_Amatrix);
-	//MatSetNullSpace(A_Matrix, nullspace_Amatrix);
-	//MatSetTransposeNullSpace(A_Matrix, nullspace_Amatrix);
+	KSPSetTolerances(ksp, 1e-4, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
+	MatNullSpaceCreate(PETSC_COMM_WORLD, PETSC_TRUE, 0, 0, &nullspace_Amatrix);
+	MatSetNullSpace(A_Matrix, nullspace_Amatrix);
+	MatSetTransposeNullSpace(A_Matrix, nullspace_Amatrix);
 	KSPSetFromOptions(ksp);
 	KSPSetUp(ksp);
 	
@@ -85,6 +85,7 @@ int i, j, k;
     // Initial Simulation settings
 	Get_InitialConditions(MESH);
     Get_StaticBoundaryConditions_Velocities(MESH);
+
 	Get_StaticHalos_Velocity(MESH, U.Pres, V.Pres, W.Pres);
 	Get_StaticHalos_Velocity(MESH, U.Fut, V.Fut, W.Fut);
 	Get_StaticHalos_Velocity(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
@@ -119,8 +120,8 @@ int i, j, k;
 		POST1.VTK_GlobalVectorial3D("DrivenCavity/", "Velocidades", FileName_1, MESH, Global.U, Global.V, Global.W);
 	}
 	
-	
-	while(MaxDiffGlobal >= ConvergenciaGlobal){
+	//MaxDiffGlobal >= ConvergenciaGlobal
+	while(Step < 2000){
 		
 		// New Step
 		Step++;
@@ -139,13 +140,13 @@ int i, j, k;
 		VecSetValues(B_RHS, m, (const PetscInt*)RHS_Ind, (const PetscScalar*)RHS, INSERT_VALUES);
 		VecAssemblyBegin(B_RHS);
 		VecAssemblyEnd(B_RHS);
-			
+		
 		// Poisson System Resolution
         
 		KSPSolve(ksp, B_RHS, X_Sol);
 
 		VecGetArray(X_Sol, &X_Sol_Array);
-		Get_LocalSolution();
+		Get_LocalSolution(MESH);
 		
 		// New Velocities Calculation
 		Get_Velocities(MESH, P1);
@@ -162,7 +163,7 @@ int i, j, k;
         Get_NewTemperatures(MESH);
 		*/
 
-		if (Step%1 == 0){
+		if (Step%10 == 0){
 			// Checking Convergence Criteria
 			Get_Stop(MESH);
 
@@ -177,7 +178,7 @@ int i, j, k;
 		// Fields Update
 		Get_Update(MESH);
 		
-		if(Step%10 == 0){
+		if(Step%100 == 0){
 			
 			// Pressure Halos
 			Get_PressureHalos();
@@ -192,6 +193,7 @@ int i, j, k;
 			// Print of .VTK files
 			if(Rango == 0){
 				
+				POST1.Get_GlobalScalarHalos(MESH, Global.P);
 				POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
 
 				sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
@@ -208,7 +210,7 @@ int i, j, k;
 		}
 		
 	}
-
+	
 
 	// Communication to global matrix
 	P1.SendMatrixToZeroMP(P.Pres, Global.P);
@@ -220,6 +222,7 @@ int i, j, k;
 	// Print of .VTK files
 	if(Rango == 0){		
 		
+		POST1.Get_GlobalScalarHalos(MESH, Global.P);
 		POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
 		
 		sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
@@ -232,7 +235,10 @@ int i, j, k;
 		POST1.VTK_GlobalScalar3D("DrivenCavity/", "Temperatura", FileName_1, MESH, Global.T);
 
 		// Post Processing Calculations
-		
+		for (j = 0; j < NY_1 + NY_2; j++){
+			cout<<Global.P[GP(NX_1-2,j,NZ/2,0)]<<", "<<Global.P[GP(NX_1-1,j,NZ/2,0)]<<endl;
+		}
+
 		// Solver Completed
 		cout<<"Solver Completed"<<endl;
 		cout<<endl;

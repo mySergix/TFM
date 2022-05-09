@@ -18,6 +18,15 @@ PostProcessing::PostProcessing(Memory M1, ReadData R1, Mesher MESH, Parallel P1)
     NY = MESH.NY;
     NZ = MESH.NZ;
 
+    NX_1 = MESH.NX_1;
+	NX_2 = MESH.NX_2;
+	NX_3 = MESH.NX_3;
+
+	NY_1 = MESH.NY_1;
+	NY_2 = MESH.NY_2;
+	NY_3 = MESH.NY_3;
+	NY_4 = MESH.NY_4;
+
 	Halo = 2;
 	HP = 2;
 
@@ -36,6 +45,74 @@ PostProcessing::PostProcessing(Memory M1, ReadData R1, Mesher MESH, Parallel P1)
 
 // Files of the class
 #include "Matrix_Index.cpp"
+
+// Function to set the global halos of a scalar matrix
+void PostProcessing::Get_GlobalScalarHalos(Mesher MESH, double *ScalarMatrix){
+int i, j, k;
+
+    // Right
+    for (j = 0; j < NY; j++){
+        for (k = 0; k < NZ; k++){
+            ScalarMatrix[GP(NX,j,k,0)] = ScalarMatrix[GP(NX-1,j,k,0)];
+        }
+    }
+
+    // Top
+    for (i = 0; i < NX; i++){
+        for (k = 0; k < NZ; k++){
+            ScalarMatrix[GP(i,NY,k,0)] = ScalarMatrix[GP(i,NY-1,k,0)];
+        }
+    }
+
+    // There
+    for (i = 0; i < NX; i++){
+        for (j = 0; j < NY; j++){
+            ScalarMatrix[GP(i,j,NZ,0)] = ScalarMatrix[GP(i,j,NZ-1,0)];
+        }
+    }
+
+    // Top - There Corner
+    for (i = 0; i < NX; i++){
+        ScalarMatrix[GP(i,NY,NZ,0)] = 0.50 * (ScalarMatrix[GP(i,NY-1,NZ,0)] + ScalarMatrix[GP(i,NY,NZ-1,0)]);
+    }
+
+    // Right - Top Corner
+    for (k = 0; k < NZ; k++){
+        ScalarMatrix[GP(NX,NY,k,0)] = 0.50 * (ScalarMatrix[GP(NX-1,NY,k,0)] + ScalarMatrix[GP(NX,NY-1,k,0)]);
+    }
+
+    // Right - There Corner
+    for (j = 0; j < NY; j++){
+        ScalarMatrix[GP(NX,j,NZ,0)] = 0.50 * (ScalarMatrix[GP(NX-1,j,NZ,0)] + ScalarMatrix[GP(NX,j,NZ-1,0)]);
+    }
+
+    // Top - There - Right Corner
+    ScalarMatrix[GP(NX,NY,NZ,0)] = (1.0 / 3.0) * (ScalarMatrix[GP(NX-1,NY,NZ,0)] + ScalarMatrix[GP(NX,NY,NZ-1,0)] + ScalarMatrix[GP(NX,NY-1,NZ,0)]);
+
+    // Solid Walls
+
+    // Int Left
+    for (j = MESH.GlobalNY_ColumnMP[NX_1 - 1][0]; j < MESH.GlobalNY_ColumnMP[NX_1 - 1][1]; j++){
+        for (k = 0; k < NZ + 1; k++){
+            ScalarMatrix[GP(NX_1,j,k,0)] = ScalarMatrix[GP(NX_1-1,j,k,0)];
+        }
+    }
+
+    // Int Right
+    for (j = MESH.GlobalNY_ColumnMP[NX_1 + NX_2][0]; j < MESH.GlobalNY_ColumnMP[NX_1 + NX_2][1]; j++){
+        for (k = 0; k < NZ + 1; k++){
+            ScalarMatrix[GP(NX_1 + NX_2 - 1,j,k,0)] = ScalarMatrix[GP(NX_1 + NX_2,j,k,0)];
+        }
+    }
+    
+    // Slit Wall
+    for (i = NX_1; i < NX_1 + NX_2; i++){
+        for (k = 0; k < NZ; k++){
+            ScalarMatrix[GP(i,MESH.GlobalNY_ColumnMP[i][0]-1,k,0)] = ScalarMatrix[GP(i,MESH.GlobalNY_ColumnMP[i][0],k,0)];
+        }
+    }
+
+}
 
 // Function to set the global halos of the vectorial matrix
 void PostProcessing::Get_GlobalVectorialHalos(double *U_matrix, double *V_Matrix, double *W_Matrix){

@@ -16,12 +16,12 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	Problema = "Premixed";
 
 	NX_1 = 20;
-	NX_2 = 10;
-	NX_3 = 30;
+	NX_2 = 30;
+	NX_3 = 60;
 
-	NY_1 = 30;
-	NY_2 = 10;
-	NY_3 = 40;
+	NY_1 = 20;
+	NY_2 = 20;
+	NY_3 = 50;
 	NY_4 = 50;
 
 	// Meshing options:
@@ -37,25 +37,25 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 			// 3 -> Down Sided - Hyperbolic Tangent (More Density on the Down)
 			// 4 -> Centered Sided - Hyperbolic Tangent (More Density on both Sides)
 
-	OptionX_1 = 1;
+	OptionX_1 = 2;
 	OptionX_2 = 1;
 	OptionX_3 = 1;
 
-	OptionY_1 = 1;
-	OptionY_2 = 1;
-	OptionY_3 = 1;
+	OptionY_1 = 2;
+	OptionY_2 = 2;
+	OptionY_3 = 3;
 	OptionY_4 = 1;
 
 	OptionZ = 1;
 
-	SFX_1 = 2.0;
-	SFX_2 = 2.0;
-	SFX_3 = 2.0;
+	SFX_1 = 1.5;
+	SFX_2 = 1.0;
+	SFX_3 = 1.5;
 
-	SFY_1 = 2.0;
-	SFY_2 = 2.0;
-	SFY_3 = 2.0;
-	SFY_4 = 2.0;
+	SFY_1 = 1.0;
+	SFY_2 = 1.2;
+	SFY_3 = 1.2;
+	SFY_4 = 1.5;
 
 	SFZ = 1.0;
 
@@ -351,12 +351,18 @@ int i;
 
 // Function to calculate the total number of nodes in the global mesh
 void Mesher::Get_TotalNodes(){
-int i;
-TotalNodesP = 0;
 
-	// Collocated Pressure Nodes
-	for (i = 0; i < NX; i++){
-		TotalNodesP += (GlobalNY_ColumnMP[i][1] - GlobalNY_ColumnMP[i][0]) * NZ;
+	MPI_Allreduce(&ProcessNodesP, &TotalNodesP, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
+}
+
+// Function to calculate the total number of nodes on each process
+void Mesher::Get_ProcessNodes(){
+int i, j, k;
+ProcessNodesP = 0;
+
+	for (i = Ix[Rango]; i < Fx[Rango]; i++){
+		ProcessNodesP += (NY_ColumnMP[i + HP - Ix[Rango]][1] - NY_ColumnMP[i + HP - Ix[Rango]][0]) * (NZ);
 	}
 
 }
@@ -652,11 +658,13 @@ char MeshName[Problema.length() + 5];
 	Get_Deltas(); // Cálculo de las distancias entre nodos en cada una de las matrices
 	Get_Surfaces(); // Cálculo de las superficies de cada uno de los volúmenes de control
 	Get_Volumes(); // Cálculo de los volúmenes de control de cada volúmen
-	
+	Get_ProcessNodes();
+	Get_TotalNodes(); // Calculation of global mesh total nodes
+
 	if(Rango == 0){	
 		Get_GlobalMesh(); // Creacion de la malla global
 		Get_GlobalColumnsNY(); // Seteo del numero de nodos por columna (Global)
-		Get_TotalNodes(); // Calculation of global mesh total nodes
+		
 		Get_GlobalDeltas(); // Calculo de las distancias entre nodos en cada matriz (Global)
 
 		strcpy(Prob, Problema.c_str());

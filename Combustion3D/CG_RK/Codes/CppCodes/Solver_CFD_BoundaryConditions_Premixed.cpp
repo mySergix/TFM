@@ -141,7 +141,25 @@ int i, j, k;
         i = NX;
         for (j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
-                //U.Predictor[LU(NX,j,k,0)] = U.Pres[LU(NX,j,k,0)];
+                U.Predictor[LU(NX,j,k,0)] = U.Right[RIGHT(NX,j,k)];
+            }
+        }
+    }
+
+    if (Int_Left == true){
+
+        for (j = 0; j < NY - (NY_3 + NY_4); j++){
+            for (k = 0; k < NZ; k++){
+                U.Predictor[LU(NX_1,j,k,0)] = 0.0;
+            }
+        }
+        
+    }
+
+    if (Int_Right == true){
+        for (j = NY_1; j < NY - (NY_3 + NY_4); j++){
+            for (k = 0; k < NZ; k++){
+                U.Predictor[LU(NX_1 + NX_2,j,k,0)] = 0.0;
             }
         }
     }
@@ -160,17 +178,19 @@ int i, j, k;
         }
     }
 
+    
+
     // Here (Null Gradient)
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
-            //W.Predictor[LW(i,j,0,0)] = W.Predictor[LW(i,j,1,0)];
+            W.Predictor[LW(i,j,0,0)] = W.Predictor[LW(i,j,1,0)];
         }
     }
 
     // There (Null Gradient)
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (j = MESH.NY_ColumnMW[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMW[i + Halo - Ix[Rango]][1]; j++){
-            //W.Predictor[LW(i,j,NZ,0)] = W.Predictor[LW(i,j,NZ-1,0)];
+            W.Predictor[LW(i,j,NZ,0)] = W.Predictor[LW(i,j,NZ-1,0)];
         }
     }
 
@@ -202,18 +222,18 @@ int i, j, k;
     if (Int_Left){
         
         for (i = NX_1; i < NX_1 + Halo; i++){
-            for(j = 0; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = 0; j < NY - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
-                    V_Matrix[LV(i,j,k,0)] = V.I_Left[ILEFT(0,j,k)];
-                    W_Matrix[LW(i,j,k,0)] = W.I_Left[ILEFT(0,j,k)];
+                    V_Matrix[LV(i,j,k,0)] = 0.0;
+                    W_Matrix[LW(i,j,k,0)] = 0.0;
 			    }
 		    }
         }
 		
         for (i = NX_1; i < NX_1 + Halo + 1; i++){
-            for(j = 0; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = 0; j < NY - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
-				    U_Matrix[LU(i,j,k,0)] = U.I_Left[ILEFT(0,j,k)];
+				    U_Matrix[LU(i,j,k,0)] = 0.0;
 			    }
 		    }
         }
@@ -225,8 +245,8 @@ int i, j, k;
         for (i = NX_1 + NX_2 - Halo; i < NX_1 + NX_2; i++){
             for(j = MESH.NY_ColumnMP[NX_1 + NX_2 + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[NX_1 + NX_2 + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
-                    V_Matrix[LV(i,j,k,0)] = V.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[NX_1 + NX_2 + Halo - Ix[Rango]][0],k)];
-                    W_Matrix[LW(i,j,k,0)] = W.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[NX_1 + NX_2 + Halo - Ix[Rango]][0],k)];
+                    V_Matrix[LV(i,j,k,0)] = 0.0;
+                    W_Matrix[LW(i,j,k,0)] = 0.0;
 			    }
 		    }
         }
@@ -234,7 +254,7 @@ int i, j, k;
 		for (i = NX_1 + NX_2 - Halo; i <= NX_1 + NX_2; i++){
             for(j = MESH.NY_ColumnMP[NX_1 + NX_2 + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[NX_1 + NX_2 + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
-				    U_Matrix[LU(i,j,k,0)] = U.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[NX_1 + NX_2 + Halo - Ix[Rango]][0],k)];
+				    U_Matrix[LU(i,j,k,0)] = 0.0;
 			    }
 		    }
         }

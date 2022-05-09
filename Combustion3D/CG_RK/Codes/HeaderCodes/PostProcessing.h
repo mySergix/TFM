@@ -22,6 +22,9 @@ class PostProcessing{
     	int NY;
     	int NZ;
 
+		int NX_1, NX_2, NX_3;
+		int NY_1, NY_2, NY_3, NY_4;
+		
 		int Halo;
 		int HP;
 		
@@ -33,6 +36,7 @@ class PostProcessing{
 		int *Fx;
 
 		//Metodos de la clase
+		void Get_GlobalScalarHalos(Mesher, double*);
 		void Get_GlobalVectorialHalos(double*, double*, double*);
 
 		void VTK_GlobalScalar3D(string, string, string, Mesher, double*);

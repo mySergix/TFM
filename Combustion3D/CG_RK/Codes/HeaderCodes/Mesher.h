@@ -39,6 +39,7 @@ class Mesher{
 		double SFZ;
 
 		int TotalNodesP;
+		int ProcessNodesP;
 
 		// Datos Geométricos del problema
 		double Width_Inlet;
@@ -119,6 +120,7 @@ class Mesher{
 		void Get_LocalColumnsNY();
 		void Get_GlobalColumnsNY();
 		void Get_TotalNodes();
+		void Get_ProcessNodes();
 
 		void Get_LocalMeshes(); //Creación de todas las mallas
 		void Get_GlobalMesh(); // Creation of global collocated meesh

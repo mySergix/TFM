@@ -34,6 +34,9 @@ class Solver{
 		int NX_1, NX_2, NX_3;
 		int NY_1, NY_2, NY_3, NY_4;
 
+        int ProcessNodesP;
+        int TotalNodesP;
+        
         // Geometry Data
 		double Width_Inlet;
 		double Width_Slit;
@@ -268,9 +271,11 @@ class Solver{
             // Poisson Coefficients
             void Get_PoissonCoefficients(Mesher);
             void Get_NonZero_NumberElements();
-            void Get_CSR_LaplacianMatrix();
-            void Get_RHS_VectorIndex();
-            void Get_LocalSolution();
+            int Get_GlobalIndCoefficient(Mesher, int, int, int);
+            int Get_LocalIndCoefficient(Mesher, int, int, int);
+            void Get_CSR_LaplacianMatrix(Mesher);
+            void Get_RHS_VectorIndex(Mesher);
+            void Get_LocalSolution(Mesher);
 
             // Momentum Diffusion
             void Get_DiffusionU(Mesher, double*);

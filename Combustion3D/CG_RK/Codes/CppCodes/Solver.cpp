@@ -32,6 +32,9 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	Halo = 2;
 	HP = 2;
 
+	ProcessNodesP = MESH.ProcessNodesP;
+	TotalNodesP = MESH.TotalNodesP;
+
 	// Geometry Data
     Width_Inlet = MESH.Width_Inlet; 
 	Width_Slit = MESH.Width_Slit;
@@ -78,7 +81,7 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
     // Datos Físicos del Problema
 	Rho = 1.0;
 	Uref = 1.0;
-	Reynolds = 100;
+	Reynolds = 200;
 	
 	Prandtl = R1.ProblemPhysicalData[5];
 	K = 1.0;
@@ -92,12 +95,8 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
     ConvergenciaGS = R1.ProblemData[3];
 	ConvergenciaGlobal = R1.ProblemData[4];
 
-	printf("Process number %d of %d with Ix = %d and Fx = %d \n", Rango, Procesos, Ix[Rango], Fx[Rango]);
-
-	//for (int i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-	//	cout<<"Inicio NY: "<<MESH.NY_ColumnMU[i - Halo - Ix[Rango]][0]<<endl;
-	//	cout<<"Final NY: "<<MESH.NY_ColumnMU[i - Halo - Ix[Rango]][1]<<endl;
-	//}
+	
+	printf("Process number %d of %d with Ix = %d and Fx = %d, LocalNodes: %d and GlobalNodes: %d \n", Rango, Procesos, Ix[Rango], Fx[Rango], ProcessNodesP, TotalNodesP);
 	
 }
 
