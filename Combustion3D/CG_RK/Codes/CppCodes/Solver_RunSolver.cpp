@@ -120,8 +120,7 @@ int i, j, k;
 		POST1.VTK_GlobalVectorial3D("DrivenCavity/", "Velocidades", FileName_1, MESH, Global.U, Global.V, Global.W);
 	}
 	
-	//MaxDiffGlobal >= ConvergenciaGlobal
-	while(Step < 2000){
+	while(MaxDiffGlobal >= ConvergenciaGlobal){
 		
 		// New Step
 		Step++;
@@ -178,7 +177,7 @@ int i, j, k;
 		// Fields Update
 		Get_Update(MESH);
 		
-		if(Step%100 == 0){
+		if(Step%200 == 0){
 			
 			// Pressure Halos
 			Get_PressureHalos();

@@ -16,13 +16,13 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	Problema = "Premixed";
 
 	NX_1 = 40;
-	NX_2 = 20;
-	NX_3 = 60;
+	NX_2 = 30;
+	NX_3 = 40;
 
-	NY_1 = 40;
+	NY_1 = 30;
 	NY_2 = 20;
-	NY_3 = 50;
-	NY_4 = 50;
+	NY_3 = 40;
+	NY_4 = 30;
 
 	// Meshing options:
 	// 1 -> Regular
@@ -39,22 +39,22 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 
 	OptionX_1 = 1;
 	OptionX_2 = 1;
-	OptionX_3 = 1;
+	OptionX_3 = 4;
 
-	OptionY_1 = 1;
+	OptionY_1 = 2;
 	OptionY_2 = 1;
-	OptionY_3 = 1;
+	OptionY_3 = 3;
 	OptionY_4 = 1;
 
 	OptionZ = 1;
 
 	SFX_1 = 1.5;
 	SFX_2 = 1.0;
-	SFX_3 = 1.5;
+	SFX_3 = 1.7;
 
 	SFY_1 = 1.0;
-	SFY_2 = 1.2;
-	SFY_3 = 1.2;
+	SFY_2 = 1.4;
+	SFY_3 = 1.6;
 	SFY_4 = 1.5;
 
 	SFZ = 1.0;
@@ -87,7 +87,7 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	Xdomain = X_1 + X_2 + X_3;
 	if (Problema == "Premixed"){ Ydomain = Y_1 + Y_2 + Y_3 + Y_4; }
 	else if (Problema == "NonPremixed"){ Ydomain = Y_2 + Y_3 + Y_4; }
-	Zdomain = 0.002;
+	Zdomain = 0.001;
 
 	//Datos necesarios para computación paralela
 	Rango = P1.Rango;

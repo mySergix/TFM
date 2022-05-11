@@ -245,7 +245,7 @@ class Solver{
             void Get_StepTime(Mesher);
             inline double ConvectiveScheme(double, double, double, double, double, double, double, double, double, double, string);  
             void Get_PredictorsDivergence(Mesher);
-            void Get_CorrectedVelocities(Mesher, Parallel, double*, double*, double*);
+            void Get_CorrectedVelocities(Mesher, Parallel, double*, double*, double*, double);
             void Get_Velocities(Mesher, Parallel);
             void Get_PressureHalos();
             void Get_Stop(Mesher);

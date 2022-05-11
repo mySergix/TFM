@@ -130,7 +130,7 @@ int i, j, k;
 
 	// 4. Intermediate Velocities Correction
 	
-		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity, RK.a21);
 
     // 5. Calculo Diffusion + Convection + Boussinesq
 
@@ -146,7 +146,7 @@ int i, j, k;
         // Diffusion Terms Calculation
         Get_DiffusionU(MESH, U.New_Velocity);
         Get_DiffusionV(MESH, V.New_Velocity);
-        Get_DiffusionW(MESH, W.New_Velocity);
+    	Get_DiffusionW(MESH, W.New_Velocity);
         
 		// Convective Terms Calculation
 		Get_ConvectionU(MESH, U.New_Velocity, V.New_Velocity, W.New_Velocity);
@@ -191,7 +191,7 @@ int i, j, k;
 
 	// 8. Intermediate Velocities Correction
 	
-		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity, RK.a32);
 
     // 9. Calculo Diffusion + Convection + Boussinesq
 
@@ -252,7 +252,7 @@ int i, j, k;
 
 	// 12. Intermediate Velocities Correction
 	
-		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity);
+		Get_CorrectedVelocities(MESH, P1, U.New_Velocity, V.New_Velocity, W.New_Velocity, RK.a43);
 
 	// 13. Calculo Diffusion + Convection + Boussinesq
 

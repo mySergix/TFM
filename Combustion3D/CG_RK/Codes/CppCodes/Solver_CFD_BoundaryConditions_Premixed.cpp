@@ -75,9 +75,9 @@ int i, j, k;
 
         for (j = 0; j < NY; j++){
             for (k = 0; k < NZ; k++){
-                U.Left[LEFT(0,j,k)] = U_Matrix[LU(0,j,k,0)];
+                U.Left[LEFT(0,j,k)] = 0.0;
                 V.Left[LEFT(0,j,k)] = V_Matrix[LV(0,j,k,0)];
-                W.Left[LEFT(0,j,k)] = W_Matrix[LW(0,j,k,0)];
+                W.Left[LEFT(0,j,k)] = 0.0;
             }
         }
 
@@ -131,7 +131,7 @@ int i, j, k;
         i = 0;
         for (j = 0; j < NY; j++){
             for (k = 0; k < NZ; k++){
-                //U.Predictor[LU(0,j,k,0)] = U.Pres[LU(0,j,k,0)];
+                U.Predictor[LU(0,j,k,0)] = U.Left[LEFT(0,j,k)];
             }
         }
     }

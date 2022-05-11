@@ -70,18 +70,11 @@ int i, j, k;
     // Left (Symmmetry)
     if (Rango == 0){
 
-        // Bottom
-        for (k = 0; k < NZ; k++){
-            U.Left[LEFT(0,0,k)] = U_Matrix[LU(0,0,k,0)];
-            V.Left[LEFT(0,0,k)] = Uref;
-            W.Left[LEFT(0,0,k)] = W_Matrix[LW(0,0,k,0)];
-        }
-
-        for (j = 1; j < NY; j++){
+        for (j = 0; j < NY; j++){
             for (k = 0; k < NZ; k++){
-                U.Left[LEFT(0,j,k)] = U_Matrix[LU(0,j,k,0)];
+                U.Left[LEFT(0,j,k)] = 0.0;
                 V.Left[LEFT(0,j,k)] = V_Matrix[LV(0,j,k,0)];
-                W.Left[LEFT(0,j,k)] = W_Matrix[LW(0,j,k,0)];
+                W.Left[LEFT(0,j,k)] = 0.0;
             }
         }
 
@@ -92,9 +85,9 @@ int i, j, k;
         i = NX - 1;
         for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
-                U.Right[RIGHT(NX,j,k)] = U_Matrix[LU(NX,j,k,0)];
+                U.Right[RIGHT(NX,j,k)] = 0.0;
                 V.Right[RIGHT(NX,j,k)] = V_Matrix[LV(NX-1,j,k,0)];
-                W.Right[RIGHT(NX,j,k)] = W_Matrix[LW(NX-1,j,k,0)];
+                W.Right[RIGHT(NX,j,k)] = 0.0;
             }
         }
     }   

@@ -74,14 +74,14 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	Int_Left = false;
     Int_Right = false;
 
-	CourantFactor = 0.60;
+	CourantFactor = 0.80;
 	// Courant Factor -> Driven ----- RK3 ->(0.80 max) ----- RK4 ->(1.10 max) 
 	//				  -> Differentially ----- RK3 ->( max) ----- RK4 ->(0.70 max) 
 
     // Datos Físicos del Problema
 	Rho = 1.0;
 	Uref = 1.0;
-	Reynolds = 100;
+	Reynolds = 10;
 	
 	Prandtl = R1.ProblemPhysicalData[5];
 	K = 1.0;
@@ -90,8 +90,11 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	V.Gravity = 0.0;
 	W.Gravity = 0.0;
 
-	mu = (Uref * Xdomain) / Reynolds;
+	mu = 0.00002; //(Uref * Xdomain) / Reynolds;
 	
+	Twalls = 298.0; // K
+    T_FlowInlet = 298.0; // K
+
     ConvergenciaGS = R1.ProblemData[3];
 	ConvergenciaGlobal = R1.ProblemData[4];
 
