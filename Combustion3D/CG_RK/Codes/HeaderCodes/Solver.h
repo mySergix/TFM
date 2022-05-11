@@ -73,7 +73,11 @@ class Solver{
 		double Uref;
         double Uref_NonPremixed;
 		double Reynolds;
-        double Twalls;
+        double Twalls_IntLeft;
+        double Twalls_IntRight;
+        double Twalls_Slit;
+        double Twalls_Burner;
+        
         double T_FlowInlet;
         
 		double Rayleigh;

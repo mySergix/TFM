@@ -118,18 +118,25 @@ int i, j, k;
 void PostProcessing::Get_GlobalVectorialHalos(double *U_matrix, double *V_Matrix, double *W_Matrix){
 int i, j, k;
 
+    // Velocity U
+
+
     // Velocity V
+
+    // Right
     for (j = 0; j < NY + 1; j++){
         for (k = 0; k < NZ + 1; k++){
             V_Matrix[GV(NX,j,k,0)] = V_Matrix[GV(NX-1,j,k,0)];
         }
     }
 
+    // There
     for (i = 0; i < NX + 1; i++){
         for (j = 0; j < NY + 1; j++){
             V_Matrix[GV(i,j,NZ,0)] = V_Matrix[GV(i,j,NZ-1,0)];
         }
     }
+
 
 }
 

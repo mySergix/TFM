@@ -12,8 +12,11 @@ int i, j, k;
             if (i < NX_1){
                 T.Bottom[BOTTOM(i,0,k)] = T_FlowInlet;
             }
-            else{
-                T.Bottom[BOTTOM(i,0,k)] = Twalls;
+            else if (i >= NX_1 && i < NX_1 + NX_2){
+                T.Bottom[BOTTOM(i,0,k)] = Twalls_Slit;
+            }
+            else {
+                T.Bottom[BOTTOM(i,0,k)] = Twalls_Burner;
             }
         }
     }
@@ -21,9 +24,9 @@ int i, j, k;
     // Internal Left
     if (Int_Left){
         i = NX_1 - 1;
-		for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
-				T.I_Left[ILEFT(0,j,k)] = Twalls;
+				T.I_Left[ILEFT(0,j,k)] = Twalls_IntLeft;
 			}
 		}
     }
@@ -31,9 +34,9 @@ int i, j, k;
     // Internal Right
     if (Int_Right){
 		i = NX_1 + NX_2 + 1;
-		for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+		for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			for(k = 0; k < NZ; k++){	
-				T.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)] = Twalls;
+				T.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + HP - Ix[Rango]][0],k)] = Twalls_IntRight;
 			}
 		}
 	}
@@ -41,9 +44,9 @@ int i, j, k;
     // Right
     if (Rango == Procesos - 1){ 
         i = NX - 1;
-        for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
-                T.Right[RIGHT(NX,j,k)] = Twalls;
+                T.Right[RIGHT(NX,j,k)] = Twalls_Burner;
             }
         }
     } 
@@ -92,7 +95,7 @@ int i, j, k;
 
     // Bottom
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for (j = - Halo; j < 0; j++){
+        for (j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0] - Halo; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j++){
             for (k = 0; k < NZ; k++){
                 T_Matrix[LP(i,j,k,0)] = T.Bottom[BOTTOM(i,0,k)];
             }
@@ -103,7 +106,7 @@ int i, j, k;
     if (Int_Left){
         
         for (i = NX_1; i < NX_1 + HP; i++){
-            for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = 0; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
                     T_Matrix[LP(i,j,k,0)] = T.I_Left[ILEFT(0,j,k)];
 			    }
@@ -114,9 +117,9 @@ int i, j, k;
     // Internal Right
     if (Int_Right){
         for (i = NX_1 + NX_2 - Halo; i < NX_1 + NX_2; i++){
-            for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1] - (NY_3 + NY_4); j++){
+            for(j = MESH.NY_ColumnMP[NX_1 + NX_2 + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[NX_1 + NX_2 + HP - Ix[Rango]][1] - (NY_3 + NY_4); j++){
 			    for(k = 0; k < NZ; k++){	
-                    T_Matrix[LP(i,j,k,0)] = T.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0],k)];
+                    T_Matrix[LP(i,j,k,0)] = T.I_Right[IRIGHT(0,j - MESH.NY_ColumnMP[NX_1 + NX_2 + HP - Ix[Rango]][0],k)];
 			    }
 		    }
         }
@@ -124,8 +127,8 @@ int i, j, k;
 
     // Right
     if (Rango == Procesos - 1){
-        for (i = Fx[Rango]; i < Fx[Rango] + Halo; i++){
-            for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+        for (i = Fx[Rango]; i < Fx[Rango] + HP; i++){
+            for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
                 for (k = 0; k < NZ; k++){
                     T_Matrix[LP(i,j,k,0)] = T.Right[RIGHT(NX,j,k)];
                 }
@@ -152,7 +155,7 @@ int i, j, k;
    
     // Top
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
-        for (j = NY; j < NY + Halo; j++){
+        for (j = NY; j < NY + HP; j++){
             for (k = 0; k < NZ; k++){
                 T_Matrix[LP(i,j,k,0)] = T.Top[TOP(i,NY,k)];
             }
@@ -171,7 +174,7 @@ int i, j, k;
     // There
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (j = 0; j < NY; j++){
-            for (k = NZ; k < NZ + Halo; k++){
+            for (k = NZ; k < NZ + HP; k++){
                 T_Matrix[LP(i,j,k,0)] = T.There[THERE(i,j,NZ)];
             }
         }

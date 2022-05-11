@@ -82,17 +82,20 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	Rho = 1.0;
 	Uref = 1.0;
 	Reynolds = 10;
-	
+	Cp = 1000.0;
 	Prandtl = R1.ProblemPhysicalData[5];
-	K = 1.0;
+	mu = 0.00002;
+	K = (Cp * mu) / Prandtl;
 	
 	U.Gravity = 0.0;
 	V.Gravity = 0.0;
 	W.Gravity = 0.0;
 
-	mu = 0.00002; //(Uref * Xdomain) / Reynolds;
-	
-	Twalls = 298.0; // K
+	Twalls_IntLeft = 398.0; // K
+    Twalls_IntRight = 298.0; // K
+    Twalls_Slit = 298.0; // K
+    Twalls_Burner = 298.0; // K
+
     T_FlowInlet = 298.0; // K
 
     ConvergenciaGS = R1.ProblemData[3];

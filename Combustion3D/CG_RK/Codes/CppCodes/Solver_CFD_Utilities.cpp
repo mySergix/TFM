@@ -67,8 +67,8 @@ double I;
 		I = i;
 		for(j = 0; j < NY; j++){
 			for(k = 0; k < NZ; k++){	
-				T.Pres[LP(i,j,k,0)] = Twalls;
-				T.Fut[LP(i,j,k,0)] = Twalls;
+				T.Pres[LP(i,j,k,0)] = T_FlowInlet;
+				T.Fut[LP(i,j,k,0)] = T_FlowInlet;
 
 				T.Convective[LP(i,j,k,0)] = 0.0;
 				T.Diffusive[LP(i,j,k,0)] = 0.0;	
@@ -147,7 +147,7 @@ DiffusiveDeltaT = 1000.0;
 		}
 	}
 
-	/*
+	
 	// Heat Diffusion Time Step
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){	
 		for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
@@ -165,7 +165,7 @@ DiffusiveDeltaT = 1000.0;
 			}
 		}
 	}
-	*/
+	
 
 	MPI_Allreduce(&DiffusiveDeltaT, &DiffusiveDeltaT, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
 
@@ -325,7 +325,7 @@ MaxDiffGlobal = 0.0;
 		}
 	}
 
-	/*
+	
 	// Temperature T
 	for(i = Ix[Rango]; i < Fx[Rango]; i++){
         for(j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
@@ -334,7 +334,7 @@ MaxDiffGlobal = 0.0;
 			}
 		}
 	}
-	*/
+	
 	MPI_Allreduce(&MaxDiffGlobal, &MaxDiffGlobal, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
 }

@@ -110,6 +110,12 @@ int i, j, k;
 
 	// Print of Step 0 .VTK files
 	if(Rango == 0){
+
+		POST1.Get_GlobalScalarHalos(MESH, Global.P);
+		POST1.Get_GlobalScalarHalos(MESH, Global.T);
+
+		POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
+
 		sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
 		POST1.VTK_GlobalScalar3D("DrivenCavity/", "Presion", FileName_1, MESH, Global.P);
 
@@ -150,7 +156,6 @@ int i, j, k;
 		// New Velocities Calculation
 		Get_Velocities(MESH, P1);
 		
-		/*
 		// New Temperatures Calculation
 		Get_UpdateBoundaryConditions_Temperatures(MESH, T.Pres);
 		Get_UpdateHalos_Temperatures(MESH, T.Pres);
@@ -160,8 +165,7 @@ int i, j, k;
 		Get_ConvectionEnergy(MESH, T.Pres, U.Pres, V.Pres, W.Pres);
 		Get_EnergyContributions(MESH);
         Get_NewTemperatures(MESH);
-		*/
-
+		
 		if (Step%10 == 0){
 			// Checking Convergence Criteria
 			Get_Stop(MESH);
@@ -193,6 +197,8 @@ int i, j, k;
 			if(Rango == 0){
 				
 				POST1.Get_GlobalScalarHalos(MESH, Global.P);
+				POST1.Get_GlobalScalarHalos(MESH, Global.T);
+
 				POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
 
 				sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
@@ -222,6 +228,8 @@ int i, j, k;
 	if(Rango == 0){		
 		
 		POST1.Get_GlobalScalarHalos(MESH, Global.P);
+		POST1.Get_GlobalScalarHalos(MESH, Global.T);
+		
 		POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
 		
 		sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
@@ -244,7 +252,7 @@ int i, j, k;
 		
 	}
 	
-/*
+
 	// Petsc Memory free
 	PetscFree(Val_Laplacian);
 	PetscFree(Col_Ind);
@@ -258,8 +266,8 @@ int i, j, k;
 	VecDestroy(&X_Sol);
 
 	MatDestroy(&A_Matrix);
-	*/
-/*
+	
+
 	// Classes Memory Delete
 
 		// ReadData Memory
@@ -282,7 +290,7 @@ int i, j, k;
 		Delete_EnergyMemory(T);
 		Delete_PoissonMemory(A);
 		Delete_SolverMemory();
-	*/	
+		
 	if (Rango == 0){
 		cout<<endl;
 		cout<<"Memory Deleted."<<endl;
