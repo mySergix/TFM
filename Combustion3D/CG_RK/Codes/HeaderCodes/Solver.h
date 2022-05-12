@@ -8,10 +8,12 @@
 #include <stdio.h>
 #include <cmath>
 #include <chrono>
+#include <algorithm>
 
 #include "petsc.h"
 
-#define N_Species 2
+#define N_Species 3
+#define N_Reactions 4
 
 using namespace std;
 
@@ -77,7 +79,7 @@ class Solver{
         double Twalls_IntRight;
         double Twalls_Slit;
         double Twalls_Burner;
-        
+
         double T_FlowInlet;
         
 		double Rayleigh;
@@ -211,6 +213,50 @@ class Solver{
             double b1, b2, b3, b4;
         };
 
+        struct Species_Struct
+        {
+            string Name; // Name of the species
+            double Wmolar; // Molar weight of the species
+            double Epsilon; // Characteristic Lennard-Jones energy
+            double Schmidt; // Schmidt number of the specie
+            double Lewis; // Lewis number of the specie
+
+            double sigma;
+
+            double InitialY; // Initial Mass Fraction in the domain
+
+            double *Y_Pres;
+            double *Y_Fut;
+
+            double *Convective;
+            double *Diffusive;
+
+            double *ContributionPast;
+            double *ContributionPres;
+
+            double *D_ab;
+
+            double *Bottom;
+            double *Top;
+
+            double *Here;
+            double *There;
+
+            double *Left;
+            double *Right;
+
+            // JANAF Terms
+            double *Cp_coeff;
+            double *h_coeff;
+            double *mu_coeff;
+            double *lambda_coeff;
+
+            // Chemical Terms
+            double *wk;
+
+            double *Global;
+        };
+
         struct Velocity_Struct U;
         struct Velocity_Struct V;
         struct Velocity_Struct W;
@@ -224,6 +270,7 @@ class Solver{
 
         struct Runge_Kutta RK;
 
+        struct Species_Struct Species[N_Species];
 
         // Class Functions
 
@@ -297,6 +344,48 @@ class Solver{
             void Get_BoussinesqV(Mesher, double*, double*);
             void Get_EnergyContributions(Mesher);
             void Get_NewTemperatures(Mesher);
+
+            // Species Transport Equation
+            void Allocate_StructSpecies(Memory);
+            void Delete_StructSpecies();
+
+            void Get_Species_StaticBoundaryConditions(Mesher);
+            void Get_Species_UpdateBoundaryConditions(Mesher);
+
+            void Get_Species_StaticHalos();
+            void Get_Species_UpdateHalos(Mesher);
+
+            void Get_Species_Convection(Mesher);
+
+            void Get_Species_DiffusionCoefficients();
+            void Get_Species_Diffusion(Mesher);
+
+            void Get_Species_InitialConditions();
+            void Get_SpeciesContributions(Mesher);
+            void Get_Species_MassFraction(Mesher);
+            void Get_Species_MassConservation(Mesher);
+
+            // Combustion Data Input
+            void Read_SpeciesName(string);
+            void Read_AllSpeciesData();
+            void Read_SpeciesInformation(Species_Struct&, string);
+
+            // Combustion JANAF Calculations
+            double JANAF_CpSpecie(double, int);
+            double JANAF_LambdaSpecies(double, int);
+            double JANAF_CpHeat(double, int, int, int);
+            double JANAF_AbsEnthalpy_Specie(int, double);
+            double JANAF_AbsEnthalpy_Specie_Mix(double, int, int, int);
+            double JANAF_DynViscosity(double, int, int, int);
+            double JANAF_ThermalCond(double, int, int, int);
+
+            void Get_DynamicViscosity();
+            void Get_ThermalConductivity();
+            void Get_CpHeat();
+
+            // Combustion-Related Calculations
+            void Allocate_StructReactions(Memory);
+            void Get_ReactionsEnergy(Mesher);
 
             // Run Solver
             void RunSolver(Memory, ReadData, Parallel, Mesher, PostProcessing);

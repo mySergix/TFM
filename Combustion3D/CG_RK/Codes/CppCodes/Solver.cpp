@@ -11,6 +11,9 @@
 #include "../HeaderCodes/PostProcessing.h"
 #include "../HeaderCodes/Solver.h"
 
+#define N_Species 3
+#define N_Reactions 4
+
 Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 
     //Datos Numéricos del problema
