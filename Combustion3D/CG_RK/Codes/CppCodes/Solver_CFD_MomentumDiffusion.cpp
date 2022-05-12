@@ -12,13 +12,13 @@ int i, j, k;
 		    for(k = 1; k < NZ - 1; k++){	
 
 				// Core
-				U.Diffusive[LU(i,j,k,0)] =  (mu/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
-                                         + MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
-                                         - MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
-										 + MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
-										 + MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
-										 - MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
+				U.Diffusive[LU(i,j,k,0)] =  (1.0/(Rho*MESH.VolMU[LU(i,j,k,0)]))*(
+                                         + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
+                                         - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
+										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
+                                         - 0.25 * (mu_visc[LP(i-1,j-1,k,0)] + mu_visc[LP(i,j-1,k,0)] + mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j-1,k,0)]) / MESH.DeltasMV[LV(i,j,k,1)]
+										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k+1,0)] + mu_visc[LP(i,j,k+1,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
+										 - 0.25 * (mu_visc[LP(i-1,j,k-1,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
 
 				// Internal Left
