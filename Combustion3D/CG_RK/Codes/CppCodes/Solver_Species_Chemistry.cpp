@@ -2,8 +2,22 @@
 //                       CPP FILE FOR SPECIES CHEMISTRY FUNCTIONS                                 //
 //------------------------------------------------------------------------------------------------//
 
-// Function to calculate the reaction rate of progress of each species
-void Solver::Get_Reactions_FourStepCH4(){
+// Function to calculate the reaction rate of progress of each species (4 Step - CH4)
+void Solver::Get_Reactions_OneStepCH4(Mesher MESH){
+int i, j, k, n, r;
+
+    for (i = Ix[Rango]; i < Fx[Rango]; i++){
+        for (j = 0; j < NY; j++){
+            for (k = 0; k < NZ; k++){
+
+            }
+        }
+    }
+
+}
+
+// Function to calculate the reaction rate of progress of each species (4 Step - CH4)
+void Solver::Get_Reactions_FourStepCH4(Mesher MESH){
 int i, j, k, n, r;
 double Q1, Q2, Q3, Q4;
 

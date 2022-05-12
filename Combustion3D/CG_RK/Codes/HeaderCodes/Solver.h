@@ -12,7 +12,7 @@
 
 #include "petsc.h"
 
-#define N_Species 3
+#define N_Species 5
 #define N_Reactions 4
 
 using namespace std;
@@ -386,6 +386,9 @@ class Solver{
             // Combustion-Related Calculations
             void Allocate_StructReactions(Memory);
             void Get_ReactionsEnergy(Mesher);
+
+            void Get_Reactions_OneStepCH4(Mesher);
+            void Get_Reactions_FourStepCH4(Mesher);
 
             // Run Solver
             void RunSolver(Memory, ReadData, Parallel, Mesher, PostProcessing);

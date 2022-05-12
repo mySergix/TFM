@@ -49,7 +49,7 @@ int i, j, k, n;
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
             for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
-				    Species[n].ContributionPres[LP(i,j,k,0)] = Species[n].Diffusive[LP(i,j,k,0)] - Species[n].Convective[LP(i,j,k,0)];
+				    Species[n].ContributionPres[LP(i,j,k,0)] = Species[n].Diffusive[LP(i,j,k,0)] - Species[n].Convective[LP(i,j,k,0)] + Species[n].wk[LP(i,j,k,0)];
 			    }
 		    }
 	    }
