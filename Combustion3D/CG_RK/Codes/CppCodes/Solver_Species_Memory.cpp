@@ -61,6 +61,19 @@ int n;
       		Species[N_Species-1].Global = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     	}
 
+		if (Rango == 0){
+			Species[N_Species-1].Left = M1.AllocateDouble(1, NY, NZ, 1);
+    	}
+    	else if (Rango == Procesos - 1){
+        	Species[N_Species-1].Right = M1.AllocateDouble(1, NY, NZ, 1);
+    	}
+
+    	Species[N_Species-1].Bottom = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2, 1, NZ, 1);
+    	Species[N_Species-1].Top = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2, 1, NZ, 1);
+
+    	Species[N_Species-1].Here = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2, NY, 1, 1);
+    	Species[N_Species-1].There = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2, NY, 1, 1);
+
 		// JANAF Terms
     	Species[N_Species-1].Cp_coeff = M1.AllocateDouble(10, 1, 1, 1);
     	Species[N_Species-1].h_coeff = M1.AllocateDouble(12, 1, 1, 1);

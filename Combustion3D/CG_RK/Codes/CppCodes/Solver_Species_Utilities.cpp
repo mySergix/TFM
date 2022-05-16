@@ -6,10 +6,25 @@
 void Solver::Get_Species_InitialConditions(Mesher MESH){
 int i, j, k, n;
 
-    for (n = 0; n < N_Species; n++){
+    // Species 0 - CH4
+    Species[0].InitialY = 0.0;
+
+    // Species 1 - O2
+    Species[1].InitialY = 0.21;
+
+    // Species 2 - CO2
+    Species[2].InitialY = 0.0;
+
+    // Species 3 - H2O
+    Species[3].InitialY = 0.0;
+
+    // Species 4 - N2
+    Species[4].InitialY = 0.79;
+
+    for (n = 0; n < N_Species - 1; n++){
 
         // Fluid Domain
-        for (i = Ix[Rango]; i < Fx[Rango]; i++){
+        for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
 		    for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
 			    for(k = 0; k < NZ; k++){	
 				    Species[n].Y_Pres[LP(i,j,k,0)] = Species[n].InitialY;
@@ -22,7 +37,7 @@ int i, j, k, n;
 	    }
         
         // Solid Domain
-        for (i = Ix[Rango]; i < Fx[Rango]; i++){
+        for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
             if (MESH.NY_ColumnMP[i + HP - Ix[Rango]][0] > 0){
                 for (j = 0; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j++){
                     for(k = 0; k < NZ; k++){	
@@ -38,6 +53,30 @@ int i, j, k, n;
 
     }
 		
+
+    // Species n = N_Species (N2)
+    n = N_Species - 1;
+
+    // Fluid Domain
+        for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
+		    for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
+			    for(k = 0; k < NZ; k++){	
+				    Species[n].Y_Pres[LP(i,j,k,0)] = Species[n].InitialY;
+			    }
+		    }
+	    }
+        
+        // Solid Domain
+        for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
+            if (MESH.NY_ColumnMP[i + HP - Ix[Rango]][0] > 0){
+                for (j = 0; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j++){
+                    for(k = 0; k < NZ; k++){	
+				        Species[n].Y_Pres[LP(i,j,k,0)] = 0.0;
+			        }
+                }
+            }  
+        }
+
 }
 
 // Function to Calculate the Species Equation contributions

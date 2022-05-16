@@ -126,8 +126,11 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 //#include "Solver_CFD_RK3_Integration.cpp"
 #include "Solver_CFD_RK4_Integration.cpp"
 
+#include "Solver_Species_Utilities.cpp"
 #include "Solver_Species_Memory.cpp"
 #include "Solver_Species_Read.cpp"
 #include "Solver_Species_JANAF.cpp"
+#include "Solver_Species_BoundaryConditions_Premixed.cpp"
+//#include "Solver_Species_BoundaryConditions_NonPremixed.cpp"
 #include "Solver_RunSolver.cpp"
 

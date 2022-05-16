@@ -89,6 +89,8 @@ int i, j, k, sp;
 	
     // Initial Simulation settings
 	Get_InitialConditions(MESH);
+	Get_Species_InitialConditions(MESH);
+
     Get_StaticBoundaryConditions_Velocities(MESH);
 
 	Get_StaticHalos_Velocity(MESH, U.Pres, V.Pres, W.Pres);
@@ -104,6 +106,9 @@ int i, j, k, sp;
 	Get_StaticBoundaryConditions_Temperatures(MESH);
 	Get_StaticHalos_Temperatures(MESH, T.Pres);
 	
+	Get_Species_StaticBoundaryConditions(MESH);
+	Get_Species_StaticHalos();
+
 	Get_DynamicViscosity(MESH);
 	Get_ThermalConductivity(MESH);
 	Get_CpHeat(MESH);
@@ -148,8 +153,10 @@ int i, j, k, sp;
 		}
 
 	}
-	/*
-	while(MaxDiffGlobal >= ConvergenciaGlobal){
+	
+	//MaxDiffGlobal >= ConvergenciaGlobal
+	
+	while(Step < 30){
 		
 		// New Step
 		Step++;
@@ -195,7 +202,13 @@ int i, j, k, sp;
 		Get_EnergyContributions(MESH);
         Get_NewTemperatures(MESH);
 		
-		if (Step%10 == 0){
+
+		// New Mass Fractions Calculation
+		Get_Species_UpdateBoundaryConditions(MESH);
+		Get_Species_UpdateHalos(MESH);
+
+
+		if (Step%1 == 0){
 			// Checking Convergence Criteria
 			Get_Stop(MESH);
 
@@ -270,10 +283,6 @@ int i, j, k, sp;
 		sprintf(FileName_1, "MapaTemperaturas_Step_%d", Step);
 		POST1.VTK_GlobalScalar3D("DrivenCavity/", "Temperatura", FileName_1, MESH, Global.T);
 
-		// Post Processing Calculations
-		for (j = 0; j < NY_1 + NY_2; j++){
-			cout<<Global.P[GP(NX_1-2,j,NZ/2,0)]<<", "<<Global.P[GP(NX_1-1,j,NZ/2,0)]<<endl;
-		}
 
 		// Solver Completed
 		cout<<"Solver Completed"<<endl;
@@ -319,7 +328,7 @@ int i, j, k, sp;
 		Delete_EnergyMemory(T);
 		Delete_PoissonMemory(A);
 		Delete_SolverMemory();
-		*/
+		
 	if (Rango == 0){
 		cout<<endl;
 		cout<<"Memory Deleted."<<endl;

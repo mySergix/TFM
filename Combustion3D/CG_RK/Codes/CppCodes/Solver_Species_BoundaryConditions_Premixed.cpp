@@ -76,6 +76,7 @@ int i, j, k, n;
 
     // Right (Burner Wall)
     if (Rango == Procesos - 1){
+        i = NX - 1;
         for (n = 0; n < N_Species; n++){
 
             for (j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
@@ -150,14 +151,18 @@ int i, j, k, n;
     // Bottom
     if (Fx[Rango] >= NX_1){
 
-        for (i = max(Ix[Rango],NX_1); i < Fx[Rango]; i++){
-            for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0] - HP; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j++){
-                for (k = 0; k < NZ; k++){
-                    Species[n].Y_Pres[LP(i,j,k,0)] = Species[n].Bottom[BOTTOM(i,0,k)];   
+        for (n = 0; n < N_Species; n++){
+
+            for (i = max(Ix[Rango],NX_1); i < Fx[Rango]; i++){
+                for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0] - HP; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j++){
+                    for (k = 0; k < NZ; k++){
+                        Species[n].Y_Pres[LP(i,j,k,0)] = Species[n].Bottom[BOTTOM(i,0,k)];   
+                    }
                 }
             }
+
         }
-        
+          
     }
 
 

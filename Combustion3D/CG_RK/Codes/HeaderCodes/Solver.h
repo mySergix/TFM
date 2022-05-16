@@ -298,7 +298,7 @@ class Solver{
         struct Species_Struct Species[N_Species];
 
         struct Reactions_Struct Reactions;
-        
+
         // Class Functions
 
             // Memory Allocation
@@ -391,7 +391,7 @@ class Solver{
             void Get_Species_DiffusionCoefficients();
             void Get_Species_Diffusion(Mesher);
 
-            void Get_Species_InitialConditions();
+            void Get_Species_InitialConditions(Mesher);
             void Get_SpeciesContributions(Mesher);
             void Get_Species_MassFraction(Mesher);
             void Get_Species_MassConservation(Mesher);

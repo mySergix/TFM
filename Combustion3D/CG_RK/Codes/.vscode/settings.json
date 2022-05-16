@@ -9,6 +9,7 @@
         "string": "cpp",
         "random": "cpp",
         "limits": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "cmath": "cpp"
     }
 }

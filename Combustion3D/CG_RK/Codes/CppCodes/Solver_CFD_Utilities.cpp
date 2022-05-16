@@ -106,20 +106,24 @@ DiffusiveDeltaT = 1000.0;
 	//b+=(a-b)*(a>b)
 
 	// Diffusive U Velocity
-	for (i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		for (j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
+	for (i = Ix[Rango] + 1; i < Fx[Rango] + 1; i++){
+		for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
 			for (k = 0; k < NZ; k++){
 
 				// CFL Diffusive U
-				DiffusiveDeltaT += ((CourantFactor * Rho * pow(MESH.DeltasMU[LU(i,j,k,0)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) - DiffusiveDeltaT) * 
+				if (i > 0 && i < NX){
+
+					DiffusiveDeltaT += ((CourantFactor * Rho * pow(MESH.DeltasMU[LU(i,j,k,0)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,0)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) <= DiffusiveDeltaT);
 				
-				DiffusiveDeltaT += ((CourantFactor * Rho * pow(MESH.DeltasMU[LU(i,j,k,1)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) - DiffusiveDeltaT) * 
+					DiffusiveDeltaT += ((CourantFactor * Rho * pow(MESH.DeltasMU[LU(i,j,k,1)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,1)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) <= DiffusiveDeltaT);
 				
-				DiffusiveDeltaT += ((CourantFactor * Rho * pow(MESH.DeltasMU[LU(i,j,k,2)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) - DiffusiveDeltaT) * 
+					DiffusiveDeltaT += ((CourantFactor * Rho * pow(MESH.DeltasMU[LU(i,j,k,2)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMU[LU(i,j,k,2)],2.0))/(0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) + 1e-10) <= DiffusiveDeltaT);
 
+				}
+				
 			}
 		}
 	}
@@ -172,16 +176,17 @@ DiffusiveDeltaT = 1000.0;
 
 		// Bottom 
 		j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0];
+		for (k = 0; k < NZ; k++){
 
-		DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * 
+			DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) <= DiffusiveDeltaT);
 
-		DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,1)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * 
+			DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,1)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,1)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) <= DiffusiveDeltaT);
 				
-		DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,2)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * 
+			DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,2)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,2)],2.0))/(mu_visc[LP(i,j,k,0)] + 1e-10) <= DiffusiveDeltaT);
-			
+		}	
 
 		for (j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 			for (k = 0; k < NZ; k++){
@@ -200,16 +205,17 @@ DiffusiveDeltaT = 1000.0;
 		}
 
 		// Top
-		j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1];
-
-		DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) - DiffusiveDeltaT) * 
+		j = NY;
+		for (k = 0; k < NZ; k++){
+			DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,0)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) <= DiffusiveDeltaT);
 
-		DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,1)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) - DiffusiveDeltaT) * 
+			DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,1)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,1)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) <= DiffusiveDeltaT);
 				
-		DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,2)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) - DiffusiveDeltaT) * 
+			DiffusiveDeltaT += ((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,2)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) - DiffusiveDeltaT) * 
 									((CourantFactor * Rho*pow(MESH.DeltasMV[LV(i,j,k,2)],2.0))/(mu_visc[LP(i,j-1,k,0)] + 1e-10) <= DiffusiveDeltaT);
+		}
 
 	}
 
