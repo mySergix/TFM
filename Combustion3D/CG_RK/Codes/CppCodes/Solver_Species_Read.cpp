@@ -70,7 +70,7 @@ string FinalName;
 					if (iss >> Specie.Wmolar){ i++; }	
 				}
 				else if(i == 1){
-					if (iss >> Specie.Epsilon){ i++; }	
+					if (iss >> Specie.Lewis){ i++; }	
 				}
 				else if(i == 2){
 					if (iss >> Specie.sigma){ i++; }	

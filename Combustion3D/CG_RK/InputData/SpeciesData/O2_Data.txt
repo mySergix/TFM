@@ -8,8 +8,8 @@ MW: (g/mol)
 0.3199880028e+02
 
 
-Epsilon/kB (Lennard-Jones potential) (K)
-107.400
+Lewis Number
+1.0
 
 
 Sigma (Lennard-Jones collision diameter) (Angstroms)

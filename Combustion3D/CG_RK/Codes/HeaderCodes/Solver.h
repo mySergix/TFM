@@ -388,13 +388,15 @@ class Solver{
 
             void Get_Species_Convection(Mesher);
 
-            void Get_Species_DiffusionCoefficients();
+            void Get_Species_DiffusionCoefficients(Mesher);
             void Get_Species_Diffusion(Mesher);
 
             void Get_Species_InitialConditions(Mesher);
+            void Get_SpeciesDiffusion_TimeStep(Mesher);
             void Get_SpeciesContributions(Mesher);
             void Get_Species_MassFraction(Mesher);
             void Get_Species_MassConservation(Mesher);
+            void Get_Species_Update(Mesher);
 
             // Combustion Data Input
             void Read_SpeciesName(string);

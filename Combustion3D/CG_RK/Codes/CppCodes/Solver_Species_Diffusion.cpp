@@ -8,13 +8,15 @@ int i, j, k, n;
 
     for (n = 0; n < N_Species - 1; n++){
 
-        for (i = Ix[Rango]; i < Fx[Rango]; i++){
+        for (i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){
             for (j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
                 for (k = 0; k < NZ; k++){
 
                     // Based on Constant Lewis Number
                     Species[n].D_ab[LP(i,j,k,0)] = JANAF_LambdaSpecies(T.Pres[LP(i,j,k,0)], n) / (Rho * Species[n].Lewis * JANAF_CpSpecie(T.Pres[LP(i,j,k,0)], n));
-                
+                    if(isnan(Species[n].D_ab[LP(i,j,k,0)])){
+                        cout<<"Hola "<<JANAF_CpSpecie(T.Pres[LP(i,j,k,0)], n)<<",    "<<T.Pres[LP(i,j,k,0)]<<endl;
+                    }
                 }
             }
         }
@@ -70,7 +72,7 @@ int i, j, k, n;
                 }
             }
         }
-
+        /*
         // Bottom
         for (i = Ix[Rango]; i < Fx[Rango]; i++){
             j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0];
@@ -562,6 +564,7 @@ int i, j, k, n;
     
 
         }
+        */
     }
     
 }

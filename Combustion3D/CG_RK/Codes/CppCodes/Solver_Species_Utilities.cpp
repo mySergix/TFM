@@ -79,6 +79,36 @@ int i, j, k, n;
 
 }
 
+// Function to calculate the species diffusion time step
+void Solver::Get_SpeciesDiffusion_TimeStep(Mesher MESH){
+int i, j, k, n;
+
+    for (n = 1; n <= 1; n++){
+
+        for(i = Ix[Rango]; i < Fx[Rango]; i++){	
+		    for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+			    for(k = 0; k < NZ; k++){
+
+				    // Mass Diffusion (X Direction)
+				    DiffusiveDeltaT += ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,0)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,0)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) <= DiffusiveDeltaT);
+                   // cout<<Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)]<<endl;
+				    // Mass Diffusion (Y Direction)
+				    DiffusiveDeltaT += ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,1)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,1)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) <= DiffusiveDeltaT);
+
+				    // Mass Diffusion (Z Direction)
+				    DiffusiveDeltaT += ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,2)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,2)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) <= DiffusiveDeltaT);
+
+			    }
+		    }
+	    }
+
+    }
+	
+	
+	MPI_Allreduce(&DiffusiveDeltaT, &DiffusiveDeltaT, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+
+}
+
 // Function to Calculate the Species Equation contributions
 void Solver::Get_SpeciesContributions(Mesher MESH){
 int i, j, k, n;
@@ -88,7 +118,7 @@ int i, j, k, n;
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
             for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
-				    Species[n].ContributionPres[LP(i,j,k,0)] = Species[n].Diffusive[LP(i,j,k,0)] - Species[n].Convective[LP(i,j,k,0)] + Species[n].wk[LP(i,j,k,0)];
+				    Species[n].ContributionPres[LP(i,j,k,0)] = Species[n].Diffusive[LP(i,j,k,0)] - Species[n].Convective[LP(i,j,k,0)];// + Species[n].wk[LP(i,j,k,0)];
 			    }
 		    }
 	    }
@@ -135,3 +165,21 @@ int i, j, k, n;
 
 }
 
+// Function to update the mass fraction fields of the species
+void Solver::Get_Species_Update(Mesher MESH){
+int i, j, k, n;
+
+    for (n = 0; n < N_Species - 1; n++){
+
+        for (i = Ix[Rango]; i < Fx[Rango]; i++){
+            for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
+                for (k = 0; k < NZ; k++){
+                    Species[n].Y_Pres[LP(i,j,k,0)] = Species[n].Y_Fut[LP(i,j,k,0)];
+                    Species[n].ContributionPast[LP(i,j,k,0)] = Species[n].ContributionPres[LP(i,j,k,0)];
+                }
+            }
+        }
+
+    }
+
+}

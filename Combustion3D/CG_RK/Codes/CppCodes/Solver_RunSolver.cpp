@@ -166,8 +166,11 @@ int i, j, k, sp;
 		Get_ThermalConductivity(MESH);
 		Get_CpHeat(MESH);
 
+		Get_Species_DiffusionCoefficients(MESH);
+
 		// Step Time Calculation
 		Get_DiffusiveTimeStep(MESH);
+		Get_SpeciesDiffusion_TimeStep(MESH);
 		Get_StepTime(MESH);
 		Time += DeltaT;
         
@@ -192,6 +195,20 @@ int i, j, k, sp;
 		// New Velocities Calculation
 		Get_Velocities(MESH, P1);
 		
+		// New Mass Fractions Calculation
+		for (sp = 0; sp < N_Species - 1; sp++){
+			P1.CommunicateDataLP(Species[sp].Y_Pres, Species[sp].Y_Pres);
+		}
+
+		Get_Species_UpdateBoundaryConditions(MESH);
+		Get_Species_UpdateHalos(MESH);
+
+		Get_Species_Diffusion(MESH);
+		Get_Species_Convection(MESH);
+		Get_SpeciesContributions(MESH);
+		Get_Species_MassFraction(MESH);
+		Get_Species_MassConservation(MESH);
+
 		// New Temperatures Calculation
 		Get_UpdateBoundaryConditions_Temperatures(MESH, T.Pres);
 		Get_UpdateHalos_Temperatures(MESH, T.Pres);
@@ -203,10 +220,7 @@ int i, j, k, sp;
         Get_NewTemperatures(MESH);
 		
 
-		// New Mass Fractions Calculation
-		Get_Species_UpdateBoundaryConditions(MESH);
-		Get_Species_UpdateHalos(MESH);
-
+		
 
 		if (Step%1 == 0){
 			// Checking Convergence Criteria
@@ -222,8 +236,9 @@ int i, j, k, sp;
 		
 		// Fields Update
 		Get_Update(MESH);
-		
-		if(Step%200 == 0){
+		Get_Species_Update(MESH);
+
+		if(Step%10 == 0){
 			
 			// Pressure Halos
 			Get_PressureHalos();
