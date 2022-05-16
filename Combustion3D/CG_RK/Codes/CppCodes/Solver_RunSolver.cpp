@@ -4,7 +4,7 @@
 
 // Function to run the solver of the simulation
 void Solver::RunSolver(Memory M1, ReadData R1, Parallel P1, Mesher MESH, PostProcessing POST1){	
-int i, j, k;
+int i, j, k, sp;
 
 	// PETSc Library
 	PetscMPIInt rank, size;
@@ -25,6 +25,7 @@ int i, j, k;
 	int Step = 0;
 
 	char FileName_1[300]; 
+	char VariableName_1[30]; 
 
 	MaxDiffGlobal = 2.0*ConvergenciaGlobal;
 
@@ -40,7 +41,11 @@ int i, j, k;
     Allocate_PoissonCoeffsMemory(M1);
 	Allocate_EnergyMemory(M1);
 	if (Rango == 0){ Allocate_GlobalMemory(M1); }
-	
+	Allocate_StructSpecies(M1);
+
+	Read_SpeciesName("Species_Data.txt");
+	Read_AllSpeciesData();
+
 	// Laplacian Matrix Calculations
 	Get_PoissonCoefficients(MESH);	
 	NNZ = 0; // Non-Zero Elements
@@ -99,7 +104,9 @@ int i, j, k;
 	Get_StaticBoundaryConditions_Temperatures(MESH);
 	Get_StaticHalos_Temperatures(MESH, T.Pres);
 	
-	Get_DiffusiveTimeStep(MESH);
+	Get_DynamicViscosity(MESH);
+	Get_ThermalConductivity(MESH);
+	Get_CpHeat(MESH);
 
 	// Communication to global matrix at step 0
 	P1.SendMatrixToZeroMP(P.Pres, Global.P);
@@ -108,11 +115,19 @@ int i, j, k;
 	P1.SendMatrixToZeroMW(W.Fut, Global.W);
 	P1.SendMatrixToZeroMP(T.Pres, Global.T); 
 
+	for (sp = 0; sp < N_Species; sp++){
+		P1.SendMatrixToZeroMP(Species[sp].Y_Pres, Species[sp].Global); 
+	}
+
 	// Print of Step 0 .VTK files
 	if(Rango == 0){
 
 		POST1.Get_GlobalScalarHalos(MESH, Global.P);
 		POST1.Get_GlobalScalarHalos(MESH, Global.T);
+
+		for (sp = 0; sp < N_Species; sp++){
+			POST1.Get_GlobalScalarHalos(MESH, Species[sp].Global);
+		}
 
 		POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
 
@@ -124,14 +139,28 @@ int i, j, k;
 		
 		sprintf(FileName_1, "MapaVelocidades_Step_%d", Step);
 		POST1.VTK_GlobalVectorial3D("DrivenCavity/", "Velocidades", FileName_1, MESH, Global.U, Global.V, Global.W);
+
+		for (sp = 0; sp < N_Species; sp++){
+			sprintf(FileName_1, "MapaY_%s_Step_%d", Species[sp].Name.c_str(), Step);
+			sprintf(VariableName_1, "Y_%s", Species[sp].Name.c_str());
+			
+			POST1.VTK_GlobalScalar3D("DrivenCavity/", VariableName_1, FileName_1, MESH, Species[sp].Global);
+		}
+
 	}
-	
+	/*
 	while(MaxDiffGlobal >= ConvergenciaGlobal){
 		
 		// New Step
 		Step++;
 
+		// Flow Properties Calculation
+		Get_DynamicViscosity(MESH);
+		Get_ThermalConductivity(MESH);
+		Get_CpHeat(MESH);
+
 		// Step Time Calculation
+		Get_DiffusiveTimeStep(MESH);
 		Get_StepTime(MESH);
 		Time += DeltaT;
         
@@ -161,8 +190,8 @@ int i, j, k;
 		Get_UpdateHalos_Temperatures(MESH, T.Pres);
 
 		P1.CommunicateDataLP(T.Pres, T.Pres);
-		Get_DiffusionEnergy(MESH, T.Pres);
-		Get_ConvectionEnergy(MESH, T.Pres, U.Pres, V.Pres, W.Pres);
+		Get_DiffusionEnergy(MESH);
+		Get_ConvectionEnergy(MESH);
 		Get_EnergyContributions(MESH);
         Get_NewTemperatures(MESH);
 		
@@ -290,7 +319,7 @@ int i, j, k;
 		Delete_EnergyMemory(T);
 		Delete_PoissonMemory(A);
 		Delete_SolverMemory();
-		
+		*/
 	if (Rango == 0){
 		cout<<endl;
 		cout<<"Memory Deleted."<<endl;

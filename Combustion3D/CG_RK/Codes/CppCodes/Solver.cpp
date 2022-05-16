@@ -104,7 +104,8 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
     ConvergenciaGS = R1.ProblemData[3];
 	ConvergenciaGlobal = R1.ProblemData[4];
 
-	
+	R_ideal = 8.31447; // J/mol K
+
 	printf("Process number %d of %d with Ix = %d and Fx = %d, LocalNodes: %d and GlobalNodes: %d \n", Rango, Procesos, Ix[Rango], Fx[Rango], ProcessNodesP, TotalNodesP);
 	
 }
@@ -113,6 +114,7 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 #include "Matrix_Index.cpp"
 #include "Solver_CFD_Memory.cpp"
 #include "Solver_CFD_Utilities.cpp"
+#include "Solver_CFD_FlowProperties.cpp"
 #include "Solver_CFD_BoundaryConditions_Premixed.cpp"
 #include "Solver_CFD_BoundaryConditions_Premixed_T.cpp"
 //#include "Solver_CFD_BoundaryConditions_NonPremixed.cpp"
@@ -123,5 +125,9 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 #include "Solver_CFD_Energy.cpp"
 //#include "Solver_CFD_RK3_Integration.cpp"
 #include "Solver_CFD_RK4_Integration.cpp"
+
+#include "Solver_Species_Memory.cpp"
+#include "Solver_Species_Read.cpp"
+#include "Solver_Species_JANAF.cpp"
 #include "Solver_RunSolver.cpp"
 

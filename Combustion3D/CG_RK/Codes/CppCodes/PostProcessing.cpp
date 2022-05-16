@@ -121,8 +121,6 @@ int i, j, k;
     // Velocity U
 
     // Top
-    for (i = 0; i < NX)
-
 
     // Velocity V
 

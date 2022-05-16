@@ -100,6 +100,7 @@ int i;
 
     for (i = 0; i < N_Species; i++){
         Read_SpeciesInformation(Species[i], SpeciesString[i]);
+		Species[i].Wmolar = Species[i].Wmolar / 1000.0;
     }
 
 }

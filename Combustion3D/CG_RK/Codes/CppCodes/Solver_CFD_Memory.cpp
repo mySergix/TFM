@@ -81,6 +81,10 @@ void Solver::Allocate_VelocitiesMemory(Memory M1){
     Allocate_VelocitiesPartMemory(M1, W, Fx[Rango] - Ix[Rango] + 2*Halo, NY + 2*Halo, NZ + 2*Halo + 1);
     Allocate_VelocitiesBoundaryConditionsMemory(M1, W, Fx[Rango] - Ix[Rango] + 2, NY, NZ);
   
+    mu_visc = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+    K_Thermal = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+    Cp_Heat = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+    
 }
 
 // Function to allocate memory for the pressure matrix
@@ -100,7 +104,8 @@ void Solver::Allocate_EnergyMemory(Memory M1){
 
     T.Convective = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     T.Diffusive = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
-    
+    T.Reactive = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+
     if (Rango == 0){
 		T.Left = M1.AllocateDouble(1, NY, NZ, 1);
     }
@@ -122,6 +127,7 @@ void Solver::Allocate_EnergyMemory(Memory M1){
     if (Int_Right == true){
         T.I_Right = M1.AllocateDouble(1, NY_2, NZ, 1);
     }
+    
 }
 
 // Function to allocate memory for the global matrix in core 0

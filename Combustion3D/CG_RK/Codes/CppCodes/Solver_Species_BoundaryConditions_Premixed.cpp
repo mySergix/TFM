@@ -12,19 +12,20 @@ int i, j, k, n;
             for (k = 0; k < NZ; k++){
 
                 // Species 0 - CH4
-                Species[0].Bottom[BOTTOM(i,0,k)] = Species[0].Wmolar / (Species[0].Wmolar + 2.0 * Species[1].Wmolar + 2.0 * 3.76 * Species[2].Wmolar);
+                Species[0].Bottom[BOTTOM(i,0,k)] = Species[0].Wmolar / (Species[0].Wmolar + 2.0 * Species[1].Wmolar + 2.0 * 3.76 * Species[4].Wmolar);
 
                 // Species 1 - O2
-                Species[1].Bottom[BOTTOM(i,0,k)] = Species[1].Wmolar / (Species[0].Wmolar + 2.0 * Species[1].Wmolar + 2.0 * 3.76 * Species[2].Wmolar);
+                Species[1].Bottom[BOTTOM(i,0,k)] = Species[1].Wmolar / (Species[0].Wmolar + 2.0 * Species[1].Wmolar + 2.0 * 3.76 * Species[4].Wmolar);
 
-                // Species 2 - N2
-                Species[2].Bottom[BOTTOM(i,0,k)] = Species[2].Wmolar / (Species[0].Wmolar + 2.0 * Species[1].Wmolar + 2.0 * 3.76 * Species[2].Wmolar);
+                // Species 2 - CO2
+                Species[2].Bottom[BOTTOM(i,0,k)] = 0.0;
 
-                // Species 3 - CO2
+                // Species 3 - H2O
                 Species[3].Bottom[BOTTOM(i,0,k)] = 0.0;
 
-                // Species 4 - H2O
-                Species[4].Bottom[BOTTOM(i,0,k)] = 0.0;
+                // Species 4 - N2
+                Species[4].Bottom[BOTTOM(i,0,k)] = Species[4].Wmolar / (Species[0].Wmolar + 2.0 * Species[1].Wmolar + 2.0 * 3.76 * Species[4].Wmolar);
+
 
             }
         }

@@ -75,6 +75,7 @@ class Solver{
 		double Uref;
         double Uref_NonPremixed;
 		double Reynolds;
+
         double Twalls_IntLeft;
         double Twalls_IntRight;
         double Twalls_Slit;
@@ -112,6 +113,14 @@ class Solver{
         
         Vec         B_RHS, X_Sol;
         Mat         A_Matrix;
+
+        // Flow Properties
+        double *mu_visc;
+        double *K_Thermal;
+        double *Cp_Heat;
+
+        string *SpeciesString;
+        double R_ideal;
 
         struct Velocity_Struct
         {
@@ -154,6 +163,7 @@ class Solver{
 
             double *Convective;
             double *Diffusive;
+            double *Reactive;
 
             double *ContributionPast;
             double *ContributionPres;
@@ -257,6 +267,20 @@ class Solver{
             double *Global;
         };
 
+        struct Reactions_Struct
+        {
+            double *Kf;
+            double *Kr;
+
+            double *A;
+            double *Beta;
+            double *EA;
+
+            double *DeltaS;
+            double *DeltaH;
+
+        };
+
         struct Velocity_Struct U;
         struct Velocity_Struct V;
         struct Velocity_Struct W;
@@ -264,6 +288,7 @@ class Solver{
         struct Pressure_Struct P;
 
         struct Energy_Struct T;
+
         struct Poisson_Coeffs A;
         
         struct Global_Struct Global;
@@ -272,6 +297,8 @@ class Solver{
 
         struct Species_Struct Species[N_Species];
 
+        struct Reactions_Struct Reactions;
+        
         // Class Functions
 
             // Memory Allocation
@@ -301,6 +328,11 @@ class Solver{
             void Get_PressureHalos();
             void Get_Stop(Mesher);
             void Get_Update(Mesher);
+
+            // Flow Properties
+            void Get_DynamicViscosity(Mesher);
+            void Get_ThermalConductivity(Mesher);
+            void Get_CpHeat(Mesher);
 
             // Runge Kutta Temporal Integration
             void Get_RK_Coefficients(Runge_Kutta&);
@@ -339,9 +371,8 @@ class Solver{
             void Get_ConvectionW(Mesher, double*, double*, double*);
 
             // Energy Equation
-            void Get_DiffusionEnergy(Mesher, double*);
-            void Get_ConvectionEnergy(Mesher, double*, double*, double*, double*);
-            void Get_BoussinesqV(Mesher, double*, double*);
+            void Get_DiffusionEnergy(Mesher);
+            void Get_ConvectionEnergy(Mesher);
             void Get_EnergyContributions(Mesher);
             void Get_NewTemperatures(Mesher);
 
