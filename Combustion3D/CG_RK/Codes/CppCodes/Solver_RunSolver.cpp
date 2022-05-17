@@ -161,6 +161,8 @@ int i, j, k, sp;
 		// New Step
 		Step++;
 
+		P1.CommunicateDataLP(T.Pres, T.Pres);
+
 		// Flow Properties Calculation
 		Get_DynamicViscosity(MESH);
 		Get_ThermalConductivity(MESH);
@@ -170,7 +172,7 @@ int i, j, k, sp;
 
 		// Step Time Calculation
 		Get_DiffusiveTimeStep(MESH);
-		Get_SpeciesDiffusion_TimeStep(MESH);
+		//Get_SpeciesDiffusion_TimeStep(MESH);
 		Get_StepTime(MESH);
 		Time += DeltaT;
         
@@ -186,7 +188,6 @@ int i, j, k, sp;
 		VecAssemblyEnd(B_RHS);
 		
 		// Poisson System Resolution
-        
 		KSPSolve(ksp, B_RHS, X_Sol);
 
 		VecGetArray(X_Sol, &X_Sol_Array);
@@ -203,7 +204,7 @@ int i, j, k, sp;
 		Get_Species_UpdateBoundaryConditions(MESH);
 		Get_Species_UpdateHalos(MESH);
 
-		Get_Species_Diffusion(MESH);
+		//Get_Species_Diffusion(MESH);
 		Get_Species_Convection(MESH);
 		Get_SpeciesContributions(MESH);
 		Get_Species_MassFraction(MESH);
@@ -213,15 +214,12 @@ int i, j, k, sp;
 		Get_UpdateBoundaryConditions_Temperatures(MESH, T.Pres);
 		Get_UpdateHalos_Temperatures(MESH, T.Pres);
 
-		P1.CommunicateDataLP(T.Pres, T.Pres);
+		
 		Get_DiffusionEnergy(MESH);
 		Get_ConvectionEnergy(MESH);
 		Get_EnergyContributions(MESH);
         Get_NewTemperatures(MESH);
 		
-
-		
-
 		if (Step%1 == 0){
 			// Checking Convergence Criteria
 			Get_Stop(MESH);
@@ -250,11 +248,19 @@ int i, j, k, sp;
 			P1.SendMatrixToZeroMW(W.Fut, Global.W);
 			P1.SendMatrixToZeroMP(T.Pres, Global.T);
 
+			for (sp = 0; sp < N_Species; sp++){
+				P1.SendMatrixToZeroMP(Species[sp].Y_Pres, Species[sp].Global); 
+			}
+
 			// Print of .VTK files
 			if(Rango == 0){
 				
 				POST1.Get_GlobalScalarHalos(MESH, Global.P);
 				POST1.Get_GlobalScalarHalos(MESH, Global.T);
+
+				for (sp = 0; sp < N_Species; sp++){
+					POST1.Get_GlobalScalarHalos(MESH, Species[sp].Global);
+				}
 
 				POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
 
@@ -267,6 +273,13 @@ int i, j, k, sp;
 				sprintf(FileName_1, "MapaVelocidades_Step_%d", Step);
 				POST1.VTK_GlobalVectorial3D("DrivenCavity/", "Velocidades", FileName_1, MESH, Global.U, Global.V, Global.W);
 		
+				for (sp = 0; sp < N_Species; sp++){
+					sprintf(FileName_1, "MapaY_%s_Step_%d", Species[sp].Name.c_str(), Step);
+					sprintf(VariableName_1, "Y_%s", Species[sp].Name.c_str());
+			
+					POST1.VTK_GlobalScalar3D("DrivenCavity/", VariableName_1, FileName_1, MESH, Species[sp].Global);
+				}
+
 			}
 			
 		}
@@ -281,12 +294,20 @@ int i, j, k, sp;
 	P1.SendMatrixToZeroMW(W.Fut, Global.W);
 	P1.SendMatrixToZeroMP(T.Pres, Global.T);
 
+	for (sp = 0; sp < N_Species; sp++){
+		P1.SendMatrixToZeroMP(Species[sp].Y_Pres, Species[sp].Global); 
+	}
+
 	// Print of .VTK files
 	if(Rango == 0){		
 		
 		POST1.Get_GlobalScalarHalos(MESH, Global.P);
 		POST1.Get_GlobalScalarHalos(MESH, Global.T);
 		
+		for (sp = 0; sp < N_Species; sp++){
+			POST1.Get_GlobalScalarHalos(MESH, Species[sp].Global);
+		}
+
 		POST1.Get_GlobalVectorialHalos(Global.U, Global.V, Global.W);
 		
 		sprintf(FileName_1, "MapaPresiones_Step_%d", Step);
@@ -298,6 +319,12 @@ int i, j, k, sp;
 		sprintf(FileName_1, "MapaTemperaturas_Step_%d", Step);
 		POST1.VTK_GlobalScalar3D("DrivenCavity/", "Temperatura", FileName_1, MESH, Global.T);
 
+		for (sp = 0; sp < N_Species; sp++){
+			sprintf(FileName_1, "MapaY_%s_Step_%d", Species[sp].Name.c_str(), Step);
+			sprintf(VariableName_1, "Y_%s", Species[sp].Name.c_str());
+			
+			POST1.VTK_GlobalScalar3D("DrivenCavity/", VariableName_1, FileName_1, MESH, Species[sp].Global);
+		}
 
 		// Solver Completed
 		cout<<"Solver Completed"<<endl;

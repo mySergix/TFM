@@ -63,7 +63,7 @@ double I;
 	}
 
 	// Temperature T
-	for(i = Ix[Rango]; i < Fx[Rango]; i++){	
+	for(i = Ix[Rango] - 1; i < Fx[Rango] + 1; i++){	
 		I = i;
 		for(j = 0; j < NY; j++){
 			for(k = 0; k < NZ; k++){	

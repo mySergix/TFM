@@ -14,9 +14,7 @@ int i, j, k, n;
 
                     // Based on Constant Lewis Number
                     Species[n].D_ab[LP(i,j,k,0)] = JANAF_LambdaSpecies(T.Pres[LP(i,j,k,0)], n) / (Rho * Species[n].Lewis * JANAF_CpSpecie(T.Pres[LP(i,j,k,0)], n));
-                    if(isnan(Species[n].D_ab[LP(i,j,k,0)])){
-                        cout<<"Hola "<<JANAF_CpSpecie(T.Pres[LP(i,j,k,0)], n)<<",    "<<T.Pres[LP(i,j,k,0)]<<endl;
-                    }
+                    
                 }
             }
         }
