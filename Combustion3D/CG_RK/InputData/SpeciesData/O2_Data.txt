@@ -9,7 +9,7 @@ MW: (g/mol)
 
 
 Lewis Number
-1.0
+1.11
 
 
 Sigma (Lennard-Jones collision diameter) (Angstroms)

@@ -33,7 +33,7 @@ double I;
 	
     // Velocity V
 	for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
-		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1]; j++){
+		for(j = MESH.NY_ColumnMV[i + Halo - Ix[Rango]][0] + 1; j < MESH.NY_ColumnMV[i + Halo - Ix[Rango]][1] - 1; j++){
 			for(k = 0; k < NZ + 1; k++){	
 				V.Pres[LV(i,j,k,0)] = 0.0;
 				V.Fut[LV(i,j,k,0)] = 0.0;

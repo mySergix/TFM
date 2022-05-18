@@ -174,7 +174,7 @@ int i, j, k;
     // Top
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for (k = 0; k < NZ; k++){
-			V.Predictor[LV(i,NY,k,0)] = V.Pres[LV(i,NY,k,0)];
+			V.Predictor[LV(i,NY,k,0)] = V.Predictor[LV(i,NY-1,k,0)];
         }
     }
 

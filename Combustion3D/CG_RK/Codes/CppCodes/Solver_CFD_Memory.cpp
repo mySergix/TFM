@@ -85,6 +85,10 @@ void Solver::Allocate_VelocitiesMemory(Memory M1){
     K_Thermal = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     Cp_Heat = M1.AllocateDouble(Fx[Rango] - Ix[Rango] + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
     
+    Global_mu_visc = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+    Global_K_Thermal = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+    Global_Cp_Heat = M1.AllocateDouble(NX + 2*HP, NY + 2*Halo, NZ + 2*Halo, 1);
+
 }
 
 // Function to allocate memory for the pressure matrix

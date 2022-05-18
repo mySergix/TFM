@@ -13,7 +13,7 @@
 #include "petsc.h"
 
 #define N_Species 5
-#define N_Reactions 4
+#define N_Reactions 1
 
 using namespace std;
 
@@ -118,6 +118,10 @@ class Solver{
         double *mu_visc;
         double *K_Thermal;
         double *Cp_Heat;
+
+        double *Global_mu_visc;
+        double *Global_K_Thermal;
+        double *Global_Cp_Heat;
 
         string *SpeciesString;
         double R_ideal;

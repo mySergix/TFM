@@ -70,7 +70,7 @@ int i, j, k, n;
                 }
             }
         }
-        /*
+        
         // Bottom
         for (i = Ix[Rango]; i < Fx[Rango]; i++){
             j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0];
@@ -81,7 +81,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -92,7 +92,7 @@ int i, j, k, n;
                                                    
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -103,7 +103,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -111,7 +111,7 @@ int i, j, k, n;
 
             }
         }
-
+        
         // Top
         j = NY - 1;
         for (i = Ix[Rango]; i < Fx[Rango]; i++){
@@ -126,7 +126,7 @@ int i, j, k, n;
 										           );
             }
         }
-
+        
         // Here
         k = 0;
         for (i = Ix[Rango]; i < Fx[Rango]; i++){
@@ -218,7 +218,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -229,7 +229,7 @@ int i, j, k, n;
                                                    
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -240,7 +240,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -258,7 +258,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].There[THERE(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -269,7 +269,7 @@ int i, j, k, n;
                                                    
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].There[THERE(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -280,7 +280,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].There[THERE(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -304,7 +304,7 @@ int i, j, k, n;
 
 
         // Top There Corner
-        i = NY - 1;
+        j = NY - 1;
         k = NZ - 1;
         for (i = Ix[Rango]; i < Fx[Rango]; i++){
             Species[n].Diffusive[LP(i,j,k,0)] = (1 / MESH.VolMP[LP(i,j,k,0)])*(
@@ -341,7 +341,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -393,7 +393,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -406,7 +406,7 @@ int i, j, k, n;
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].There[THERE(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -427,7 +427,7 @@ int i, j, k, n;
 
 
             // Top There Corner
-            i = NY - 1;
+            j = NY - 1;
             k = NZ - 1;
             Species[n].Diffusive[LP(i,j,k,0)] = (1 / MESH.VolMP[LP(i,j,k,0)])*(
                                                    + 0.50 * (Species[n].D_ab[LP(i+1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i+1,j,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
@@ -463,7 +463,7 @@ int i, j, k, n;
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Right[RIGHT(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -515,7 +515,7 @@ int i, j, k, n;
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Right[RIGHT(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + 0.50 * (Species[n].D_ab[LP(i,j,k+1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k+1,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -528,7 +528,7 @@ int i, j, k, n;
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Right[RIGHT(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                                    - 0.50 * (Species[n].D_ab[LP(i-1,j,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
                                                    + 0.50 * (Species[n].D_ab[LP(i,j+1,k,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j+1,k,0)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                                   - Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,1)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,2)] * (Species[n].There[THERE(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
                                                    - 0.50 * (Species[n].D_ab[LP(i,j,k-1,0)] + Species[n].D_ab[LP(i,j,k,0)]) * MESH.SupMP[LP(i,j,k,2)] * (Species[n].Y_Pres[LP(i,j,k,0)] - Species[n].Y_Pres[LP(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										           );
@@ -549,7 +549,7 @@ int i, j, k, n;
 
 
             // Top There Corner
-            i = NY - 1;
+            j = NY - 1;
             k = NZ - 1;
             Species[n].Diffusive[LP(i,j,k,0)] = (1 / MESH.VolMP[LP(i,j,k,0)])*(
                                                    + Species[n].D_ab[LP(i,j,k,0)] * MESH.SupMP[LP(i,j,k,0)] * (Species[n].Right[RIGHT(i,j,k)] - Species[n].Y_Pres[LP(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
@@ -562,7 +562,7 @@ int i, j, k, n;
     
 
         }
-        */
+        
     }
     
 }

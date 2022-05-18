@@ -12,7 +12,7 @@
 #include "../HeaderCodes/Solver.h"
 
 #define N_Species 5
-#define N_Reactions 4
+#define N_Reactions 1
 
 Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 
@@ -85,16 +85,12 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	Rho = 1.0;
 	Uref = 1.0;
 	Reynolds = 10;
-	Cp = 1000.0;
-	Prandtl = R1.ProblemPhysicalData[5];
-	mu = 0.00002;
-	K = (Cp * mu) / Prandtl;
 	
 	U.Gravity = 0.0;
 	V.Gravity = 0.0;
 	W.Gravity = 0.0;
 
-	Twalls_IntLeft = 398.0; // K
+	Twalls_IntLeft = 298.0; // K
     Twalls_IntRight = 298.0; // K
     Twalls_Slit = 298.0; // K
     Twalls_Burner = 298.0; // K

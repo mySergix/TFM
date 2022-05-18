@@ -82,6 +82,9 @@ int i, j, k;
 		P1.CommunicateDataLV(V.Pres, V.Pres);
 		P1.CommunicateDataLW(W.Pres, W.Pres);
         
+		Get_UpdateBoundaryConditions_Velocities(MESH, U.Pres, V.Pres, W.Pres);
+		Get_UpdateHalos_Velocity(MESH, U.Pres, V.Pres, W.Pres);
+		
         // Diffusion Terms Calculation
         Get_DiffusionU(MESH, U.Pres);
         Get_DiffusionV(MESH, V.Pres);

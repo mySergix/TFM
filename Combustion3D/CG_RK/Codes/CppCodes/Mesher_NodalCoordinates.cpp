@@ -30,6 +30,10 @@ double nz;
 					else if (OptionX_1 == 2){
 						MU[LU(i,j,k,0)] = X_1  * (tanh(SFX_1 * (I / nx)) / tanh(SFX_1));
 					}
+					// Centered - Hyperbolic Tangent
+					else if (OptionX_1 == 4){
+						MU[LU(i,j,k,0)] = (X_1 / 2.0) * (1.0 + tanh(SFX_1 * (((2.0 * I) - nx) / nx)) / tanh(SFX_1));
+					}
 					
 				}
 				// Section 2 (X Direction)
@@ -42,6 +46,10 @@ double nz;
 					// Right Sided - Hyperbolic Tangent
 					else if (OptionX_2 == 2){
 						MU[LU(i,j,k,0)] = X_1 + X_2 * (1.0 - tanh(SFX_2 * ((I - NX_1) / nx)) / tanh(SFX_2));
+					}
+					// Centered - Hyperbolic Tangent
+					else if (OptionX_2 == 4){
+						MU[LU(i,j,k,0)] = X_1 + (X_2 / 2.0) * (1.0 + tanh(SFX_2 * (((2.0 * (I - (NX_1))) - nx) / nx)) / tanh(SFX_2));
 					}
 
 				}
@@ -353,7 +361,10 @@ double nz = NZ;
 					else if (OptionX_1 == 2){
 						GlobalMeshU[GU(i,j,k,0)] = X_1 * (tanh(SFX_1 * (I / nx)) / tanh(SFX_1));
 					}
-					
+					// Centered - Hyperbolic Tangent
+					else if (OptionX_1 == 4){
+						GlobalMeshU[GU(i,j,k,0)] = (X_1 / 2.0) * (1.0 + tanh(SFX_1 * (((2.0 * I) - nx) / nx)) / tanh(SFX_1));
+					}
 				}
 				// Section 2 (X Direction)
 				else if (i > NX_1 && i <= NX_1 + NX_2){
@@ -366,7 +377,10 @@ double nz = NZ;
 					else if (OptionX_2 == 2){
 						GlobalMeshU[GU(i,j,k,0)] = X_1 + X_2 * (tanh(SFX_2 * ((I - NX_1) / nx)) / tanh(SFX_2));
 					}
-
+					// Centered - Hyperbolic Tangent
+					else if (OptionX_2 == 4){
+						GlobalMeshU[GU(i,j,k,0)] = X_1 + (X_2 / 2.0) * (1.0 + tanh(SFX_2 * (((2.0 * (I - (NX_1))) - nx) / nx)) / tanh(SFX_2));
+					}
 				}
 				// Section 3 (X Direction)
 				else if (i > NX_1 + NX_2){

@@ -91,7 +91,7 @@ int i, j, k, n;
 
 				    // Mass Diffusion (X Direction)
 				    DiffusiveDeltaT += ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,0)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,0)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) <= DiffusiveDeltaT);
-                   // cout<<Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)]<<endl;
+                  
 				    // Mass Diffusion (Y Direction)
 				    DiffusiveDeltaT += ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,1)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) - DiffusiveDeltaT) * ((CourantFactor * pow(MESH.DeltasMP[LP(i,j,k,1)], 2.0)) / (Species[n].Lewis * Species[n].D_ab[LP(i,j,k,0)] + 1e-10) <= DiffusiveDeltaT);
 

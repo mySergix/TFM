@@ -15,14 +15,14 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	//Datos Numéricos del problema
 	Problema = "Premixed";
 
-	NX_1 = 40;
-	NX_2 = 30;
-	NX_3 = 40;
+	NX_1 = 30;
+	NX_2 = 24;
+	NX_3 = 30;
 
 	NY_1 = 30;
 	NY_2 = 20;
-	NY_3 = 40;
-	NY_4 = 30;
+	NY_3 = 30;
+	NY_4 = 40;
 
 	// Meshing options:
 	// 1 -> Regular
@@ -37,11 +37,11 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 			// 3 -> Down Sided - Hyperbolic Tangent (More Density on the Down)
 			// 4 -> Centered Sided - Hyperbolic Tangent (More Density on both Sides)
 
-	OptionX_1 = 1;
+	OptionX_1 = 4;
 	OptionX_2 = 1;
 	OptionX_3 = 4;
 
-	OptionY_1 = 2;
+	OptionY_1 = 1;
 	OptionY_2 = 1;
 	OptionY_3 = 3;
 	OptionY_4 = 1;
@@ -49,12 +49,12 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	OptionZ = 1;
 
 	SFX_1 = 1.5;
-	SFX_2 = 1.0;
-	SFX_3 = 1.7;
+	SFX_2 = 1.2;
+	SFX_3 = 1.6;
 
 	SFY_1 = 1.0;
 	SFY_2 = 1.4;
-	SFY_3 = 1.6;
+	SFY_3 = 1.4;
 	SFY_4 = 1.5;
 
 	SFZ = 1.0;
@@ -62,7 +62,7 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	NX = NX_1 + NX_2 + NX_3;
 	if (Problema == "Premixed"){ NY = NY_1 + NY_2 + NY_3 + NY_4; }
 	else if (Problema == "NonPremixed"){ NY = NY_2 + NY_3 + NY_4; }
-	NZ = 10;
+	NZ = 8;
 
 	// Datos Geométricos del problema (m)
 	Width_Inlet = 0.002; 
@@ -434,7 +434,7 @@ int i, j, k;
 			DeltasMV[LV(i,0,k,0)] = MU[LU(i+1,0,k,0)] - MU[LU(i,0,k,0)]; // Delta X Parte Abajo
 			DeltasMV[LV(i,NY,k,0)] = MU[LU(i+1,NY-1,k,0)] - MU[LU(i,NY-1,k,0)]; // Delta X Parte Arriba
 
-			DeltasMV[LV(i,0,k,1)] = MP[LP(i,0,k,1)] - MV[LV(i,0,k,1)]; // Delta Y Parte Abajo
+			DeltasMV[LV(i,0,k,1)] = MP[LP(i,0,k,1)] - MP[LP(i,-1,k,1)]; // Delta Y Parte Abajo
 			DeltasMV[LV(i,NY,k,1)] = MV[LV(i,NY,k,1)] - MP[LP(i,NY-1,k,1)]; // Delta Y Parte Arriba
 
 			DeltasMV[LV(i,0,k,2)] = MW[LW(i,0,k+1,2)] - MW[LW(i,0,k,2)]; // Delta Z Parte Abajo

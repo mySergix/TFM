@@ -159,26 +159,26 @@ int i, j, k;
     file<<"ASCII"<<endl;
     file<<endl;
     file<<"DATASET STRUCTURED_GRID"<<endl;
-    file<<"DIMENSIONS"<<"   "<<(NX + 1)<<"   "<<(NY + 1)<<"   "<<(NZ + 1)<<endl;
+    file<<"DIMENSIONS"<<"   "<<NX<<"   "<<NY<<"   "<<NZ<<endl;
     file<<endl;
-    file<<"POINTS"<<"   "<<(NX + 1)*(NY + 1)*(NZ + 1)<<"   "<<"double"<<endl;
+    file<<"POINTS"<<"   "<<NX*NY*NZ<<"   "<<"double"<<endl;
 	
-	for(k = 0; k < NZ + 1; k++){
-		for(j = 0; j < NY + 1; j++){
-			for(i = 0; i < NX + 1; i++){
-				file<<MESH.GlobalMeshU[GU(i,j,k,0)]<<"   "<<MESH.GlobalMeshV[GV(i,j,k,1)]<<"   "<<MESH.GlobalMeshW[GW(i,j,k,2)]<<endl;
+	for(k = 0; k < NZ; k++){
+		for(j = 0; j < NY; j++){
+			for(i = 0; i < NX; i++){
+				file<<MESH.GlobalMeshP[GP(i,j,k,0)]<<"   "<<MESH.GlobalMeshP[GP(i,j,k,1)]<<"   "<<MESH.GlobalMeshP[GP(i,j,k,2)]<<endl;
 			}
 		}
 	}
         
     file<<endl;
-	file<<"POINT_DATA"<<"   "<<(NX + 1)*(NY + 1)*(NZ + 1)<<endl;
+	file<<"POINT_DATA"<<"   "<<NX*NY*NZ<<endl;
     file<<"SCALARS "<<Variable<<" double"<<endl;
     file<<"LOOKUP_TABLE"<<"   "<<Variable<<endl;
     file<<endl;
-	for(k = 0; k < NZ + 1; k++){
-		for(j = 0; j < NY + 1; j++){
-			for(i = 0; i < NX + 1; i++){
+	for(k = 0; k < NZ; k++){
+		for(j = 0; j < NY; j++){
+			for(i = 0; i < NX; i++){
                 file<<PropertyMatrix[GP(i,j,k,0)]<<" ";
 				//file<<(1.0 / 6.0) * (PropertyMatrix[GP(i-1,j,k,0)] + PropertyMatrix[GP(i,j-1,k,0)] + PropertyMatrix[GP(i,j,k-1,0)] + PropertyMatrix[GP(i,j,k,0)] + PropertyMatrix[GP(i,j,k,0)] + PropertyMatrix[GP(i,j,k,0)])<<" ";
 			}

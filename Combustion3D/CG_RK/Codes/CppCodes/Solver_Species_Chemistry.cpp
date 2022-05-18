@@ -2,6 +2,18 @@
 //                       CPP FILE FOR SPECIES CHEMISTRY FUNCTIONS                                 //
 //------------------------------------------------------------------------------------------------//
 
+// Function to get all the reaction kinetics data
+void Solver::Get_ReactionsData_OneStepCH4(){
+
+    Reactions.A;
+    Reactions.Beta;
+    Reactions.EA;
+
+    Reactions.DeltaS = 0.0;
+    Reactions.DeltaH = 0.0;
+
+}
+
 // Function to calculate the reaction rate of progress of each species (4 Step - CH4)
 void Solver::Get_Reactions_OneStepCH4(Mesher MESH){
 int i, j, k, n, r;

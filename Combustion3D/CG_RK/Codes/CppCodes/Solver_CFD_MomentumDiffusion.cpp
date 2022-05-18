@@ -74,7 +74,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k+1,0)] + mu_visc[LP(i,j,k+1,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.25 * (mu_visc[LP(i-1,j,k-1,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -85,7 +85,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (0.0 - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k+1,0)] + mu_visc[LP(i,j,k+1,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.25 * (mu_visc[LP(i-1,j,k-1,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -96,7 +96,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - 0.0) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k+1,0)] + mu_visc[LP(i,j,k+1,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.25 * (mu_visc[LP(i-1,j,k-1,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -199,7 +199,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k+1,0)] + mu_visc[LP(i,j,k+1,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -210,7 +210,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (0.0 - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k+1,0)] + mu_visc[LP(i,j,k+1,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -221,7 +221,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - 0.0) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k+1,0)] + mu_visc[LP(i,j,k+1,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k+1,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U.Here[HERE(i,j,k)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -239,7 +239,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U.There[THERE(i,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -250,7 +250,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (0.0 - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i-1,j,k,0)]) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U.There[THERE(i,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -261,7 +261,7 @@ int i, j, k;
                                          + mu_visc[LP(i,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i+1,j,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,0)]
                                          - mu_visc[LP(i-1,j,k,0)] * MESH.SupMU[LU(i,j,k,0)] * (U_Matrix[LU(i,j,k,0)] - 0.0) / MESH.DeltasMP[LP(i-1,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j+1,k,0)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,1)] * (U_Matrix[LU(i,j,k,0)] - U.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U.There[THERE(i,j,k)] - U_Matrix[LU(i,j,k,0)]) / MESH.DeltasMW[LW(i,j,k+1,2)]
 										 - 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i-1,j+1,k,0)] + mu_visc[LP(i,j+1,k,0)]) * MESH.SupMU[LU(i,j,k,2)] * (U_Matrix[LU(i,j,k,0)] - U_Matrix[LU(i,j,k-1,0)]) / MESH.DeltasMW[LW(i,j,k,2)]
 										 );
@@ -835,7 +835,7 @@ int i, j, k;
 										 + 0.25 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i+1,j,k,0)] + mu_visc[LP(i+1,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i+1,j,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i-1,j,k-1,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j+1,k,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i,j+1,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + mu_visc[LP(i,j,k,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k+1,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,2)]
 										 - mu_visc[LP(i,j,k-1,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i,j,k-1,0)]) / MESH.DeltasMP[LP(i,j,k-1,2)]
 										 );
@@ -846,7 +846,7 @@ int i, j, k;
 										 + 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (0.0 - W_Matrix[LW(i,j,k,0)]) / (0.50 * MESH.DeltasMU[LU(i+1,j,k,0)])
                                          - 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i-1,j,k-1,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j+1,k,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i,j+1,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + mu_visc[LP(i,j,k,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k+1,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,2)]
 										 - mu_visc[LP(i,j,k-1,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i,j,k-1,0)]) / MESH.DeltasMP[LP(i,j,k-1,2)]
 										 );
@@ -857,7 +857,7 @@ int i, j, k;
 										 + 0.25 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i+1,j,k,0)] + mu_visc[LP(i+1,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i+1,j,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - 0.0) / (0.50 * MESH.DeltasMU[LU(i,j,k,0)])
 										 + 0.25 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j+1,k,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i,j+1,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + mu_visc[LP(i,j,k,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k+1,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,2)]
 										 - mu_visc[LP(i,j,k-1,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i,j,k-1,0)]) / MESH.DeltasMP[LP(i,j,k-1,2)]
 										 );
@@ -904,7 +904,7 @@ int i, j, k;
 										 + 0.25 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i+1,j,k,0)] + mu_visc[LP(i+1,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i+1,j,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W.Left[LEFT(i,j,k)]) / MESH.DeltasMU[LU(i,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j+1,k,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i,j+1,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + mu_visc[LP(i,j,k,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k+1,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,2)]
 										 - mu_visc[LP(i,j,k-1,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i,j,k-1,0)]) / MESH.DeltasMP[LP(i,j,k-1,2)]
 										 );
@@ -947,7 +947,7 @@ int i, j, k;
 										 + 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W.Right[RIGHT(i,j,k)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMU[LU(i+1,j,k,0)]
                                          - 0.25 * (mu_visc[LP(i-1,j,k,0)] + mu_visc[LP(i-1,j,k-1,0)] + mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,0)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i-1,j,k,0)]) / MESH.DeltasMU[LU(i,j,k,0)]
 										 + 0.25 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j+1,k,0)] + mu_visc[LP(i,j,k-1,0)] + mu_visc[LP(i,j+1,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j+1,k,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMV[LV(i,j+1,k,1)]
-                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / MESH.DeltasMV[LV(i,j,k,1)]
+                                         - 0.50 * (mu_visc[LP(i,j,k,0)] + mu_visc[LP(i,j,k-1,0)]) * MESH.SupMW[LW(i,j,k,1)] * (W_Matrix[LW(i,j,k,0)] - W.Bottom[BOTTOM(i,j,k)]) / (0.50 * MESH.DeltasMV[LV(i,j,k,1)])
 										 + mu_visc[LP(i,j,k,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k+1,0)] - W_Matrix[LW(i,j,k,0)]) / MESH.DeltasMP[LP(i,j,k,2)]
 										 - mu_visc[LP(i,j,k-1,0)] * MESH.SupMW[LW(i,j,k,2)] * (W_Matrix[LW(i,j,k,0)] - W_Matrix[LW(i,j,k-1,0)]) / MESH.DeltasMP[LP(i,j,k-1,2)]
 										 );
