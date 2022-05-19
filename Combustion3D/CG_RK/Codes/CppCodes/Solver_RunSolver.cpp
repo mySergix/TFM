@@ -201,7 +201,7 @@ int i, j, k, sp;
 
 		Get_Species_Diffusion(MESH);
 		Get_Species_Convection(MESH);
-		//Get_Reactions_OneStepCH4(MESH);
+		Get_Reactions_OneStepCH4(MESH);
 		Get_SpeciesContributions(MESH);
 		Get_Species_MassFraction(MESH);
 		Get_Species_MassConservation(MESH);
@@ -212,7 +212,7 @@ int i, j, k, sp;
 
 		Get_DiffusionEnergy(MESH);
 		Get_ConvectionEnergy(MESH);
-		//Get_ReactionsEnergy(MESH);
+		Get_ReactionsEnergy(MESH);
 		Get_EnergyContributions(MESH);
         Get_NewTemperatures(MESH);
 		
@@ -245,7 +245,7 @@ int i, j, k, sp;
 			P1.SendMatrixToZeroMP(T.Pres, Global.T);
 
 			for (sp = 0; sp < N_Species; sp++){
-				P1.SendMatrixToZeroMP(Species[sp].wk, Species[sp].Global); 
+				P1.SendMatrixToZeroMP(Species[sp].Y_Pres, Species[sp].Global); 
 			}
 
 			// Print of .VTK files

@@ -155,7 +155,7 @@ int i, j, k, n;
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
             for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
-				    Species[n].Y_Fut[LP(i,j,k,0)] = Species[n].Y_Pres[LP(i,j,k,0)] + DeltaT * (1.50 * Species[n].ContributionPres[LP(i,j,k,0)] - 0.50 * Species[n].ContributionPast[LP(i,j,k,0)]);
+				    Species[n].Y_Fut[LP(i,j,k,0)] = max(0.0, Species[n].Y_Pres[LP(i,j,k,0)] + DeltaT * (1.50 * Species[n].ContributionPres[LP(i,j,k,0)] - 0.50 * Species[n].ContributionPast[LP(i,j,k,0)]));
 			    }
 		    }
 	    }

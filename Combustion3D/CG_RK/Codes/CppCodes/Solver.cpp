@@ -90,7 +90,7 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	V.Gravity = 0.0;
 	W.Gravity = 0.0;
 
-	Twalls_IntLeft = 298.0; // K
+	Twalls_IntLeft = 298.0 + 100.0; // K
     Twalls_IntRight = 298.0; // K
     Twalls_Slit = 298.0; // K
     Twalls_Burner = 298.0; // K

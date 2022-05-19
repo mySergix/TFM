@@ -22,7 +22,7 @@ double Q1;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
-                Reactions.Kf[0] = Reactions.A[0] * exp(- Reactions.EA[0] / 298.15);
+                Reactions.Kf[0] = Reactions.A[0] * exp(- Reactions.EA[0] / T.Pres[LP(i,j,k,0)]);
                 Q1 = Reactions.Kf[0] * pow(Rho * Species[0].Y_Pres[LP(i,j,k,0)] / Species[0].Wmolar, 2.8) * pow(Rho * Species[1].Y_Pres[LP(i,j,k,0)] / Species[1].Wmolar, 1.2);
                 
                 // Species 0 - CH4

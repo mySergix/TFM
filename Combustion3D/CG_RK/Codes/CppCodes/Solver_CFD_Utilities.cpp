@@ -425,7 +425,7 @@ MaxDiffGlobal = 0.0;
 	for(i = Ix[Rango]; i < Fx[Rango] + 1; i++){
         for(j = MESH.NY_ColumnMU[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMU[i + Halo - Ix[Rango]][1]; j++){
 		    for(k = 0; k < NZ; k++){
-				MaxDiffGlobal += (abs((U.Fut[LU(i,j,k,0)] - U.Pres[LU(i,j,k,0)])/(U.Pres[LU(i,j,k,0)] + 1e-15)) - MaxDiffGlobal)*(abs((U.Fut[LU(i,j,k,0)] - U.Pres[LU(i,j,k,0)])/(U.Pres[LU(i,j,k,0)] + 1e-15)) >= MaxDiffGlobal);
+				MaxDiffGlobal += (abs((U.Fut[LU(i,j,k,0)] - U.Pres[LU(i,j,k,0)])/(U.Pres[LU(i,j,k,0)] + 1e-12)) - MaxDiffGlobal)*(abs((U.Fut[LU(i,j,k,0)] - U.Pres[LU(i,j,k,0)])/(U.Pres[LU(i,j,k,0)] + 1e-12)) >= MaxDiffGlobal);
 			}
 		}
 	}

@@ -1232,7 +1232,7 @@ int i, j, k;
     for (i = Ix[Rango]; i < Fx[Rango]; i++){
         for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
             for (k = 0; k < NZ; k++){
-                T.ContributionPres[LP(i,j,k,0)] =  0.0; //(T.Diffusive[LP(i,j,k,0)]) / Cp_Heat[LP(i,j,k,0)] - T.Convective[LP(i,j,k,0)];  - T.Reactive[LP(i,j,k,0)]
+                T.ContributionPres[LP(i,j,k,0)] =  (T.Diffusive[LP(i,j,k,0)] - T.Reactive[LP(i,j,k,0)]) / Cp_Heat[LP(i,j,k,0)] - T.Convective[LP(i,j,k,0)];  
             }
         }
     }
