@@ -42,6 +42,7 @@ int i, j, k, sp;
 	Allocate_EnergyMemory(M1);
 	if (Rango == 0){ Allocate_GlobalMemory(M1); }
 	Allocate_StructSpecies(M1);
+	Allocate_StructReactions(M1);
 
 	Read_SpeciesName("Species_Data.txt");
 	Read_AllSpeciesData();
@@ -109,6 +110,8 @@ int i, j, k, sp;
 	Get_Species_StaticBoundaryConditions(MESH);
 	Get_Species_StaticHalos();
 
+	Get_ReactionsData_OneStepCH4();
+
 	Get_DynamicViscosity(MESH);
 	Get_ThermalConductivity(MESH);
 	Get_CpHeat(MESH);
@@ -164,6 +167,7 @@ int i, j, k, sp;
 		// Step Time Calculation
 		Get_DiffusiveTimeStep(MESH);
 		//Get_SpeciesDiffusion_TimeStep(MESH);
+		Get_SpeciesReactions_TimeStep(MESH);
 		Get_StepTime(MESH);
 		Time += DeltaT;
         
@@ -197,6 +201,7 @@ int i, j, k, sp;
 
 		Get_Species_Diffusion(MESH);
 		Get_Species_Convection(MESH);
+		//Get_Reactions_OneStepCH4(MESH);
 		Get_SpeciesContributions(MESH);
 		Get_Species_MassFraction(MESH);
 		Get_Species_MassConservation(MESH);
@@ -207,10 +212,11 @@ int i, j, k, sp;
 
 		Get_DiffusionEnergy(MESH);
 		Get_ConvectionEnergy(MESH);
+		//Get_ReactionsEnergy(MESH);
 		Get_EnergyContributions(MESH);
         Get_NewTemperatures(MESH);
 		
-		if (Step%100 == 0){
+		if (Step%10 == 0){
 			// Checking Convergence Criteria
 			Get_Stop(MESH);
 
@@ -226,7 +232,7 @@ int i, j, k, sp;
 		Get_Update(MESH);
 		Get_Species_Update(MESH);
 
-		if(Step%500 == 0){
+		if(Step%100 == 0){
 			
 			// Pressure Halos
 			Get_PressureHalos();
@@ -239,7 +245,7 @@ int i, j, k, sp;
 			P1.SendMatrixToZeroMP(T.Pres, Global.T);
 
 			for (sp = 0; sp < N_Species; sp++){
-				P1.SendMatrixToZeroMP(Species[sp].Y_Pres, Species[sp].Global); 
+				P1.SendMatrixToZeroMP(Species[sp].wk, Species[sp].Global); 
 			}
 
 			// Print of .VTK files

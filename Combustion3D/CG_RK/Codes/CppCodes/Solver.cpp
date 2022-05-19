@@ -77,13 +77,13 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 	Int_Left = false;
     Int_Right = false;
 
-	CourantFactor = 0.80;
+	CourantFactor = 0.40;
 	// Courant Factor -> Driven ----- RK3 ->(0.80 max) ----- RK4 ->(1.10 max) 
 	//				  -> Differentially ----- RK3 ->( max) ----- RK4 ->(0.70 max) 
 
     // Datos Físicos del Problema
 	Rho = 1.0;
-	Uref = 1.0;
+	Uref = 1.1;
 	Reynolds = 10;
 	
 	U.Gravity = 0.0;
@@ -130,5 +130,6 @@ Solver::Solver(Memory M1, ReadData R1, Parallel P1, Mesher MESH){
 #include "Solver_Species_JANAF.cpp"
 #include "Solver_Species_BoundaryConditions_Premixed.cpp"
 //#include "Solver_Species_BoundaryConditions_NonPremixed.cpp"
+#include "Solver_Species_Chemistry.cpp"
 #include "Solver_RunSolver.cpp"
 

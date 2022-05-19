@@ -109,6 +109,25 @@ int i, j, k, n;
 
 }
 
+// Function to calculate the reactions time step
+void Solver::Get_SpeciesReactions_TimeStep(Mesher MESH){
+int i, j, k, n;
+
+    for (n = 0; n < N_Species - 1; n++){
+
+        for(i = Ix[Rango]; i < Fx[Rango]; i++){	
+		    for (j = MESH.NY_ColumnMP[i + Halo - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + Halo - Ix[Rango]][1]; j++){
+			    for(k = 0; k < NZ; k++){
+                    DiffusiveDeltaT += (CourantFactor * abs(Rho * (Species[n].Y_Pres[LP(i,j,k,0)] + 1e-12) / (Species[n].wk[LP(i,j,k,0)] + 1e-12)) - DiffusiveDeltaT) * (CourantFactor * abs(Rho * (Species[n].Y_Pres[LP(i,j,k,0)] + 1e-12) / (Species[n].wk[LP(i,j,k,0)] + 1e-12)) <= DiffusiveDeltaT);
+                }
+            }
+        }
+
+    }
+
+    MPI_Allreduce(&DiffusiveDeltaT, &DiffusiveDeltaT, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+}
+
 // Function to Calculate the Species Equation contributions
 void Solver::Get_SpeciesContributions(Mesher MESH){
 int i, j, k, n;
@@ -118,7 +137,7 @@ int i, j, k, n;
         for(i = Ix[Rango]; i < Fx[Rango]; i++){
             for(j = MESH.NY_ColumnMP[i + HP - Ix[Rango]][0]; j < MESH.NY_ColumnMP[i + HP - Ix[Rango]][1]; j++){
 		        for(k = 0; k < NZ; k++){
-				    Species[n].ContributionPres[LP(i,j,k,0)] = Species[n].Diffusive[LP(i,j,k,0)] - Species[n].Convective[LP(i,j,k,0)];// + Species[n].wk[LP(i,j,k,0)];
+				    Species[n].ContributionPres[LP(i,j,k,0)] = Species[n].Diffusive[LP(i,j,k,0)] - Species[n].Convective[LP(i,j,k,0)] + Species[n].wk[LP(i,j,k,0)];
 			    }
 		    }
 	    }

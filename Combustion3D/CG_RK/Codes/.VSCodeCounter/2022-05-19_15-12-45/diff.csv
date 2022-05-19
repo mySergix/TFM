@@ -1,0 +1,11 @@
+"filename", "language", "C++", "comment", "blank", "total"
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Mesher_NodalCoordinates.cpp", "C++", 12, 4, -2, 14
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Solver.cpp", "C++", -3, 0, 0, -3
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Solver_CFD_Memory.cpp", "C++", 3, 0, 1, 4
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Solver_CFD_RK4_Integration.cpp", "C++", 2, 0, 1, 3
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Solver_CFD_Utilities.cpp", "C++", 0, 1, 1, 2
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Solver_RunSolver.cpp", "C++", 17, 0, 3, 20
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Solver_Species_Chemistry.cpp", "C++", 14, 5, 8, 27
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Solver_Species_Diffusion.cpp", "C++", 0, 0, 1, 1
+"/home/sergiogus/Documents/Github/TFM/Combustion3D/CG_RK/Codes/CppCodes/Solver_Species_Utilities.cpp", "C++", 28, 5, 16, 49
+"Total", "-", 73, 15, 29, 117

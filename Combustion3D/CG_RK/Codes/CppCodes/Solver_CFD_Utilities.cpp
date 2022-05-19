@@ -67,8 +67,8 @@ double I;
 		I = i;
 		for(j = 0; j < NY; j++){
 			for(k = 0; k < NZ; k++){	
-				T.Pres[LP(i,j,k,0)] = T_FlowInlet;
-				T.Fut[LP(i,j,k,0)] = T_FlowInlet;
+				T.Pres[LP(i,j,k,0)] = Twalls_IntRight;
+				T.Fut[LP(i,j,k,0)] = Twalls_IntRight;
 
 				T.Convective[LP(i,j,k,0)] = 0.0;
 				T.Diffusive[LP(i,j,k,0)] = 0.0;	
@@ -326,6 +326,8 @@ DeltaT = DiffusiveDeltaT;
 	
 	MPI_Allreduce(&DeltaT, &DeltaT, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
 
+	DeltaT += (1e-6 - DeltaT) * (DeltaT < 1e-6);
+	
 }
 
 // Function to calculate the convective scheme

@@ -15,14 +15,14 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	//Datos Numéricos del problema
 	Problema = "Premixed";
 
-	NX_1 = 30;
-	NX_2 = 24;
+	NX_1 = 40;
+	NX_2 = 20;
 	NX_3 = 30;
 
-	NY_1 = 30;
+	NY_1 = 60;
 	NY_2 = 20;
-	NY_3 = 30;
-	NY_4 = 40;
+	NY_3 = 50;
+	NY_4 = 50;
 
 	// Meshing options:
 	// 1 -> Regular
@@ -37,13 +37,13 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 			// 3 -> Down Sided - Hyperbolic Tangent (More Density on the Down)
 			// 4 -> Centered Sided - Hyperbolic Tangent (More Density on both Sides)
 
-	OptionX_1 = 4;
+	OptionX_1 = 1;
 	OptionX_2 = 1;
-	OptionX_3 = 4;
+	OptionX_3 = 1;
 
 	OptionY_1 = 1;
 	OptionY_2 = 1;
-	OptionY_3 = 3;
+	OptionY_3 = 1;
 	OptionY_4 = 1;
 
 	OptionZ = 1;
@@ -62,7 +62,7 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	NX = NX_1 + NX_2 + NX_3;
 	if (Problema == "Premixed"){ NY = NY_1 + NY_2 + NY_3 + NY_4; }
 	else if (Problema == "NonPremixed"){ NY = NY_2 + NY_3 + NY_4; }
-	NZ = 8;
+	NZ = 10;
 
 	// Datos Geométricos del problema (m)
 	Width_Inlet = 0.002; 
@@ -87,7 +87,7 @@ Mesher::Mesher(Memory M1, ReadData R1, Parallel P1){
 	Xdomain = X_1 + X_2 + X_3;
 	if (Problema == "Premixed"){ Ydomain = Y_1 + Y_2 + Y_3 + Y_4; }
 	else if (Problema == "NonPremixed"){ Ydomain = Y_2 + Y_3 + Y_4; }
-	Zdomain = 0.001;
+	Zdomain = 0.0005;
 
 	//Datos necesarios para computación paralela
 	Rango = P1.Rango;

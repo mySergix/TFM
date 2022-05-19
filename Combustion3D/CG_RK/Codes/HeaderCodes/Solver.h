@@ -424,6 +424,9 @@ class Solver{
             void Allocate_StructReactions(Memory);
             void Get_ReactionsEnergy(Mesher);
 
+            // Chemistry Calculations
+            void Get_SpeciesReactions_TimeStep(Mesher);
+            void Get_ReactionsData_OneStepCH4();
             void Get_Reactions_OneStepCH4(Mesher);
             void Get_Reactions_FourStepCH4(Mesher);
 
